@@ -8,8 +8,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -18,6 +18,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -25,16 +29,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.mera.islam.duaazkar.NavControllerRoutes
 import  com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.extensions.listToString
 import  com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import  com.mera.islam.duaazkar.core.presentation.permissions.RequestPermission
 import  com.mera.islam.duaazkar.core.utils.SdkHelper
+import com.mera.islam.duaazkar.presentation.categories_screen.CategoriesScreen
+import com.mera.islam.duaazkar.presentation.dua_bookmark_screen.DuaBookmarkScreen
+import com.mera.islam.duaazkar.presentation.home_screen.HomeScreen
+import com.mera.islam.duaazkar.presentation.landing_screen.components.BottomNavItems
+import com.mera.islam.duaazkar.presentation.landing_screen.components.LandingScreenBottomNavBar
 import  com.mera.islam.duaazkar.presentation.landing_screen.components.LandingScreenTopBar
 import  com.mera.islam.duaazkar.presentation.landing_screen.components.LandingScreenTopSelection
 import ir.kaaveh.sdpcompose.sdp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LandingScreen(
     navController: NavHostController,
@@ -47,30 +56,39 @@ fun LandingScreen(
     })
 
     DuaAzkarWithBackground {
+        var selectedScreen by remember {
+            mutableStateOf(BottomNavItems.Home)
+        }
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
-            topBar = { LandingScreenTopBar {} }
+            topBar = { LandingScreenTopBar {} },
+            bottomBar = {
+                LandingScreenBottomNavBar(
+                    selectedScreen = selectedScreen,
+                    onItemClick = {
+                        selectedScreen = it
+                    }
+                )
+            }
         ) { paddingValues ->
-            Column(modifier = Modifier.padding(paddingValues)) {
-                Spacer(modifier = Modifier.height(10.sdp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxHeight(0.4f)
-                        .padding(start = 10.sdp)
-                        .horizontalScroll(rememberScrollState())
-                ) {
-                    LandingScreenTopSelection(
-                        modifier = Modifier.padding(end = 5.sdp),
-                        resource = R.drawable.ic_morning_azkar
+            when (selectedScreen) {
+                BottomNavItems.Home -> HomeScreen(modifier = Modifier.padding(paddingValues))
+                BottomNavItems.Categories -> CategoriesScreen(
+                    modifier = Modifier.padding(
+                        paddingValues
                     )
+                )
 
-                    LandingScreenTopSelection(
-                        modifier = Modifier.padding(end = 5.sdp),
-                        resource = R.drawable.ic_evening_azkar
-                    )
-                }
+                BottomNavItems.Bookmarks -> DuaBookmarkScreen(
+                    modifier = Modifier.padding(
+                        paddingValues
+                    ), onDuaClick = { dua ->
+                        val duaNav = NavControllerRoutes.DUA_SCREEN(lastReadId = dua.getDataId())
+                        navController.navigate(duaNav.getPathWithNavArgs())
+                    })
             }
         }
     }

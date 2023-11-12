@@ -14,4 +14,7 @@
     <string name="location_permission_required">Location permission is required to show dua notification of after prayer</string>
     <string name="as_salamu_alaykum">As-Salamu Alaykum</string>
     <string name="dua_azkar"><![CDATA[Dua & Azkar]]></string>
+    <string name="home">Home</string>
+    <string name="categories">Categories</string>
+    <string name="bookmarks">Bookmarks</string>
 </resources>

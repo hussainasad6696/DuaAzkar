@@ -19,57 +19,43 @@ import  com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import  com.mera.islam.duaazkar.core.presentation.Loading
 import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationTextCell
+import com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
 import  com.mera.islam.duaazkar.core.utils.LoadingResources
 import ir.kaaveh.sdpcompose.sdp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DuaBookmarkScreen(
-    navHostController: NavHostController,
-    viewModel: DuaBookmarkScreenViewModel = hiltViewModel()
+    modifier: Modifier = Modifier,
+    viewModel: DuaBookmarkScreenViewModel = hiltViewModel(),
+    onDuaClick: (ArabicWithTranslation) -> Unit
 ) {
-    Scaffold(modifier = Modifier.fillMaxSize(),
-        topBar = {
-            DefaultTopAppBar(
-                title = stringResource(id = R.string.bookmarked_duas),
-                navHostController = navHostController
-            )
-        }) { paddingValues ->
-        val bookmarked by viewModel.allBookmarkedDuasWithTranslations.collectAsStateWithLifecycle()
+    val bookmarked by viewModel.allBookmarkedDuasWithTranslations.collectAsStateWithLifecycle()
 
-        when (bookmarked) {
-            is LoadingResources.Loading -> Loading(isLoading = true, modifier = Modifier.fillMaxSize())
-            is LoadingResources.SuccessList -> {
-                val arabicFont by viewModel.arabicWithTranslationStateListener.arabicTextSize.collectAsStateWithLifecycle()
-                val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
-                val bookmarkedList = (bookmarked as LoadingResources.SuccessList).data
+    when (bookmarked) {
+        is LoadingResources.Loading -> Loading(isLoading = true, modifier = modifier.fillMaxSize())
+        is LoadingResources.SuccessList -> {
+            val arabicFont by viewModel.arabicWithTranslationStateListener.arabicTextSize.collectAsStateWithLifecycle()
+            val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
+            val bookmarkedList = (bookmarked as LoadingResources.SuccessList).data
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .background(color = Color.White)
-                        .padding(horizontal = 5.sdp)
-                ) {
-                    items(bookmarkedList.size) {
-                        val dua = bookmarkedList[it]
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(color = Color.White)
+                    .padding(horizontal = 5.sdp)
+            ) {
+                items(bookmarkedList.size) {
+                    val dua = bookmarkedList[it]
 
-                        ArabicWithTranslationTextCell(
-                            arabicWithTranslation = dua,
-                            arabicFont = arabicFont,
-                            textSize = textSize,
-                            index = it,
-                            onItemClick = {
-                                val duaNav = NavControllerRoutes.DUA_SCREEN(lastReadId = dua.getDataId())
-                                navHostController.navigate(duaNav.getPathWithNavArgs())
-                            }
-                        )
-                    }
+                    ArabicWithTranslationTextCell(
+                        arabicWithTranslation = dua,
+                        arabicFont = arabicFont,
+                        textSize = textSize,
+                        index = it,
+                        onItemClick = { onDuaClick(dua) }
+                    )
                 }
             }
-
-            else -> {}
         }
-
     }
 }

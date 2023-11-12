@@ -55,8 +55,8 @@ fun Beginning() {
             val duaType = DuaType.toDuaType(backStackEntry.arguments?.getInt("duaType") ?: DuaType.ALL.type)
             DuaScreen(navHostController = navController, lastRead = lastReadId, duaType = duaType)
         }
-        composable(NavControllerRoutes.DUA_BOOKMARK_SCREEN().route) {
-            DuaBookmarkScreen(navController)
-        }
+//        composable(NavControllerRoutes.DUA_BOOKMARK_SCREEN().route) {
+//            DuaBookmarkScreen(navController)
+//        }
     }
 }
