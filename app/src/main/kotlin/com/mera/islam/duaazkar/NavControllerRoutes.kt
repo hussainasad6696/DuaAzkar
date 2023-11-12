@@ -36,6 +36,6 @@ sealed class NavControllerRoutes(val route: String) {
         }
     }
 
-    data class DUA_BOOKMARK_SCREEN(val rout: String = "duaBookmarkScreen") :
+    data class DUA_SEARCH_SCREEN(val rout: String = "duaSearchScreen") :
         NavControllerRoutes(rout)
 }

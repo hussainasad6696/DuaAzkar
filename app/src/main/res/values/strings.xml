@@ -17,4 +17,10 @@
     <string name="home">Home</string>
     <string name="categories">Categories</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="morning_azkar">Morning Azkar</string>
+    <string name="azkar">%1$s Azkar</string>
+    <string name="chapters">%1$s Chapters</string>
+    <string name="view_all">View All</string>
+    <string name="ibadat_azkar">Ibadah Azkar</string>
+    <string name="search">Search %1$s</string>
 </resources>

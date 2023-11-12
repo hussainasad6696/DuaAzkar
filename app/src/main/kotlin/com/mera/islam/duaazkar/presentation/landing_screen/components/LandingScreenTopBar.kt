@@ -35,7 +35,7 @@ fun LandingScreenTopBar(modifier: Modifier = Modifier,onSettingsClick: () -> Uni
             Text(
                 text = stringResource(R.string.as_salamu_alaykum),
                 color = lightTextGrayColor,
-                fontSize = 13.ssp,
+                fontSize = 10.ssp,
                 fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
             )
             Text(

@@ -46,33 +46,33 @@ class PrayerUtils @Inject constructor(
 
             if (localDateTime.isAfter(ishaTime)) {
                 prayerTimeListener?.setPrayerAlarm(
-                    localDateTime = fajarTime.plusDays(1),
+                    localDateTime = fajarTime.plusMinutes(15).plusDays(1),
                     prayers = Prayers.FAJAR
                 )
             } else {
                 when {
                     localDateTime.isBefore(fajarTime) -> prayerTimeListener?.setPrayerAlarm(
-                        localDateTime = fajarTime,
+                        localDateTime = fajarTime.plusMinutes(15),
                         prayers = Prayers.FAJAR
                     )
 
                     localDateTime.isBefore(zoharTime) -> prayerTimeListener?.setPrayerAlarm(
-                        localDateTime = zoharTime,
+                        localDateTime = zoharTime.plusMinutes(15),
                         prayers = Prayers.ZOHAR
                     )
 
                     localDateTime.isBefore(asrTime) -> prayerTimeListener?.setPrayerAlarm(
-                        localDateTime = asrTime,
+                        localDateTime = asrTime.plusMinutes(15),
                         prayers = Prayers.ASR
                     )
 
                     localDateTime.isBefore(magribTime) -> prayerTimeListener?.setPrayerAlarm(
-                        localDateTime = magribTime,
+                        localDateTime = magribTime.plusMinutes(15),
                         prayers = Prayers.MAGHRIB
                     )
 
                     localDateTime.isBefore(ishaTime) -> prayerTimeListener?.setPrayerAlarm(
-                        localDateTime = ishaTime,
+                        localDateTime = ishaTime.plusMinutes(15),
                         prayers = Prayers.ISHA
                     )
 

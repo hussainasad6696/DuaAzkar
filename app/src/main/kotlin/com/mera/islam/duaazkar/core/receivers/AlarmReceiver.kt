@@ -96,7 +96,7 @@ class AlarmReceiver : BroadcastReceiver() {
         createLargeNotification(
             context = context,
             title = item.duaModel.reason,
-            contentTitle = item.duaModel.duaType.name.replace("_", " "),
+            contentTitle = item.duaModel.duaType.getName(),
             bigText =  com.mera.islam.duaazkar.core.extensions.build {
                 append(item.duaModel.arabic)
                 append("\n")

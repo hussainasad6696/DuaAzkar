@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class DuaLastRead @Inject constructor(
+class DuaLastReadUseCase @Inject constructor(
     private val duaRepo: DuaRepo,
     private val duaTranslationRepo: DuaTranslationRepo,
     private val settings: Settings

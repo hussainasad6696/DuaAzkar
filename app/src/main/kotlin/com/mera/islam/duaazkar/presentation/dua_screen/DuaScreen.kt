@@ -44,7 +44,7 @@ import  com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomShee
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun DuaScreen(
     navHostController: NavHostController,

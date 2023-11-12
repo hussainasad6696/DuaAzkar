@@ -14,7 +14,7 @@ import  com.mera.islam.duaazkar.core.utils.fonts.LanguageFonts
 import  com.mera.islam.duaazkar.domain.models.DuaTranslatorModel
 import  com.mera.islam.duaazkar.domain.models.DuaType
 import  com.mera.islam.duaazkar.domain.repo.DuaTranslatorRepo
-import  com.mera.islam.duaazkar.domain.usecases.DuaLastRead
+import  com.mera.islam.duaazkar.domain.usecases.DuaLastReadUseCase
 import  com.mera.islam.duaazkar.domain.usecases.GetAllDuaWithTranslationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +29,7 @@ import javax.inject.Inject
 class DuaScreenViewModel @Inject constructor(
     private val getAllDuaWithTranslationsUseCase: GetAllDuaWithTranslationsUseCase,
     private val translatorRepo: DuaTranslatorRepo,
-    private val duaLastRead: DuaLastRead,
+    private val duaLastReadUseCase: DuaLastReadUseCase,
     private val settings: Settings
 ) : ViewModel() {
 
@@ -140,7 +140,7 @@ class DuaScreenViewModel @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             kotlin.runCatching {
                 if (allDuaWithTranslations.value is LoadingResources.SuccessList)
-                    duaLastRead((allDuaWithTranslations.value as LoadingResources.SuccessList<ArabicWithTranslation>).data[firstVisibleItemIndex].getDataId())
+                    duaLastReadUseCase((allDuaWithTranslations.value as LoadingResources.SuccessList<ArabicWithTranslation>).data[firstVisibleItemIndex].getDataId())
             }
         }
     }

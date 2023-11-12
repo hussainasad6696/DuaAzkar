@@ -4,16 +4,13 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.Toast
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -25,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +30,7 @@ import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.NavControllerRoutes
 import  com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.extensions.listToString
+import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import  com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import  com.mera.islam.duaazkar.core.presentation.permissions.RequestPermission
 import  com.mera.islam.duaazkar.core.utils.SdkHelper
@@ -41,9 +40,9 @@ import com.mera.islam.duaazkar.presentation.home_screen.HomeScreen
 import com.mera.islam.duaazkar.presentation.landing_screen.components.BottomNavItems
 import com.mera.islam.duaazkar.presentation.landing_screen.components.LandingScreenBottomNavBar
 import  com.mera.islam.duaazkar.presentation.landing_screen.components.LandingScreenTopBar
-import  com.mera.islam.duaazkar.presentation.landing_screen.components.LandingScreenTopSelection
 import ir.kaaveh.sdpcompose.sdp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LandingScreen(
     navController: NavHostController,
@@ -60,11 +59,36 @@ fun LandingScreen(
             mutableStateOf(BottomNavItems.Home)
         }
 
+        BackHandler(enabled = selectedScreen != BottomNavItems.Home) {
+            selectedScreen = BottomNavItems.Home
+        }
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
-            topBar = { LandingScreenTopBar {} },
+            topBar = {
+                if (selectedScreen == BottomNavItems.Home) LandingScreenTopBar {}
+                else DefaultTopAppBar(
+                    navHostController = navController,
+                    hasBackButton = false,
+                    hasSearch = false,
+                    title = selectedScreen.name,
+                    actions = {
+                        if (selectedScreen == BottomNavItems.Categories)
+                            IconButton(onClick = {
+                                navController.navigate(NavControllerRoutes.DUA_SEARCH_SCREEN().route)
+                            }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_search_icon),
+                                    contentDescription = "Search from types",
+                                    tint = Color.Unspecified,
+                                    modifier = Modifier.size(18.sdp)
+                                )
+                            }
+                    }
+                )
+            },
             bottomBar = {
                 LandingScreenBottomNavBar(
                     selectedScreen = selectedScreen,
@@ -75,20 +99,28 @@ fun LandingScreen(
             }
         ) { paddingValues ->
             when (selectedScreen) {
-                BottomNavItems.Home -> HomeScreen(modifier = Modifier.padding(paddingValues))
+                BottomNavItems.Home -> HomeScreen(
+                    navController = navController,
+                    modifier = Modifier.padding(paddingValues),
+                    viewModel = viewModel,
+                    onViewAllClick = { selectedScreen = BottomNavItems.Categories }
+                )
+
                 BottomNavItems.Categories -> CategoriesScreen(
                     modifier = Modifier.padding(
                         paddingValues
-                    )
+                    ),
+                    viewModel = viewModel,
+                    navController = navController
                 )
 
                 BottomNavItems.Bookmarks -> DuaBookmarkScreen(
                     modifier = Modifier.padding(
                         paddingValues
-                    ), onDuaClick = { dua ->
-                        val duaNav = NavControllerRoutes.DUA_SCREEN(lastReadId = dua.getDataId())
-                        navController.navigate(duaNav.getPathWithNavArgs())
-                    })
+                    ),
+                    viewModel = viewModel,
+                    navController = navController
+                )
             }
         }
     }
@@ -108,19 +140,6 @@ fun LandingScreen(
 //        modifier = Modifier.fillMaxWidth(),
 //        content = {
 //            Text(text = "Open all duas")
-//        }
-//    )
-//
-//    Button(
-//        onClick = {
-//            navController.navigate(
-//                NavControllerRoutes.DUA_SCREEN(duaType = DuaType.Morning_Evening_Night)
-//                    .getPathWithNavArgs()
-//            )
-//        },
-//        modifier = Modifier.fillMaxWidth(),
-//        content = {
-//            Text(text = "Open morning evening")
 //        }
 //    )
 //
