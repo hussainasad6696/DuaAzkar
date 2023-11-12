@@ -37,6 +37,7 @@ fun HomeScreen(
                 modifier = Modifier.padding(end = 5.sdp),
                 resource = R.drawable.ic_evening_azkar
             )
+
         }
     }
 }
