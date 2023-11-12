@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">DuaAzkar</string>
+    <string name="duas">Duas</string>
+    <string name="arabic_fonts">Arabic fonts</string>
+    <string name="left_lang_fonts">Left language fonts</string>
+    <string name="right_lang_fonts">Right language fonts</string>
+    <string name="bookmarked_duas">Bookmarked Duas</string>
+    <string name="notification_permission_required">Notification permission required</string>
+    <string name="to_show_daily_dua_reminder_notification_permission_is_required">To show daily dua reminder notification permission is required</string>
+    <string name="channel_description">Dua notification channel</string>
+    <string name="grant">Grant</string>
+    <string name="deny">Deny</string>
+    <string name="request_location_permission">Location permission required</string>
+    <string name="location_permission_required">Location permission is required to show dua notification of after prayer</string>
+    <string name="as_salamu_alaykum">As-Salamu Alaykum</string>
+    <string name="dua_azkar"><![CDATA[Dua & Azkar]]></string>
+</resources>

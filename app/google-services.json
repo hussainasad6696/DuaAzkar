@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "524944048170",
+    "project_id": "duaazkar-2e42a",
+    "storage_bucket": "duaazkar-2e42a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524944048170:android:4de94a80cf35a8a5224353",
+        "android_client_info": {
+          "package_name": "com.mera.islam.duaazkar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ9gLtjI5RvtjH_UzvQ-3yrnQSFgzxAYw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
