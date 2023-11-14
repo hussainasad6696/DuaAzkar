@@ -23,6 +23,7 @@ sealed class NavControllerRoutes(val route: String) {
                 defaultValue = duaType.type
             }
         )
+
         fun getPath() = "$rout?lastReadId={lastReadId}&duaType={duaType}"
         fun getPathWithNavArgs(): String {
             var mainPath = rout
@@ -38,4 +39,26 @@ sealed class NavControllerRoutes(val route: String) {
 
     data class DUA_SEARCH_SCREEN(val rout: String = "duaSearchScreen") :
         NavControllerRoutes(rout)
+
+    data class DUA_LISTING_SCREEN(
+        val rout: String = "duaListingScreen",
+        val duaListArray: Array<Int> = emptyArray()
+    ) : NavControllerRoutes(rout) {
+        val listOfArguments = listOf(
+            navArgument("duaIds") {
+                type = NavType.IntArrayType
+                defaultValue = duaListArray
+            }
+        )
+
+        fun getPath() = "$rout?duaIds={duaIds}"
+
+        fun getPathWithNavArgs(): String {
+            var mainPath = rout
+
+            mainPath += "?duaIds=$duaListArray"
+
+            return mainPath
+        }
+    }
 }

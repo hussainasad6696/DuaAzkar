@@ -15,15 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import  com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import  com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import  com.mera.islam.duaazkar.ui.theme.lightTextGrayColor
+import com.mera.islam.duaazkar.ui.theme.primary
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
-fun LandingScreenTopBar(modifier: Modifier = Modifier,onSettingsClick: () -> Unit) {
+fun LandingScreenTopBar(modifier: Modifier = Modifier, onSettingsClick: () -> Unit) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -38,9 +42,38 @@ fun LandingScreenTopBar(modifier: Modifier = Modifier,onSettingsClick: () -> Uni
                 fontSize = 10.ssp,
                 fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
             )
+
+            val annotatedString = buildAnnotatedString {
+                append(
+                    text = AnnotatedString(
+                        text = stringResource(id = R.string.dua),
+                        spanStyle = SpanStyle(
+                            color = darkTextGrayColor
+                        )
+                    )
+                )
+                append(" ")
+                append(
+                    text = AnnotatedString(
+                        text = stringResource(id = R.string.and),
+                        spanStyle = SpanStyle(
+                            color = primary
+                        )
+                    )
+                )
+                append(" ")
+                append(
+                    text = AnnotatedString(
+                        text = stringResource(id = R.string.azkar),
+                        spanStyle = SpanStyle(
+                            color = darkTextGrayColor
+                        )
+                    )
+                )
+            }
+
             Text(
-                text = stringResource(R.string.dua_azkar),
-                color = darkTextGrayColor,
+                text = annotatedString,
                 fontSize = 24.ssp,
                 fontFamily = RobotoFonts.ROBOTO_BOLD.getFont()
             )

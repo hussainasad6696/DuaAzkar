@@ -59,19 +59,17 @@ class AlarmReceiver : BroadcastReceiver() {
                         )
                     }
                     ACTION_PRAYER_DUA_REMINDER -> {
-                        prayerUtils.setPrayerTimeListener { localDateTime, prayer ->
-                            alarmScheduler.scheduleAlarm(
-                                localDateTime = localDateTime,
-                                action = ACTION_PRAYER_DUA_REMINDER,
-                                alarmId = dailyPrayerReminderId,
-                                Pair("prayerName",prayer.name)
-                            )
-                        }
-
                         intent.getStringExtra("prayerName")?.let { prayer ->
                             context?.let { prayerDuaNotification(prayer = prayer, context = it) }
 
-                            prayerUtils.calculatePrayer()
+                            prayerUtils.calculatePrayer { localDateTime, prayer ->
+                                alarmScheduler.scheduleAlarm(
+                                    localDateTime = localDateTime,
+                                    action = ACTION_PRAYER_DUA_REMINDER,
+                                    alarmId = dailyPrayerReminderId,
+                                    Pair("prayerName",prayer.name)
+                                )
+                            }
                         }
                     }
                 }

@@ -66,7 +66,7 @@ fun LandingScreenTopSelection(
             Spacer(modifier = Modifier.height(8.sdp))
 
             Text(
-                text = stringResource(id = R.string.azkar, noOfItems),
+                text = stringResource(id = R.string.azkar_with_count, noOfItems),
                 color = Color.White.copy(0.5f),
                 fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont(),
                 fontSize = 13.ssp

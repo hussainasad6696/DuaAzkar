@@ -18,13 +18,7 @@ class PrayerUtils @Inject constructor(
     private val location: OneTimeLocation
 ) {
 
-    private var prayerTimeListener: PrayerAlarmTime? = null
-
-    fun setPrayerTimeListener(prayerAlarmTime: PrayerAlarmTime) {
-        this.prayerTimeListener = prayerAlarmTime
-    }
-
-    suspend fun calculatePrayer() {
+    suspend fun calculatePrayer(prayerTimeListener: (localDateTime: LocalDateTime, prayers: Prayers) -> Unit) {
         location.getLastKnownLocation()?.let { location ->
             val localDateTime = LocalDateTime.now()
 
@@ -45,35 +39,35 @@ class PrayerUtils @Inject constructor(
             val ishaTime = getPrayerLocalDateTime(prayerTimes.isha!!)
 
             if (localDateTime.isAfter(ishaTime)) {
-                prayerTimeListener?.setPrayerAlarm(
-                    localDateTime = fajarTime.plusMinutes(15).plusDays(1),
-                    prayers = Prayers.FAJAR
+                prayerTimeListener(
+                    fajarTime.plusMinutes(15).plusDays(1),
+                    Prayers.FAJAR
                 )
             } else {
                 when {
-                    localDateTime.isBefore(fajarTime) -> prayerTimeListener?.setPrayerAlarm(
-                        localDateTime = fajarTime.plusMinutes(15),
-                        prayers = Prayers.FAJAR
+                    localDateTime.isBefore(fajarTime) -> prayerTimeListener(
+                        fajarTime.plusMinutes(15),
+                        Prayers.FAJAR
                     )
 
-                    localDateTime.isBefore(zoharTime) -> prayerTimeListener?.setPrayerAlarm(
-                        localDateTime = zoharTime.plusMinutes(15),
-                        prayers = Prayers.ZOHAR
+                    localDateTime.isBefore(zoharTime) -> prayerTimeListener(
+                        zoharTime.plusMinutes(15),
+                        Prayers.ZOHAR
                     )
 
-                    localDateTime.isBefore(asrTime) -> prayerTimeListener?.setPrayerAlarm(
-                        localDateTime = asrTime.plusMinutes(15),
-                        prayers = Prayers.ASR
+                    localDateTime.isBefore(asrTime) -> prayerTimeListener(
+                        asrTime.plusMinutes(15),
+                        Prayers.ASR
                     )
 
-                    localDateTime.isBefore(magribTime) -> prayerTimeListener?.setPrayerAlarm(
-                        localDateTime = magribTime.plusMinutes(15),
-                        prayers = Prayers.MAGHRIB
+                    localDateTime.isBefore(magribTime) -> prayerTimeListener(
+                        magribTime.plusMinutes(15),
+                        Prayers.MAGHRIB
                     )
 
-                    localDateTime.isBefore(ishaTime) -> prayerTimeListener?.setPrayerAlarm(
-                        localDateTime = ishaTime.plusMinutes(15),
-                        prayers = Prayers.ISHA
+                    localDateTime.isBefore(ishaTime) -> prayerTimeListener(
+                        ishaTime.plusMinutes(15),
+                        Prayers.ISHA
                     )
 
                     else -> {}
@@ -86,7 +80,4 @@ class PrayerUtils @Inject constructor(
         ZonedDateTime.ofInstant(Instant.ofEpochMilli(date.time), ZoneId.systemDefault())
             .toLocalDateTime()
 
-    fun interface PrayerAlarmTime {
-        fun setPrayerAlarm(localDateTime: LocalDateTime, prayers: Prayers)
-    }
 }

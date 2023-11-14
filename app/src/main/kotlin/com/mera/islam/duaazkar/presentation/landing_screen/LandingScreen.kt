@@ -128,50 +128,6 @@ fun LandingScreen(
     RequestLocationPermission(context)
     RequestPostNotificationPermission(context)
 }
-//Column(
-//modifier = Modifier
-//.padding(paddingValues)
-//.padding(16.sdp),
-//horizontalAlignment = Alignment.CenterHorizontally,
-//verticalArrangement = Arrangement.SpaceEvenly
-//) {
-//    Button(
-//        onClick = { navController.navigate(NavControllerRoutes.DUA_SCREEN().route) },
-//        modifier = Modifier.fillMaxWidth(),
-//        content = {
-//            Text(text = "Open all duas")
-//        }
-//    )
-//
-//    Button(
-//        onClick = { navController.navigate(NavControllerRoutes.DUA_BOOKMARK_SCREEN().route) },
-//        modifier = Modifier.fillMaxWidth(),
-//        content = {
-//            Text(text = "Open bookmarks")
-//        }
-//    )
-//
-//    Button(
-//        onClick = { viewModel.printAllPrayerTimes() },
-//        modifier = Modifier.fillMaxWidth(),
-//        content = {
-//            Text(text = "Prayer time test")
-//        }
-//    )
-//
-//    val duaLastReadId by viewModel.settingsDuaLastRead.collectAsStateWithLifecycle()
-//
-//    if (duaLastReadId != -1) {
-//        val duaNav = NavControllerRoutes.DUA_SCREEN(lastReadId = duaLastReadId)
-//        Button(
-//            onClick = { navController.navigate(duaNav.getPathWithNavArgs()) },
-//            modifier = Modifier.fillMaxWidth(),
-//            content = {
-//                Text(text = "Dua last read available by id $duaLastReadId")
-//            }
-//        )
-//    }
-//}
 
 @Composable
 fun RequestLocationPermission(context: Context) {

@@ -8,6 +8,7 @@ import  com.mera.islam.duaazkar.domain.models.DuaModel
 import  com.mera.islam.duaazkar.domain.models.DuaType
 import  com.mera.islam.duaazkar.domain.repo.DuaRepo
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class DuaRepoImpl(
@@ -15,18 +16,10 @@ class DuaRepoImpl(
     private val duaEntityToModelMapper: EntityModelMapper<DuaEntity, DuaModel>
 ) : DuaRepo {
     override fun getAllDuas(): Flow<List<DuaModel>> = duaDao.getAllDuas().mapper()
-    override fun getAllDuaTypesAndCounts(): Flow<List<Pair<DuaType, Int>>> =
-        duaDao.getAllDuaTypesAndCounts().map { list ->
-            list.map {
-                Pair(DuaType.toDuaType(it.duaType), it.count)
-            }
-        }
+    override fun getAllDuaTypesAndCounts(): Flow<List<DuaNameAndCount>> = duaDao.getAllDuaTypesAndCounts()
+    override fun getAllDuaTypesAndCountsByKeyword(keyword: String): Flow<List<DuaNameAndCount>> =
+        duaDao.getAllDuaTypesAndCountsByKeyword(keyword)
 
-    override fun getAllDuaTypesAndCountsByKeyword(keyword: String): Flow<List<Pair<DuaType, Int>>> = duaDao.getAllDuaTypesAndCountsByKeyword(keyword).map { list ->
-        list.map {
-            Pair(DuaType.toDuaType(it.duaType), it.count)
-        }
-    }
     override fun getDuaByDuaType(duaType: DuaType): Flow<List<DuaModel>> =
         duaDao.getDuaByDuaType(duaType.type).mapper()
 
@@ -34,6 +27,17 @@ class DuaRepoImpl(
         duaDao.getDuaById(id).map { value: DuaEntity ->
             duaEntityToModelMapper.entityToModelMapper(value)
         }
+
+    override fun getDuaByIds(ids: List<Int>): Flow<List<DuaModel>> {
+        val chunkedIds = ids.chunked(200)
+        return flow {
+            chunkedIds.map { ids ->
+                emit(
+                    duaDao.getDuaByIds(ids)
+                        .map { duaEntity -> duaEntityToModelMapper.entityToModelMapper(duaEntity) })
+            }
+        }
+    }
 
     override fun getBookmarkedDuas(): Flow<List<DuaModel>> = duaDao.getBookmarkedDuas().mapper()
     override suspend fun isBookmarked(isBookmark: Boolean, id: Int) {

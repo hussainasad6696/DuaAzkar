@@ -1,9 +1,5 @@
 package  com.mera.islam.duaazkar.core.utils
 
-data class LoadingWithResources<T>(
-    val isLoading: Boolean = false,
-    val resources: List<T> = emptyList()
-)
 
 sealed interface LoadingResources<out T> {
     data object Loading: LoadingResources<Nothing>

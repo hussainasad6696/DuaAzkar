@@ -1,21 +1,19 @@
 package com.mera.islam.duaazkar.presentation.dua_search_screen
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.NavControllerRoutes
-import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
@@ -24,6 +22,7 @@ import com.mera.islam.duaazkar.core.utils.LoadingResources
 import com.mera.islam.duaazkar.presentation.home_screen.components.DuaTypesWithCountView
 import ir.kaaveh.sdpcompose.sdp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DuaSearchScreen(
     navController: NavHostController,
@@ -32,6 +31,8 @@ fun DuaSearchScreen(
     DuaAzkarWithBackground {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onBackground,
             topBar = {
                 DefaultTopAppBar(
                     navHostController = navController,
@@ -66,12 +67,13 @@ fun DuaSearchScreen(
                             val dua = data[index]
 
                             DuaTypesWithCountView(
-                                duaType = dua.first,
-                                noOfDua = dua.second,
+                                duaType = dua.getDuaType(),
+                                noOfDua = dua.count,
                                 onNextClick = {
                                     navController.navigate(
-                                        NavControllerRoutes.DUA_SCREEN(duaType = dua.first)
-                                            .getPathWithNavArgs()
+                                        NavControllerRoutes.DUA_LISTING_SCREEN(
+                                            duaListArray = dua.getIdList().toTypedArray()
+                                        ).getPathWithNavArgs()
                                     )
                                 })
                         }

@@ -51,34 +51,35 @@ class LandingScreenViewModel @Inject constructor(
             initialValue = -1
         )
 
-    val duaTypeWithCount = getBookmarkedDuasWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
-        .map {
-            LoadingResources.SuccessList(it)
-        }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = LoadingResources.Loading
-        )
+    val duaTypeWithCount =
+        getBookmarkedDuasWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
+            .map {
+                LoadingResources.SuccessList(it)
+            }
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = LoadingResources.Loading
+            )
 
     init {
-        prayers.setPrayerTimeListener { localDateTime, prayer ->
-            if (!alarmScheduler.isAlarmAlreadySchedule(
-                    dailyPrayerReminderId,
-                    ACTION_PRAYER_DUA_REMINDER
-                )
-            ) {
-                alarmScheduler.scheduleAlarm(
-                    localDateTime = localDateTime,
-                    action = ACTION_PRAYER_DUA_REMINDER,
-                    alarmId = dailyPrayerReminderId,
-                    Pair("prayerName", prayer.name)
-                )
+        viewModelScope.launch {
+            prayers.calculatePrayer { localDateTime, prayer ->
+                if (!alarmScheduler.isAlarmAlreadySchedule(
+                        dailyPrayerReminderId,
+                        ACTION_PRAYER_DUA_REMINDER
+                    )
+                ) {
+                    alarmScheduler.scheduleAlarm(
+                        localDateTime = localDateTime,
+                        action = ACTION_PRAYER_DUA_REMINDER,
+                        alarmId = dailyPrayerReminderId,
+                        Pair("prayerName", prayer.name)
+                    )
+                }
             }
         }
-
-        viewModelScope.launch { prayers.calculatePrayer() }
     }
 
     fun setAlarmForTomorrow() {

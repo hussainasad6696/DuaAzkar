@@ -16,6 +16,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -30,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.R
@@ -88,13 +91,13 @@ fun DefaultTopAppBar(
                         mutableStateOf("")
                     }
 
-                    BasicTextField(
+                    TextField(
                         value = searchText,
                         onValueChange = {
                             searchText = it
                             onSearchText(searchText)
                         },
-                        decorationBox = { innerTextField ->
+                        placeholder = {
                             if (searchText.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.search, title ?: "here"),
@@ -103,10 +106,33 @@ fun DefaultTopAppBar(
                                     color = darkTextGrayColor.copy(0.8f),
                                     fontStyle = FontStyle.Italic
                                 )
-                                innerTextField()
                             }
                         },
-                        cursorBrush = SolidColor(primary),
+                        trailingIcon = {
+                            AnimatedVisibility(visible = searchText.isNotEmpty()) {
+                                IconButton(onClick = { onSearchText("") }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_cancel_icon),
+                                        contentDescription = "clear",
+                                        tint = Color.Unspecified,
+                                        modifier = Modifier.size(24.sdp)
+                                    )
+                                }
+                            }
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            cursorColor = primary,
+                            textColor = darkTextGrayColor,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            containerColor = Color.Transparent
+                        ),
+                        textStyle = TextStyle(
+                            background = Color.Transparent,
+                            fontSize = 16.ssp,
+                            fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont()
+                        ),
+                        modifier = Modifier.fillMaxWidth(0.9f)
                     )
                 }
 

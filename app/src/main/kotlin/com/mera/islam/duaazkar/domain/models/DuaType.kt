@@ -58,7 +58,7 @@ enum class DuaType(val type: Int,@DrawableRes val icon: Int) {
         fun toDuaType(type: Int): DuaType {
             var dua = Morning_Evening_Night
 
-            for (duaType in values()) {
+            for (duaType in entries) {
                 if (duaType.type == type) {
                     dua = duaType
                     break

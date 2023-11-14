@@ -16,3 +16,8 @@ inline fun build(builder: StringBuilder.() -> Unit): String = StringBuilder().ap
     builder()
 }.toString()
 
+fun String.findWordPosition(word: String): Int {
+    val pattern = Regex("\\b${Regex.escape(word)}\\b", RegexOption.IGNORE_CASE)
+    val matchResult = pattern.find(this)
+    return matchResult?.range?.start ?: -1
+}

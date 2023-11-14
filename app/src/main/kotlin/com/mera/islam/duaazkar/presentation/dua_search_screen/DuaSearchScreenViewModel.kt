@@ -3,6 +3,7 @@ package com.mera.islam.duaazkar.presentation.dua_search_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mera.islam.duaazkar.core.utils.LoadingResources
+import com.mera.islam.duaazkar.data.local.dao.DuaNameAndCount
 import com.mera.islam.duaazkar.domain.models.DuaType
 import com.mera.islam.duaazkar.domain.repo.DuaRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,7 @@ class DuaSearchScreenViewModel @Inject constructor(
     private val duaRepo: DuaRepo
 ) : ViewModel() {
 
-    private val _searchedDua: MutableStateFlow<LoadingResources<Pair<DuaType, Int>>> =
+    private val _searchedDua: MutableStateFlow<LoadingResources<DuaNameAndCount>> =
         MutableStateFlow(LoadingResources.Loading)
     val searchedDua = _searchedDua.asStateFlow()
 
@@ -30,7 +31,7 @@ class DuaSearchScreenViewModel @Inject constructor(
         searchJob?.cancel()
         searchJob = viewModelScope.launch(Dispatchers.IO) {
             (if (keyword.isEmpty()) duaRepo.getAllDuaTypesAndCounts()
-            else duaRepo.getAllDuaTypesAndCountsByKeyword("'%$keyword%'")).collect {
+            else duaRepo.getAllDuaTypesAndCountsByKeyword(keyword)).collect {
                 _searchedDua.value = LoadingResources.SuccessList(it)
             }
         }

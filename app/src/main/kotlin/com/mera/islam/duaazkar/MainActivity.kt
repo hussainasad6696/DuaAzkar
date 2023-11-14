@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mera.islam.duaazkar.domain.models.DuaType
 import com.mera.islam.duaazkar.presentation.dua_bookmark_screen.DuaBookmarkScreen
+import com.mera.islam.duaazkar.presentation.dua_listing_screen.DuaListingScreen
 import com.mera.islam.duaazkar.presentation.dua_screen.DuaScreen
 import com.mera.islam.duaazkar.presentation.dua_search_screen.DuaSearchScreen
 import com.mera.islam.duaazkar.presentation.landing_screen.LandingScreen
@@ -74,6 +75,18 @@ fun Beginning() {
             popEnterTransition = { popEnterTransition() },
             popExitTransition = { popExitTransition() }) {
             DuaSearchScreen(navController)
+        }
+        val duaListingNav = NavControllerRoutes.DUA_LISTING_SCREEN()
+        composable(
+            duaListingNav.getPath(),
+            arguments = duaListingNav.listOfArguments,
+            enterTransition = { enterTransition() },
+            exitTransition = { exitTransition() },
+            popEnterTransition = { popEnterTransition() },
+            popExitTransition = { popExitTransition() }
+        ) { backStackEntry ->
+            val arrayIds = backStackEntry.arguments?.getIntArray("duaIds") ?: IntArray(0)
+            DuaListingScreen(navHostController = navController, duaIds = arrayIds)
         }
     }
 }

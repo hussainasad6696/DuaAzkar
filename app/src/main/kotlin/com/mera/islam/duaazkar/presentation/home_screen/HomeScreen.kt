@@ -60,7 +60,7 @@ fun HomeScreen(
                         modifier = Modifier.padding(end = 5.sdp),
                         name = R.string.morning_azkar,
                         resource = R.drawable.ic_morning_azkar,
-                        noOfItems = data.firstOrNull { it.first == DuaType.Morning_Evening_Night }?.second
+                        noOfItems = data.firstOrNull { it.getDuaType() == DuaType.Morning_Evening_Night }?.count
                             ?: 0,
                         onItemClick = {
                             navController.navigate(
@@ -74,7 +74,7 @@ fun HomeScreen(
                         modifier = Modifier.padding(end = 5.sdp),
                         name = R.string.ibadat_azkar,
                         resource = R.drawable.ic_evening_azkar,
-                        noOfItems = data.firstOrNull { it.first == DuaType.Ibadah }?.second ?: 0,
+                        noOfItems = data.firstOrNull { it.getDuaType() == DuaType.Ibadah }?.count ?: 0,
                         onItemClick = {
                             navController.navigate(
                                 NavControllerRoutes.DUA_SCREEN(duaType = DuaType.Ibadah)
@@ -123,12 +123,13 @@ fun HomeScreen(
                             val dua = it[index]
 
                             DuaTypesWithCountView(
-                                duaType = dua.first,
-                                noOfDua = dua.second,
+                                duaType = dua.getDuaType(),
+                                noOfDua = dua.count,
                                 onNextClick = {
                                     navController.navigate(
-                                        NavControllerRoutes.DUA_SCREEN(duaType = dua.first)
-                                            .getPathWithNavArgs()
+                                        NavControllerRoutes.DUA_LISTING_SCREEN(
+                                            duaListArray = dua.getIdList().toTypedArray()
+                                        ).getPathWithNavArgs()
                                     )
                                 })
                         }

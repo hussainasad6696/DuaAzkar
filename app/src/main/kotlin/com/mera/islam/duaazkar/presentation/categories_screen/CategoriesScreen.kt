@@ -37,12 +37,13 @@ fun CategoriesScreen(
                         val dua = data[index]
 
                         DuaTypesWithCountView(
-                            duaType = dua.first,
-                            noOfDua = dua.second,
+                            duaType = dua.getDuaType(),
+                            noOfDua = dua.count,
                             onNextClick = {
                                 navController.navigate(
-                                    NavControllerRoutes.DUA_SCREEN(duaType = dua.first)
-                                        .getPathWithNavArgs()
+                                    NavControllerRoutes.DUA_LISTING_SCREEN(
+                                        duaListArray = dua.getIdList().toTypedArray()
+                                    ).getPathWithNavArgs()
                                 )
                             })
                     }
