@@ -42,7 +42,7 @@ sealed class NavControllerRoutes(val route: String) {
 
     data class DUA_LISTING_SCREEN(
         val rout: String = "duaListingScreen",
-        val duaListArray: Array<Int> = emptyArray()
+        val duaListArray: IntArray = IntArray(0)
     ) : NavControllerRoutes(rout) {
         val listOfArguments = listOf(
             navArgument("duaIds") {

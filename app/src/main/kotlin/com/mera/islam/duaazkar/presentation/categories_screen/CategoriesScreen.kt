@@ -42,7 +42,7 @@ fun CategoriesScreen(
                             onNextClick = {
                                 navController.navigate(
                                     NavControllerRoutes.DUA_LISTING_SCREEN(
-                                        duaListArray = dua.getIdList().toTypedArray()
+                                        duaListArray = dua.getIdList().toIntArray()
                                     ).getPathWithNavArgs()
                                 )
                             })
