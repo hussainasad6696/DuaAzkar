@@ -129,8 +129,5 @@ enum class CalculationMethod {
                 CalculationParameters(0.0, 0.0, this)
             }
 
-            else -> {
-                throw IllegalArgumentException("Invalid CalculationMethod")
-            }
         }
 }

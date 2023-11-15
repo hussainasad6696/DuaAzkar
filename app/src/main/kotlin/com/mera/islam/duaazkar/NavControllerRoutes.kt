@@ -2,6 +2,7 @@ package com.mera.islam.duaazkar
 
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.domain.models.DuaType
 
 
@@ -46,8 +47,8 @@ sealed class NavControllerRoutes(val route: String) {
     ) : NavControllerRoutes(rout) {
         val listOfArguments = listOf(
             navArgument("duaIds") {
-                type = NavType.IntArrayType
-                defaultValue = duaListArray
+                type = NavType.StringType
+                defaultValue = duaListArray.joinToString(",")
             }
         )
 
@@ -56,7 +57,9 @@ sealed class NavControllerRoutes(val route: String) {
         fun getPathWithNavArgs(): String {
             var mainPath = rout
 
-            mainPath += "?duaIds=$duaListArray"
+            mainPath += "?duaIds=${duaListArray.joinToString(",")}"
+
+            "mainPath == $mainPath".log()
 
             return mainPath
         }

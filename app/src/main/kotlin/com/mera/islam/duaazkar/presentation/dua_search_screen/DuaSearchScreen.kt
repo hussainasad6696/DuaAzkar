@@ -29,7 +29,7 @@ import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
-import com.mera.islam.duaazkar.core.utils.LoadingResources
+import com.mera.islam.duaazkar.core.utils.Resources
 import com.mera.islam.duaazkar.presentation.home_screen.components.DuaTypesWithCountView
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
@@ -62,14 +62,14 @@ fun DuaSearchScreen(
             val allDuas by viewModel.searchedDua.collectAsStateWithLifecycle()
 
             when (allDuas) {
-                LoadingResources.Loading -> Loading(
+                Resources.Loading -> Loading(
                     modifier = Modifier
                         .padding(paddingValues)
                         .fillMaxSize()
                 )
 
-                is LoadingResources.SuccessList -> {
-                    val data = (allDuas as LoadingResources.SuccessList).data
+                is Resources.SuccessList -> {
+                    val data = (allDuas as Resources.SuccessList).data
 
                     if (data.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -82,7 +82,7 @@ fun DuaSearchScreen(
                                 )
                                 Spacer(modifier = Modifier.height(5.sdp))
                                 Text(
-                                    text = stringResource(R.string.no_bookmarks_yet),
+                                    text = stringResource(R.string.no_search_found),
                                     color = darkTextGrayColor,
                                     fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont(),
                                     fontSize = 16.ssp

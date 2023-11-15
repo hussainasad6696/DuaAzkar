@@ -85,8 +85,9 @@ fun Beginning() {
             popEnterTransition = { popEnterTransition() },
             popExitTransition = { popExitTransition() }
         ) { backStackEntry ->
-            val arrayIds = backStackEntry.arguments?.getIntArray("duaIds") ?: IntArray(0)
-            DuaListingScreen(navHostController = navController, duaIds = arrayIds)
+            val arrayIds = backStackEntry.arguments?.getString("duaIds") ?: "0"
+
+            DuaListingScreen(navHostController = navController, duaIds = arrayIds.split(",").mapNotNull { it.toIntOrNull() })
         }
     }
 }

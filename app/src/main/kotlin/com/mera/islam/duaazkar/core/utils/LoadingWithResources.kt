@@ -1,9 +1,9 @@
 package  com.mera.islam.duaazkar.core.utils
 
 
-sealed interface LoadingResources<out T> {
-    data object Loading: LoadingResources<Nothing>
-    data class SuccessList<T>(var data: List<T>): LoadingResources<T>
+sealed interface Resources<out T> {
+    data object Loading: Resources<Nothing>
+    data class SuccessList<T>(var data: List<T>): Resources<T>
 }
 
 sealed interface Result<out T> {

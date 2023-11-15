@@ -3,7 +3,7 @@ package com.mera.islam.duaazkar.presentation.dua_listing_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
-import com.mera.islam.duaazkar.core.utils.LoadingResources
+import com.mera.islam.duaazkar.core.utils.Resources
 import com.mera.islam.duaazkar.domain.usecases.DuaByIdsWithTranslationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,13 +17,13 @@ class DuaListingScreenViewModel @Inject constructor(
     private val duaWithTranslationByIds: DuaByIdsWithTranslationUseCase
 ) : ViewModel() {
 
-    private val _duasHeadingList: MutableStateFlow<LoadingResources<ArabicWithTranslation>> =
-        MutableStateFlow(LoadingResources.Loading)
+    private val _duasHeadingList: MutableStateFlow<Resources<ArabicWithTranslation>> =
+        MutableStateFlow(Resources.Loading)
     val duaHeadingList = _duasHeadingList.asStateFlow()
 
-    fun loadDuaByIds(duaIds: IntArray) = viewModelScope.launch(Dispatchers.IO) {
+    fun loadDuaByIds(duaIds: List<Int>) = viewModelScope.launch(Dispatchers.IO) {
         duaWithTranslationByIds(duaIds.toList()).collect {
-            _duasHeadingList.value = LoadingResources.SuccessList(it)
+            _duasHeadingList.value = Resources.SuccessList(it)
         }
     }
 

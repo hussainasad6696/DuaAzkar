@@ -22,8 +22,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.R
+import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.core.presentation.Loading
-import com.mera.islam.duaazkar.core.utils.LoadingResources
+import com.mera.islam.duaazkar.core.utils.Resources
 import com.mera.islam.duaazkar.domain.models.DuaType
 import com.mera.islam.duaazkar.presentation.home_screen.components.DuaTypesWithCountView
 import com.mera.islam.duaazkar.presentation.landing_screen.LandingScreenViewModel
@@ -44,9 +45,9 @@ fun HomeScreen(
     val allDuaTypes by viewModel.duaTypeWithCount.collectAsStateWithLifecycle()
 
     when (allDuaTypes) {
-        LoadingResources.Loading -> Loading(modifier = modifier.fillMaxSize())
-        is LoadingResources.SuccessList -> {
-            val data = (allDuaTypes as LoadingResources.SuccessList).data
+        Resources.Loading -> Loading(modifier = modifier.fillMaxSize())
+        is Resources.SuccessList -> {
+            val data = (allDuaTypes as Resources.SuccessList).data
 
             Column(modifier = modifier.fillMaxSize()) {
                 Spacer(modifier = Modifier.height(10.sdp))

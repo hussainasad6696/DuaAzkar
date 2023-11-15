@@ -118,9 +118,6 @@ class CalculationParameters
                 NightPortions(fajrAngle / 60.0, ishaAngle / 60.0)
             }
 
-            else -> {
-                throw IllegalArgumentException("Invalid high latitude rule")
-            }
         }
     }
 }

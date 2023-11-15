@@ -53,6 +53,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -79,6 +80,7 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics:18.5.1")
     implementation("com.google.firebase:firebase-analytics:21.5.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     //lifecycle aware components
     val lifecycle_version = "2.6.2"

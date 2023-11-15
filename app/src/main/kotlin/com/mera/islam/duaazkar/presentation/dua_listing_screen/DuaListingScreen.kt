@@ -20,7 +20,7 @@ import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
 import com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
-import com.mera.islam.duaazkar.core.utils.LoadingResources
+import com.mera.islam.duaazkar.core.utils.Resources
 import com.mera.islam.duaazkar.presentation.dua_bookmark_screen.components.IndexedItems
 import ir.kaaveh.sdpcompose.sdp
 
@@ -29,7 +29,7 @@ import ir.kaaveh.sdpcompose.sdp
 fun DuaListingScreen(
     navHostController: NavHostController,
     viewModel: DuaListingScreenViewModel = hiltViewModel(),
-    duaIds: IntArray
+    duaIds: List<Int>
 ) {
     val context = LocalContext.current
 
@@ -49,9 +49,9 @@ fun DuaListingScreen(
             val duaByIds by viewModel.duaHeadingList.collectAsStateWithLifecycle()
 
             when (duaByIds) {
-                LoadingResources.Loading -> Loading(modifier = Modifier.padding(paddingValues))
-                is LoadingResources.SuccessList<ArabicWithTranslation> -> {
-                    val data = (duaByIds as LoadingResources.SuccessList).data
+                Resources.Loading -> Loading(modifier = Modifier.padding(paddingValues))
+                is Resources.SuccessList<ArabicWithTranslation> -> {
+                    val data = (duaByIds as Resources.SuccessList).data
 
                     CustomLazyList(
                         modifier = Modifier

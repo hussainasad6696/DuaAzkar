@@ -27,4 +27,5 @@
     <string name="dua">Dua</string>
     <string name="and"><![CDATA[&]]></string>
     <string name="no_bookmarks_yet">No Bookmarks Yet!</string>
+    <string name="no_search_found">No Search Found</string>
 </resources>

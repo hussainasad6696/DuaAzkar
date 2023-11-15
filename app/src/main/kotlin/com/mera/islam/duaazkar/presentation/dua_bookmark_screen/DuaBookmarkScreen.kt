@@ -22,7 +22,7 @@ import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.Loading
-import com.mera.islam.duaazkar.core.utils.LoadingResources
+import com.mera.islam.duaazkar.core.utils.Resources
 import com.mera.islam.duaazkar.presentation.dua_bookmark_screen.components.IndexedItems
 import com.mera.islam.duaazkar.presentation.landing_screen.LandingScreenViewModel
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
@@ -39,9 +39,9 @@ fun DuaBookmarkScreen(
     val bookmarked by viewModel.allBookmarkedDuasWithTranslations.collectAsStateWithLifecycle()
 
     when (bookmarked) {
-        is LoadingResources.Loading -> Loading(isLoading = true, modifier = modifier.fillMaxSize())
-        is LoadingResources.SuccessList -> {
-            val bookmarkedList = (bookmarked as LoadingResources.SuccessList).data
+        is Resources.Loading -> Loading(isLoading = true, modifier = modifier.fillMaxSize())
+        is Resources.SuccessList -> {
+            val bookmarkedList = (bookmarked as Resources.SuccessList).data
 
             if (bookmarkedList.isEmpty()) {
                 Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

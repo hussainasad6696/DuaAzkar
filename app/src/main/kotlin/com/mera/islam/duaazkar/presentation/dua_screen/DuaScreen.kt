@@ -38,7 +38,7 @@ import  com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import  com.mera.islam.duaazkar.core.presentation.Loading
 import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationTextCell
 import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
-import  com.mera.islam.duaazkar.core.utils.LoadingResources
+import  com.mera.islam.duaazkar.core.utils.Resources
 import  com.mera.islam.duaazkar.domain.models.DuaType
 import  com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomSheet
 import ir.kaaveh.sdpcompose.sdp
@@ -93,17 +93,17 @@ fun DuaScreen(
                     val allDuas by viewModel.allDuaWithTranslations.collectAsStateWithLifecycle()
 
                     when (allDuas) {
-                        is LoadingResources.Loading -> Loading(
+                        is Resources.Loading -> Loading(
                             isLoading = true,
                             modifier = Modifier.fillMaxSize()
                         )
 
-                        is LoadingResources.SuccessList<ArabicWithTranslation> -> {
+                        is Resources.SuccessList<ArabicWithTranslation> -> {
                             Box(modifier = Modifier.fillMaxSize()) {
 
                                 val listState = rememberLazyListState()
                                 val duas =
-                                    (allDuas as LoadingResources.SuccessList<ArabicWithTranslation>).data
+                                    (allDuas as Resources.SuccessList<ArabicWithTranslation>).data
 
                                 val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
                                 val arabicFonts by viewModel.arabicWithTranslationStateListener.arabicTextSize.collectAsStateWithLifecycle()

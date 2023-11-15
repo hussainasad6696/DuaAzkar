@@ -8,7 +8,7 @@ import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
 import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationStateListener
 import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
-import  com.mera.islam.duaazkar.core.utils.LoadingResources
+import  com.mera.islam.duaazkar.core.utils.Resources
 import  com.mera.islam.duaazkar.core.utils.fonts.FontsType
 import  com.mera.islam.duaazkar.core.utils.fonts.LanguageFonts
 import  com.mera.islam.duaazkar.domain.models.DuaTranslatorModel
@@ -46,9 +46,9 @@ class DuaScreenViewModel @Inject constructor(
         MutableStateFlow(emptyList())
     val translators = _translators.asStateFlow()
 
-    private val _allDuasWithTranslations: MutableStateFlow<LoadingResources<ArabicWithTranslation>> =
+    private val _allDuasWithTranslations: MutableStateFlow<Resources<ArabicWithTranslation>> =
         MutableStateFlow(
-            LoadingResources.Loading
+            Resources.Loading
         )
     val allDuaWithTranslations = _allDuasWithTranslations.asStateFlow()
 
@@ -72,7 +72,7 @@ class DuaScreenViewModel @Inject constructor(
     fun loadDuasByDuaType(duaType: DuaType) = viewModelScope.launch(Dispatchers.IO) {
         getAllDuaWithTranslationsUseCase(duaType)
             .collect {
-                _allDuasWithTranslations.value = LoadingResources.SuccessList(it)
+                _allDuasWithTranslations.value = Resources.SuccessList(it)
             }
     }
 
@@ -139,8 +139,8 @@ class DuaScreenViewModel @Inject constructor(
     fun saveLastRead(firstVisibleItemIndex: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             kotlin.runCatching {
-                if (allDuaWithTranslations.value is LoadingResources.SuccessList)
-                    duaLastReadUseCase((allDuaWithTranslations.value as LoadingResources.SuccessList<ArabicWithTranslation>).data[firstVisibleItemIndex].getDataId())
+                if (allDuaWithTranslations.value is Resources.SuccessList)
+                    duaLastReadUseCase((allDuaWithTranslations.value as Resources.SuccessList<ArabicWithTranslation>).data[firstVisibleItemIndex].getDataId())
             }
         }
     }

@@ -8,8 +8,7 @@ import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.dailyDuaReminderId
 import  com.mera.islam.duaazkar.core.dailyPrayerReminderId
 import  com.mera.islam.duaazkar.core.extensions.nextDayNoon
-import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationStateListener
-import com.mera.islam.duaazkar.core.utils.LoadingResources
+import com.mera.islam.duaazkar.core.utils.Resources
 import  com.mera.islam.duaazkar.core.utils.alarmManager.AlarmScheduler
 import  com.mera.islam.duaazkar.core.utils.prayerTimes.PrayerUtils
 import com.mera.islam.duaazkar.domain.usecases.GetBookmarkedDuasWithTranslationsUseCase
@@ -34,13 +33,13 @@ class LandingScreenViewModel @Inject constructor(
 
     val allBookmarkedDuasWithTranslations = getBookmarkedDuasWithTranslationsUseCase()
         .map {
-            LoadingResources.SuccessList(it)
+            Resources.SuccessList(it)
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = LoadingResources.Loading
+            initialValue = Resources.Loading
         )
 
     val settingsDuaLastRead = settings.getDuaLastReadId()
@@ -54,13 +53,13 @@ class LandingScreenViewModel @Inject constructor(
     val duaTypeWithCount =
         getBookmarkedDuasWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
             .map {
-                LoadingResources.SuccessList(it)
+                Resources.SuccessList(it)
             }
             .flowOn(Dispatchers.IO)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = LoadingResources.Loading
+                initialValue = Resources.Loading
             )
 
     init {

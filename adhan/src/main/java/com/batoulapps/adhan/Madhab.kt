@@ -26,8 +26,5 @@ enum class Madhab {
                 ShadowLength.DOUBLE
             }
 
-            else -> {
-                throw IllegalArgumentException("Invalid Madhab")
-            }
         }
 }
