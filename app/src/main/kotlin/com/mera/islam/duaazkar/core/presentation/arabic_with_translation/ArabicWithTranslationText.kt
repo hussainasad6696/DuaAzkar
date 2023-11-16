@@ -25,6 +25,7 @@ import ir.kaaveh.sdpcompose.ssp
 
 @Composable
 fun ArabicWithTranslationText(
+    modifier: Modifier = Modifier,
     arabicWithTranslation: ArabicWithTranslation,
     arabicColor: Color = Color.Black,
     translationColor: Color = Color.Black,
@@ -105,7 +106,7 @@ fun ArabicWithTranslationText(
 
     Text(
         text = annotatedString,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .animateContentSize()
     )

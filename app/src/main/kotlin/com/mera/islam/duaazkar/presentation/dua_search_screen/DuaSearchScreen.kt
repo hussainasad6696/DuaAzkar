@@ -36,83 +36,77 @@ import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DuaSearchScreen(
     navController: NavHostController,
     viewModel: DuaSearchScreenViewModel = hiltViewModel()
 ) {
-    DuaAzkarWithBackground {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            topBar = {
-                DefaultTopAppBar(
-                    navHostController = navController,
-                    isSearchPressed = true,
-                    onSearchText = viewModel::search
-                )
-            }
-        ) { paddingValues ->
-            LaunchedEffect(key1 = Unit) {
-                viewModel.search("")
-            }
+    DuaAzkarWithBackground(addScaffolding = true,
+        topBar = {
+            DefaultTopAppBar(
+                navHostController = navController,
+                isSearchPressed = true,
+                onSearchText = viewModel::search
+            )
+        }) { paddingValues ->
 
-            val allDuas by viewModel.searchedDua.collectAsStateWithLifecycle()
+        LaunchedEffect(key1 = Unit) {
+            viewModel.search("")
+        }
 
-            when (allDuas) {
-                Resources.Loading -> Loading(
-                    modifier = Modifier
-                        .padding(paddingValues)
-                        .fillMaxSize()
-                )
+        val allDuas by viewModel.searchedDua.collectAsStateWithLifecycle()
 
-                is Resources.SuccessList -> {
-                    val data = (allDuas as Resources.SuccessList).data
+        when (allDuas) {
+            Resources.Loading -> Loading(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize()
+            )
 
-                    if (data.isEmpty()) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_no_search_icon),
-                                    contentDescription = "No bookmark",
-                                    tint = Color.Unspecified,
-                                    modifier = Modifier.size(90.sdp)
-                                )
-                                Spacer(modifier = Modifier.height(5.sdp))
-                                Text(
-                                    text = stringResource(R.string.no_search_found),
-                                    color = darkTextGrayColor,
-                                    fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont(),
-                                    fontSize = 16.ssp
-                                )
-                            }
+            is Resources.SuccessList -> {
+                val data = (allDuas as Resources.SuccessList).data
+
+                if (data.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_no_search_icon),
+                                contentDescription = "No bookmark",
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(90.sdp)
+                            )
+                            Spacer(modifier = Modifier.height(5.sdp))
+                            Text(
+                                text = stringResource(R.string.no_search_found),
+                                color = darkTextGrayColor,
+                                fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont(),
+                                fontSize = 16.ssp
+                            )
                         }
-                    } else
-                        CustomLazyList(
-                            modifier = Modifier
-                                .padding(paddingValues)
-                                .padding(horizontal = 10.sdp)
-                                .padding(top = 5.sdp)
-                        ) {
-                            items(data.size) { index ->
-                                val dua = data[index]
+                    }
+                } else
+                    CustomLazyList(
+                        modifier = Modifier
+                            .padding(paddingValues)
+                            .padding(horizontal = 10.sdp)
+                            .padding(top = 5.sdp)
+                    ) {
+                        items(data.size) { index ->
+                            val dua = data[index]
 
-                                DuaTypesWithCountView(
-                                    duaType = dua.getDuaType(),
-                                    noOfDua = dua.count,
-                                    onNextClick = {
-                                        navController.navigate(
-                                            NavControllerRoutes.DUA_LISTING_SCREEN(
-                                                duaListArray = dua.getIdList().toIntArray()
-                                            ).getPathWithNavArgs()
-                                        )
-                                    })
-                            }
+                            DuaTypesWithCountView(
+                                duaType = dua.getDuaType(),
+                                noOfDua = dua.count,
+                                onNextClick = {
+                                    navController.navigate(
+                                        NavControllerRoutes.DUA_LISTING_SCREEN(
+                                            duaListArray = dua.getIdList().toIntArray()
+                                        ).getPathWithNavArgs()
+                                    )
+                                })
                         }
+                    }
 
-                }
             }
         }
     }

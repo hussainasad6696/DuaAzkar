@@ -8,6 +8,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
 import java.util.TimeZone
+import kotlin.math.abs
 
 class PrayerTimes(
     val coordinates: Coordinates?,
@@ -48,15 +49,15 @@ class PrayerTimes(
         val tomorrow: DateComponents = DateComponents.Companion.fromUTC(tomorrowDate)
         val solarTime = SolarTime(dateComponents, coordinates)
         var timeComponents: TimeComponents? = TimeComponents.fromDouble(solarTime.transit)
-        val transit = if (timeComponents == null) null else timeComponents.dateComponents(
+        val transit = timeComponents?.dateComponents(
             dateComponents
         )
-        timeComponents = TimeComponents.Companion.fromDouble(solarTime.sunrise)
+        timeComponents = TimeComponents.fromDouble(solarTime.sunrise)
         val sunriseComponents = timeComponents?.dateComponents(
             dateComponents
         )
-        timeComponents = TimeComponents.Companion.fromDouble(solarTime.sunset)
-        val sunsetComponents = if (timeComponents == null) null else timeComponents.dateComponents(
+        timeComponents = TimeComponents.fromDouble(solarTime.sunset)
+        val sunsetComponents = timeComponents?.dateComponents(
             dateComponents
         )
         val tomorrowSolarTime = SolarTime(tomorrow, coordinates)
@@ -68,7 +69,7 @@ class PrayerTimes(
             tempDhuhr = transit
             tempSunrise = sunriseComponents
             tempMaghrib = sunsetComponents
-            timeComponents = TimeComponents.Companion.fromDouble(
+            timeComponents = TimeComponents.fromDouble(
                 solarTime.afternoon(calculationParameters!!.madhab.shadowLength)
             )
             if (timeComponents != null) {
@@ -95,9 +96,7 @@ class PrayerTimes(
                 )
             }
             val nightPortions = calculationParameters.nightPortions()
-            val safeFajr: Date?
-            safeFajr =
-                if (calculationParameters.method == CalculationMethod.MOON_SIGHTING_COMMITTEE) {
+            val safeFajr: Date? = if (calculationParameters.method == CalculationMethod.MOON_SIGHTING_COMMITTEE) {
                     seasonAdjustedMorningTwilight(
                         coordinates!!.latitude,
                         dayOfYear,
@@ -105,7 +104,7 @@ class PrayerTimes(
                         sunriseComponents
                     )
                 } else {
-                    val portion = nightPortions!!.fajr
+                    val portion = nightPortions.fajr
                     val nightFraction = (portion * night / 1000).toLong()
                     CalendarUtil.add(
                         sunriseComponents, -1 * nightFraction.toInt(), Calendar.SECOND
@@ -143,7 +142,7 @@ class PrayerTimes(
                             coordinates!!.latitude, dayOfYear, dateComponents.year, sunsetComponents
                         )
                     } else {
-                        val portion = nightPortions!!.isha
+                        val portion = nightPortions.isha
                         val nightFraction = (portion * night / 1000).toLong()
                         CalendarUtil.add(sunsetComponents, nightFraction.toInt(), Calendar.SECOND)
                     }
@@ -288,10 +287,10 @@ class PrayerTimes(
         private fun seasonAdjustedMorningTwilight(
             latitude: Double, day: Int, year: Int, sunrise: Date?
         ): Date? {
-            val a = 75 + 28.65 / 55.0 * Math.abs(latitude)
-            val b = 75 + 19.44 / 55.0 * Math.abs(latitude)
-            val c = 75 + 32.74 / 55.0 * Math.abs(latitude)
-            val d = 75 + 48.10 / 55.0 * Math.abs(latitude)
+            val a = 75 + 28.65 / 55.0 * abs(latitude)
+            val b = 75 + 19.44 / 55.0 * abs(latitude)
+            val c = 75 + 32.74 / 55.0 * abs(latitude)
+            val d = 75 + 48.10 / 55.0 * abs(latitude)
             val adjustment: Double
             val dyy = daysSinceSolstice(day, year, latitude)
             adjustment = if (dyy < 91) {
@@ -317,10 +316,10 @@ class PrayerTimes(
         private fun seasonAdjustedEveningTwilight(
             latitude: Double, day: Int, year: Int, sunset: Date?
         ): Date? {
-            val a = 75 + 25.60 / 55.0 * Math.abs(latitude)
-            val b = 75 + 2.050 / 55.0 * Math.abs(latitude)
-            val c = 75 - 9.210 / 55.0 * Math.abs(latitude)
-            val d = 75 + 6.140 / 55.0 * Math.abs(latitude)
+            val a = 75 + 25.60 / 55.0 * abs(latitude)
+            val b = 75 + 2.050 / 55.0 * abs(latitude)
+            val c = 75 - 9.210 / 55.0 * abs(latitude)
+            val d = 75 + 6.140 / 55.0 * abs(latitude)
             val adjustment: Double
             val dyy = daysSinceSolstice(day, year, latitude)
             adjustment = if (dyy < 91) {
@@ -349,12 +348,12 @@ class PrayerTimes(
             if (latitude >= 0) {
                 daysSinceSolistice = dayOfYear + northernOffset
                 if (daysSinceSolistice >= daysInYear) {
-                    daysSinceSolistice = daysSinceSolistice - daysInYear
+                    daysSinceSolistice -= daysInYear
                 }
             } else {
                 daysSinceSolistice = dayOfYear - southernOffset
                 if (daysSinceSolistice < 0) {
-                    daysSinceSolistice = daysSinceSolistice + daysInYear
+                    daysSinceSolistice += daysInYear
                 }
             }
             return daysSinceSolistice

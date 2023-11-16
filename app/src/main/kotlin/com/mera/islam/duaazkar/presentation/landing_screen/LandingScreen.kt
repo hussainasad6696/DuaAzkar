@@ -54,74 +54,68 @@ fun LandingScreen(
         viewModel.setAlarmForTomorrow()
     })
 
-    DuaAzkarWithBackground {
-        var selectedScreen by remember {
-            mutableStateOf(BottomNavItems.Home)
-        }
+    var selectedScreen by remember {
+        mutableStateOf(BottomNavItems.Home)
+    }
 
-        BackHandler(enabled = selectedScreen != BottomNavItems.Home) {
-            selectedScreen = BottomNavItems.Home
-        }
+    BackHandler(enabled = selectedScreen != BottomNavItems.Home) {
+        selectedScreen = BottomNavItems.Home
+    }
 
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            topBar = {
-                if (selectedScreen == BottomNavItems.Home) LandingScreenTopBar {}
-                else DefaultTopAppBar(
-                    navHostController = navController,
-                    hasBackButton = false,
-                    hasSearch = false,
-                    title = selectedScreen.name,
-                    actions = {
-                        if (selectedScreen == BottomNavItems.Categories)
-                            IconButton(onClick = {
-                                navController.navigate(NavControllerRoutes.DUA_SEARCH_SCREEN().route)
-                            }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_search_icon),
-                                    contentDescription = "Search from types",
-                                    tint = Color.Unspecified,
-                                    modifier = Modifier.size(18.sdp)
-                                )
-                            }
-                    }
-                )
-            },
-            bottomBar = {
-                LandingScreenBottomNavBar(
-                    selectedScreen = selectedScreen,
-                    onItemClick = {
-                        selectedScreen = it
-                    }
-                )
-            }
-        ) { paddingValues ->
-            when (selectedScreen) {
-                BottomNavItems.Home -> HomeScreen(
-                    navController = navController,
-                    modifier = Modifier.padding(paddingValues),
-                    viewModel = viewModel,
-                    onViewAllClick = { selectedScreen = BottomNavItems.Categories }
-                )
+    DuaAzkarWithBackground(addScaffolding = true,
+        topBar = {
+            if (selectedScreen == BottomNavItems.Home) LandingScreenTopBar {}
+            else DefaultTopAppBar(
+                navHostController = navController,
+                hasBackButton = false,
+                hasSearch = false,
+                title = selectedScreen.name,
+                actions = {
+                    if (selectedScreen == BottomNavItems.Categories)
+                        IconButton(onClick = {
+                            navController.navigate(NavControllerRoutes.DUA_SEARCH_SCREEN().route)
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_search_icon),
+                                contentDescription = "Search from types",
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(18.sdp)
+                            )
+                        }
+                }
+            )
+        }, bottomBar = {
+            LandingScreenBottomNavBar(
+                selectedScreen = selectedScreen,
+                onItemClick = {
+                    selectedScreen = it
+                }
+            )
+        }) { paddingValues ->
 
-                BottomNavItems.Categories -> CategoriesScreen(
-                    modifier = Modifier.padding(
-                        paddingValues
-                    ),
-                    viewModel = viewModel,
-                    navController = navController
-                )
+        when (selectedScreen) {
+            BottomNavItems.Home -> HomeScreen(
+                navController = navController,
+                modifier = Modifier.padding(paddingValues),
+                viewModel = viewModel,
+                onViewAllClick = { selectedScreen = BottomNavItems.Categories }
+            )
 
-                BottomNavItems.Bookmarks -> DuaBookmarkScreen(
-                    modifier = Modifier.padding(
-                        paddingValues
-                    ),
-                    viewModel = viewModel,
-                    navController = navController
-                )
-            }
+            BottomNavItems.Categories -> CategoriesScreen(
+                modifier = Modifier.padding(
+                    paddingValues
+                ),
+                viewModel = viewModel,
+                navController = navController
+            )
+
+            BottomNavItems.Bookmarks -> DuaBookmarkScreen(
+                modifier = Modifier.padding(
+                    paddingValues
+                ),
+                viewModel = viewModel,
+                navController = navController
+            )
         }
     }
 
