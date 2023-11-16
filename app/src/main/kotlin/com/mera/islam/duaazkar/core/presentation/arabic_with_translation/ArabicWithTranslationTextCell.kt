@@ -36,6 +36,7 @@ import  com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
 import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
 import  com.mera.islam.duaazkar.core.utils.ArabicContentType
 import  com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
+import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import com.mera.islam.duaazkar.ui.theme.lightTextGrayColor
 import com.mera.islam.duaazkar.ui.theme.primary
 import ir.kaaveh.sdpcompose.sdp
@@ -44,8 +45,8 @@ import ir.kaaveh.sdpcompose.sdp
 fun ArabicWithTranslationTextCell(
     arabicWithTranslation: ArabicWithTranslation,
     arabicFont: FontFamily = ArabicFonts.AL_QALAM_QURAN.getFont(),
-    arabicColor: Color = Color.Black,
-    translationColor: Color = Color.Black,
+    arabicColor: Color = darkTextGrayColor,
+    translationColor: Color = darkTextGrayColor,
     index: Int = 0,
     textSize: TextUnit = TEXT_MIN_SIZE,
     onBookmarkedClick: () -> Unit = {},

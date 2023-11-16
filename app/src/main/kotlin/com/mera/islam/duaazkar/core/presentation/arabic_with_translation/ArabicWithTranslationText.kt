@@ -21,14 +21,15 @@ import com.mera.islam.duaazkar.core.enums.LanguageDirection
 import com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.core.utils.fonts.LeftLangFonts
+import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
 fun ArabicWithTranslationText(
     modifier: Modifier = Modifier,
     arabicWithTranslation: ArabicWithTranslation,
-    arabicColor: Color = Color.Black,
-    translationColor: Color = Color.Black,
+    arabicColor: Color = darkTextGrayColor,
+    translationColor: Color = darkTextGrayColor,
     textSize: TextUnit = TEXT_MIN_SIZE,
     arabicFont: FontFamily = ArabicFonts.AL_QALAM_QURAN.getFont()
 ) {
@@ -55,10 +56,9 @@ fun ArabicWithTranslationText(
                     AnnotatedString(
                         text = translitration,
                         spanStyle = SpanStyle(
-                            color = Color.Green.copy(0.8f),
+                            color = Color(0xFF01AD8E),
                             fontFamily = LeftLangFonts.ROBOTO.getFont(),
-                            fontSize = (textSize.value * 0.8f).sp,
-                            fontStyle = FontStyle.Italic
+                            fontSize = (textSize.value * 0.8f).sp
                         )
                     )
                 )
@@ -97,7 +97,7 @@ fun ArabicWithTranslationText(
                     spanStyle = SpanStyle(
                         color = translationColor,
                         fontFamily = LeftLangFonts.ROBOTO.getFont(),
-                        fontSize = (textSize.value * 0.4f).sp
+                        fontSize = (textSize.value * 0.5f).sp
                     )
                 )
             )
