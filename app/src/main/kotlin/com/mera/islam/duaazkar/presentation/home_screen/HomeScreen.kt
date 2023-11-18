@@ -1,6 +1,6 @@
 package com.mera.islam.duaazkar.presentation.home_screen
 
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,33 +8,39 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.R
-import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.core.presentation.Loading
 import com.mera.islam.duaazkar.core.utils.Resources
 import com.mera.islam.duaazkar.domain.models.DuaType
 import com.mera.islam.duaazkar.presentation.home_screen.components.DuaTypesWithCountView
-import com.mera.islam.duaazkar.presentation.landing_screen.LandingScreenViewModel
 import com.mera.islam.duaazkar.presentation.home_screen.components.LandingScreenTopSelection
+import com.mera.islam.duaazkar.presentation.landing_screen.LandingScreenViewModel
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.lightTextGrayColor
 import com.mera.islam.duaazkar.ui.theme.primary
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -49,107 +55,157 @@ fun HomeScreen(
         is Resources.SuccessList -> {
             val data = (allDuaTypes as Resources.SuccessList).data
 
-            Column(modifier = modifier.fillMaxSize()) {
-                Spacer(modifier = Modifier.height(10.sdp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.sdp)
-                        .horizontalScroll(rememberScrollState())
-                ) {
-                    LandingScreenTopSelection(
-                        modifier = Modifier.padding(end = 5.sdp),
-                        name = R.string.morning_azkar,
-                        resource = R.drawable.ic_morning_azkar,
-                        noOfItems = data.firstOrNull { it.getDuaType() == DuaType.Morning_Evening_Night }?.count
-                            ?: 0,
-                        onItemClick = {
-                            navController.navigate(
-                                NavControllerRoutes.DUA_SCREEN(duaType = DuaType.Morning_Evening_Night)
-                                    .getPathWithNavArgs()
-                            )
-                        }
-                    )
+            val localScreenConfig = LocalConfiguration.current.screenWidthDp.dp.value
 
-                    LandingScreenTopSelection(
-                        modifier = Modifier.padding(end = 5.sdp),
-                        name = R.string.ibadat_azkar,
-                        resource = R.drawable.ic_evening_azkar,
-                        noOfItems = data.firstOrNull { it.getDuaType() == DuaType.Ibadah }?.count ?: 0,
-                        onItemClick = {
-                            navController.navigate(
-                                NavControllerRoutes.DUA_SCREEN(duaType = DuaType.Ibadah)
-                                    .getPathWithNavArgs()
-                            )
-                        }
-                    )
-                }
+            val seventyPercentWidth = (0.6 * localScreenConfig).dp
+            val thirtyPercentWidth = (0.4 * localScreenConfig).dp
 
-                Spacer(modifier = Modifier.height(10.sdp))
+            LazyColumn(
+                modifier = modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(5.sdp)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(10.sdp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.sdp, end = 5.sdp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(R.string.duas),
-                        color = lightTextGrayColor,
-                        fontSize = 11.ssp,
-                        fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.sdp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        LandingScreenTopSelection(
+                            modifier = Modifier
+                                .height(120.sdp)
+                                .width(seventyPercentWidth),
+                            name = R.string.morning_azkar,
+                            resource = R.drawable.ic_morning_evening_azkar,
+                            subTitle = stringResource(
+                                id = R.string.azkar_with_count,
+                                data.firstOrNull { it.getDuaType() == DuaType.Morning_Evening_Night }?.count
+                                    ?: 0
+                            ),
+                            onItemClick = {
+                                navController.navigate(
+                                    NavControllerRoutes.DUA_SCREEN(duaType = DuaType.Morning_Evening_Night)
+                                        .getPathWithNavArgs()
+                                )
+                            }
+                        )
 
-                    TextButton(onClick = onViewAllClick) {
-                        Text(
-                            text = stringResource(R.string.view_all),
-                            color = primary,
-                            fontSize = 11.ssp,
-                            fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont()
+                        Spacer(modifier = Modifier.width(5.sdp))
+
+                        LandingScreenTopSelection(
+                            modifier = Modifier
+                                .height(120.sdp)
+                                .width(thirtyPercentWidth),
+                            name = R.string.tasbih,
+                            resource = R.drawable.ic_tasbih,
+                            subTitle = stringResource(
+                                id = R.string.azkar_with_count,
+                                data.firstOrNull { it.getDuaType() == DuaType.Ibadah }?.count
+                                    ?: 0
+                            ),
+                            onItemClick = {
+                                navController.navigate(
+                                    NavControllerRoutes.DUA_SCREEN(duaType = DuaType.Ibadah)
+                                        .getPathWithNavArgs()
+                                )
+                            }
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(5.sdp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.sdp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        val lastRead by viewModel.settingsDuaLastRead.collectAsStateWithLifecycle()
+                        LandingScreenTopSelection(
+                            modifier = Modifier
+                                .height(120.sdp)
+                                .width(thirtyPercentWidth),
+                            name = R.string.last_read,
+                            resource = R.drawable.ic_last_read,
+                            subTitle = lastRead.second,
+                            onItemClick = {
+                                val duaNav = NavControllerRoutes.DUA_SCREEN(
+                                    lastReadId = lastRead.first,
+                                    duaType = DuaType.ALL
+                                )
+                                navController.navigate(duaNav.getPathWithNavArgs())
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.width(5.sdp))
+
+                        LandingScreenTopSelection(
+                            modifier = Modifier
+                                .height(120.sdp)
+                                .width(seventyPercentWidth),
+                            name = R.string.names_of_allah,
+                            resource = R.drawable.ic_names_of_allah,
+                            subTitle = stringResource(
+                                id = R.string.azkar_with_count,
+                                data.firstOrNull { it.getDuaType() == DuaType.Ibadah }?.count
+                                    ?: 0
+                            ),
+                            onItemClick = {
+                                navController.navigate(
+                                    NavControllerRoutes.DUA_SCREEN(duaType = DuaType.Ibadah)
+                                        .getPathWithNavArgs()
+                                )
+                            }
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(10.sdp))
-
-                runCatching { data.subList(0, 3) }.getOrNull()?.let {
-                    Column(
+                item {
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 10.sdp),
-                        verticalArrangement = Arrangement.spacedBy(10.sdp)
+                            .padding(start = 10.sdp, end = 5.sdp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        List(it.size) { index ->
-                            val dua = it[index]
+                        Text(
+                            text = stringResource(R.string.duas),
+                            color = lightTextGrayColor,
+                            fontSize = 11.ssp,
+                            fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
+                        )
 
-                            DuaTypesWithCountView(
-                                duaType = dua.getDuaType(),
-                                noOfDua = dua.count,
-                                onNextClick = {
-                                    navController.navigate(
-                                        NavControllerRoutes.DUA_LISTING_SCREEN(
-                                            duaListArray = dua.getIdList().toIntArray()
-                                        ).getPathWithNavArgs()
-                                    )
-                                })
+                        TextButton(onClick = onViewAllClick) {
+                            Text(
+                                text = stringResource(R.string.view_all),
+                                color = primary,
+                                fontSize = 11.ssp,
+                                fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont()
+                            )
                         }
+                    }
+                }
+
+                runCatching { data.subList(0, 5) }.getOrNull()?.let {
+                    items(it.size) { index ->
+                        val dua = it[index]
+
+                        DuaTypesWithCountView(
+                            modifier = Modifier.padding(horizontal = 10.sdp),
+                            duaType = dua.getDuaType(),
+                            noOfDua = dua.count,
+                            onNextClick = {
+                                navController.navigate(
+                                    NavControllerRoutes.DUA_LISTING_SCREEN(
+                                        duaListArray = dua.getIdList().toIntArray()
+                                    ).getPathWithNavArgs()
+                                )
+                            })
                     }
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun Buttons() {
-    TextButton(onClick = { /*TODO*/ }) {
-        Text(
-            text = stringResource(R.string.view_all),
-            color = primary,
-            fontSize = 13.ssp,
-            fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont()
-        )
     }
 }

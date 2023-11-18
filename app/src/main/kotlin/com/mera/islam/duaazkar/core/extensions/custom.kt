@@ -1,10 +1,15 @@
 package  com.mera.islam.duaazkar.core.extensions
 
+import android.R.attr.text
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.temporal.ChronoUnit
+
 
 infix fun Context.share(shareable: String) {
     val sendIntent = Intent().apply {
@@ -14,6 +19,11 @@ infix fun Context.share(shareable: String) {
     }
 
     this.startActivity(Intent.createChooser(sendIntent,"Dua And Azkar"))
+}
+
+infix fun Context.copy(shareable: String) {
+    val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    clipboard.setPrimaryClip(ClipData.newPlainText("Copied Text", shareable))
 }
 
 fun LocalDateTime.nextDayNoon(): LocalDateTime {

@@ -23,9 +23,13 @@ class DuaSearchScreenViewModel @Inject constructor(
     val searchedDua = _searchedDua.asStateFlow()
 
     private var searchJob: Job? = null
+    var keywords = emptyList<String>()
+
     fun search(keyword: String) {
         if (searchedDua.value !is Resources.Loading)
             _searchedDua.value = Resources.Loading
+
+        keywords = keyword.split(",")
 
         searchJob?.cancel()
         searchJob = viewModelScope.launch(Dispatchers.IO) {

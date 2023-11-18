@@ -33,9 +33,14 @@ import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
-fun DuaTypesWithCountView(duaType: DuaType, noOfDua: Int, onNextClick: () -> Unit) {
+fun DuaTypesWithCountView(
+    modifier: Modifier = Modifier,
+    duaType: DuaType,
+    noOfDua: Int,
+    onNextClick: () -> Unit
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(color = Color.White, shape = RoundedCornerShape(35))
             .clickable(

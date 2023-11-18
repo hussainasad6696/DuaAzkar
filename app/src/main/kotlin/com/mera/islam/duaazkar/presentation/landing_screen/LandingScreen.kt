@@ -5,6 +5,15 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Left
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Right
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,7 +51,6 @@ import com.mera.islam.duaazkar.presentation.landing_screen.components.LandingScr
 import  com.mera.islam.duaazkar.presentation.landing_screen.components.LandingScreenTopBar
 import ir.kaaveh.sdpcompose.sdp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LandingScreen(
     navController: NavHostController,
@@ -93,29 +101,45 @@ fun LandingScreen(
             )
         }) { paddingValues ->
 
-        when (selectedScreen) {
-            BottomNavItems.Home -> HomeScreen(
-                navController = navController,
-                modifier = Modifier.padding(paddingValues),
-                viewModel = viewModel,
-                onViewAllClick = { selectedScreen = BottomNavItems.Categories }
-            )
+        AnimatedContent(
+            targetState = selectedScreen,
+            transitionSpec = {
+                slideIntoContainer(
+                    animationSpec = tween(300, easing = EaseIn),
+                    towards = Right
+                ).togetherWith(
+                    slideOutOfContainer(
+                        animationSpec = tween(300, easing = EaseOut),
+                        towards = Left
+                    )
+                )
+            },
+            label = "Bottom Nav Items"
+        ) { targetState ->
+            when (targetState) {
+                BottomNavItems.Home -> HomeScreen(
+                    navController = navController,
+                    modifier = Modifier.padding(paddingValues),
+                    viewModel = viewModel,
+                    onViewAllClick = { selectedScreen = BottomNavItems.Categories }
+                )
 
-            BottomNavItems.Categories -> CategoriesScreen(
-                modifier = Modifier.padding(
-                    paddingValues
-                ),
-                viewModel = viewModel,
-                navController = navController
-            )
+                BottomNavItems.Categories -> CategoriesScreen(
+                    modifier = Modifier.padding(
+                        paddingValues
+                    ),
+                    viewModel = viewModel,
+                    navController = navController
+                )
 
-            BottomNavItems.Bookmarks -> DuaBookmarkScreen(
-                modifier = Modifier.padding(
-                    paddingValues
-                ),
-                viewModel = viewModel,
-                navController = navController
-            )
+                BottomNavItems.Bookmarks -> DuaBookmarkScreen(
+                    modifier = Modifier.padding(
+                        paddingValues
+                    ),
+                    viewModel = viewModel,
+                    navController = navController
+                )
+            }
         }
     }
 

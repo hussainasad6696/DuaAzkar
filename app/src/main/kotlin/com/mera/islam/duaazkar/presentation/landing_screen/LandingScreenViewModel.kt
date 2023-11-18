@@ -7,14 +7,18 @@ import  com.mera.islam.duaazkar.core.ACTION_PRAYER_DUA_REMINDER
 import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.dailyDuaReminderId
 import  com.mera.islam.duaazkar.core.dailyPrayerReminderId
+import com.mera.islam.duaazkar.core.extensions.log
 import  com.mera.islam.duaazkar.core.extensions.nextDayNoon
 import com.mera.islam.duaazkar.core.utils.Resources
 import  com.mera.islam.duaazkar.core.utils.alarmManager.AlarmScheduler
 import  com.mera.islam.duaazkar.core.utils.prayerTimes.PrayerUtils
+import com.mera.islam.duaazkar.data.local.dao.DuaNameAndCount
+import com.mera.islam.duaazkar.domain.models.DuaType
 import com.mera.islam.duaazkar.domain.usecases.GetBookmarkedDuasWithTranslationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -42,14 +46,6 @@ class LandingScreenViewModel @Inject constructor(
             initialValue = Resources.Loading
         )
 
-    val settingsDuaLastRead = settings.getDuaLastReadId()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = -1
-        )
-
     val duaTypeWithCount =
         getBookmarkedDuasWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
             .map {
@@ -61,6 +57,22 @@ class LandingScreenViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = Resources.Loading
             )
+
+    val settingsDuaLastRead = settings.getDuaLastReadId()
+        .map {
+            if (it != -1)
+                Pair(it,
+                    getBookmarkedDuasWithTranslationsUseCase.duaRepo.getDuaById(it)
+                        .first().duaType.getName()
+                )
+            else Pair(1, DuaType.ALL.getName())
+        }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = Pair(1, DuaType.ALL.getName())
+        )
 
     init {
         viewModelScope.launch {

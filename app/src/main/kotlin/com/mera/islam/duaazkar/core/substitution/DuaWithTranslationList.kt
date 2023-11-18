@@ -32,4 +32,6 @@ data class DuaWithTranslationList(
         append("\n")
         append("${duaModel.referenceType}-${duaModel.referenceFrom}")
     }
+
+    override fun getDataType(): Any = duaModel.duaType
 }

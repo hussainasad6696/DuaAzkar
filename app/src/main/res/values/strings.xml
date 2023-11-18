@@ -17,7 +17,7 @@
     <string name="home">Home</string>
     <string name="categories">Categories</string>
     <string name="bookmarks">Bookmarks</string>
-    <string name="morning_azkar">Morning Azkar</string>
+    <string name="morning_azkar">Morning / Evening Azkar</string>
     <string name="azkar_with_count">%1$s Azkar</string>
     <string name="azkar">Azkar</string>
     <string name="chapters">%1$s Chapters</string>
@@ -28,4 +28,7 @@
     <string name="and"><![CDATA[&]]></string>
     <string name="no_bookmarks_yet">No Bookmarks Yet!</string>
     <string name="no_search_found">No Search Found</string>
+    <string name="tasbih">Tasbih</string>
+    <string name="last_read">Last Read</string>
+    <string name="names_of_allah">Names Of Allah</string>
 </resources>

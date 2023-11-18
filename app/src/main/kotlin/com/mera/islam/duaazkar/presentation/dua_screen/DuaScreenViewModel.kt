@@ -2,6 +2,7 @@ package  com.mera.islam.duaazkar.presentation.dua_screen
 
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import  com.mera.islam.duaazkar.core.Settings
@@ -19,9 +20,18 @@ import  com.mera.islam.duaazkar.domain.usecases.GetAllDuaWithTranslationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMap
+import kotlinx.coroutines.flow.flatten
+import kotlinx.coroutines.flow.flattenConcat
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,6 +40,7 @@ class DuaScreenViewModel @Inject constructor(
     private val getAllDuaWithTranslationsUseCase: GetAllDuaWithTranslationsUseCase,
     private val translatorRepo: DuaTranslatorRepo,
     private val duaLastReadUseCase: DuaLastReadUseCase,
+    private val savedStateHandle: SavedStateHandle,
     private val settings: Settings
 ) : ViewModel() {
 
@@ -46,11 +57,22 @@ class DuaScreenViewModel @Inject constructor(
         MutableStateFlow(emptyList())
     val translators = _translators.asStateFlow()
 
-    private val _allDuasWithTranslations: MutableStateFlow<Resources<ArabicWithTranslation>> =
-        MutableStateFlow(
-            Resources.Loading
+    private val _title: MutableStateFlow<String> = MutableStateFlow("Duas")
+    val title = _title.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val allDuaWithTranslations = savedStateHandle.getStateFlow(DUA_TYPE, DuaType.ALL.type)
+        .map { getAllDuaWithTranslationsUseCase(DuaType.toDuaType(it)) }
+        .flattenConcat()
+        .onEach {
+            _title.value = it.map { it.getDataType() as DuaType }.distinctBy { it.type }.map { it.getName() }.joinToString(" / ")
+        }
+        .map { Resources.SuccessList(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = Resources.Loading
         )
-    val allDuaWithTranslations = _allDuasWithTranslations.asStateFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -69,11 +91,8 @@ class DuaScreenViewModel @Inject constructor(
         }
     }
 
-    fun loadDuasByDuaType(duaType: DuaType) = viewModelScope.launch(Dispatchers.IO) {
-        getAllDuaWithTranslationsUseCase(duaType)
-            .collect {
-                _allDuasWithTranslations.value = Resources.SuccessList(it)
-            }
+    fun loadDuasByDuaType(duaType: DuaType) {
+        savedStateHandle[DUA_TYPE] = duaType.type
     }
 
     fun onUserEvent(userEvent: UserEvent) {
@@ -157,3 +176,5 @@ data class DuaTranslatorModelWithSelection(
     val isSelected: Boolean = true,
     val duaTranslatorModel: DuaTranslatorModel
 )
+
+private const val DUA_TYPE = "duaType"

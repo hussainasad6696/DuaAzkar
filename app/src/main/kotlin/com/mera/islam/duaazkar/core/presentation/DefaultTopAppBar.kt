@@ -34,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
@@ -62,7 +63,9 @@ fun DefaultTopAppBar(
                     text = title,
                     color = darkTextGrayColor,
                     fontSize = 20.ssp,
-                    fontFamily = RobotoFonts.ROBOTO_BOLD.getFont()
+                    fontFamily = RobotoFonts.ROBOTO_BOLD.getFont(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             } ?: titleContent()
         },
@@ -110,7 +113,10 @@ fun DefaultTopAppBar(
                         },
                         trailingIcon = {
                             AnimatedVisibility(visible = searchText.isNotEmpty()) {
-                                IconButton(onClick = { onSearchText("") }) {
+                                IconButton(onClick = {
+                                    searchText = ""
+                                    onSearchText(searchText)
+                                }) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.ic_cancel_icon),
                                         contentDescription = "clear",

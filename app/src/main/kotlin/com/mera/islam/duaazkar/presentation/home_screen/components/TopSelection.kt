@@ -3,6 +3,7 @@ package  com.mera.islam.duaazkar.presentation.home_screen.components
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import ir.kaaveh.sdpcompose.sdp
@@ -33,11 +37,10 @@ fun LandingScreenTopSelection(
     modifier: Modifier = Modifier,
     @StringRes name: Int,
     @DrawableRes resource: Int,
-    noOfItems: Int,
+    subTitle: String,
     onItemClick: () -> Unit
 ) {
     Box(modifier = modifier
-        .wrapContentSize()
         .clickable(
             interactionSource = MutableInteractionSource(),
             indication = rememberRipple()
@@ -46,7 +49,7 @@ fun LandingScreenTopSelection(
             painter = painterResource(id = resource),
             contentDescription = "Selections",
             modifier = Modifier
-                .size(200.sdp)
+                .matchParentSize()
                 .clip(RoundedCornerShape(12)),
             contentScale = ContentScale.Crop
         )
@@ -59,17 +62,19 @@ fun LandingScreenTopSelection(
             Text(
                 text = stringResource(id = name),
                 color = Color.White,
-                fontSize = 19.ssp,
+                fontSize = 13.ssp,
                 fontFamily = RobotoFonts.ROBOTO_BOLD.getFont()
             )
 
-            Spacer(modifier = Modifier.height(8.sdp))
+            Spacer(modifier = Modifier.height(4.sdp))
 
             Text(
-                text = stringResource(id = R.string.azkar_with_count, noOfItems),
+                text = subTitle,
                 color = Color.White.copy(0.5f),
                 fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont(),
-                fontSize = 13.ssp
+                fontSize = 10.ssp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

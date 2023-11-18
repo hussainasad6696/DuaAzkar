@@ -18,11 +18,13 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
 import com.mera.islam.duaazkar.core.enums.LanguageDirection
+import com.mera.islam.duaazkar.core.extensions.findWordPositions
 import com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.core.utils.fonts.LeftLangFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import ir.kaaveh.sdpcompose.ssp
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun ArabicWithTranslationText(
@@ -31,14 +33,15 @@ fun ArabicWithTranslationText(
     arabicColor: Color = darkTextGrayColor,
     translationColor: Color = darkTextGrayColor,
     textSize: TextUnit = TEXT_MIN_SIZE,
-    arabicFont: FontFamily = ArabicFonts.AL_QALAM_QURAN.getFont()
+    arabicFont: FontFamily = ArabicFonts.AL_QALAM_QURAN.getFont(),
+    matchTextList: List<String> = emptyList()
 ) {
 
     val annotatedString = buildAnnotatedString {
         withStyle(style = ParagraphStyle(textAlign = TextAlign.End, lineHeight = 30.ssp)) {
             append(
                 AnnotatedString(
-                    text = arabicWithTranslation.getArabic(),
+                    text = arabicWithTranslation.getArabic().replace("\n"," "),
                     spanStyle = SpanStyle(
                         color = arabicColor,
                         fontFamily = arabicFont,
@@ -95,12 +98,22 @@ fun ArabicWithTranslationText(
                 AnnotatedString(
                     text = arabicWithTranslation.reasonOrReference(),
                     spanStyle = SpanStyle(
-                        color = translationColor,
+                        color = translationColor.copy(0.5f),
                         fontFamily = LeftLangFonts.ROBOTO.getFont(),
                         fontSize = (textSize.value * 0.5f).sp
                     )
                 )
             )
+        }
+
+        matchTextList.forEach { text ->
+            this.toAnnotatedString().text.findWordPositions(text).forEach { startingCharacterPosition ->
+                addStyle(
+                    style = SpanStyle(color = Color.Blue),
+                    start = startingCharacterPosition,
+                    end = startingCharacterPosition + text.length
+                )
+            }
         }
     }
 
@@ -110,4 +123,11 @@ fun ArabicWithTranslationText(
             .fillMaxWidth()
             .animateContentSize()
     )
+}
+
+fun main() {
+    runBlocking {
+        val demo = "Allah"
+        println(demo.length)
+    }
 }

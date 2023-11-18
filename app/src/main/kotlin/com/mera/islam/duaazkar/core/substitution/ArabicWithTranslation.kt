@@ -8,4 +8,5 @@ interface ArabicWithTranslation {
     fun getDataId(): Int
     fun getShareableString(): String
     fun reasonOrReference(): String
+    fun getDataType(): Any
 }

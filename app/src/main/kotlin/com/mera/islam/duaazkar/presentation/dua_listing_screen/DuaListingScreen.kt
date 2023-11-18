@@ -22,12 +22,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.R
+import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
 import com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
 import com.mera.islam.duaazkar.core.utils.Resources
+import com.mera.islam.duaazkar.domain.models.DuaType
 import com.mera.islam.duaazkar.presentation.dua_bookmark_screen.components.IndexedItems
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
@@ -36,14 +38,17 @@ import kotlinx.coroutines.launch
 fun DuaListingScreen(
     navHostController: NavHostController,
     viewModel: DuaListingScreenViewModel = hiltViewModel(),
-    duaIds: List<Int>
+    duaIds: List<Int>,
+    matchTextList: List<String> = emptyList()
 ) {
     val context = LocalContext.current
 
     DuaAzkarWithBackground(addScaffolding = true,
         topBar = {
+            val title by viewModel.title.collectAsStateWithLifecycle()
+
             DefaultTopAppBar(
-                title = stringResource(id = R.string.duas),
+                title = title,
                 navHostController = navHostController,
                 hasSearch = false
             )
@@ -76,7 +81,11 @@ fun DuaListingScreen(
                             dua = dua.reasonOrReference(),
                             onItemClick = {
                                 val duaNav =
-                                    NavControllerRoutes.DUA_SCREEN(lastReadId = dua.getDataId())
+                                    NavControllerRoutes.DUA_SCREEN(
+                                        lastReadId = dua.getDataId(),
+                                        duaType = dua.getDataType() as DuaType,
+                                        matchTextList = matchTextList
+                                    )
                                 navHostController.navigate(duaNav.getPathWithNavArgs())
                             })
                     }

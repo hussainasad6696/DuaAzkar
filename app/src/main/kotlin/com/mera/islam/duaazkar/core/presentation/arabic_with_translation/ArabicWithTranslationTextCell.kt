@@ -47,12 +47,13 @@ fun ArabicWithTranslationTextCell(
     arabicFont: FontFamily = ArabicFonts.AL_QALAM_QURAN.getFont(),
     arabicColor: Color = darkTextGrayColor,
     translationColor: Color = darkTextGrayColor,
-    index: Int = 0,
     textSize: TextUnit = TEXT_MIN_SIZE,
+    matchTextList: List<String> = emptyList(),
     onBookmarkedClick: () -> Unit = {},
     onItemClick: () -> Unit = {},
     onShareClick: () -> Unit = {},
-    onPlayAudio: () -> Unit = {}
+    onPlayAudio: () -> Unit = {},
+    onCopyClick: () -> Unit = {}
 ) {
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -63,7 +64,7 @@ fun ArabicWithTranslationTextCell(
                 radius = 16.sdp
             )
         ) { onItemClick() }
-        .padding(horizontal = 5.sdp, vertical = 8.sdp)) {
+        .padding(horizontal = 5.sdp, vertical = 10.sdp)) {
 
         Spacer(modifier = Modifier.height(5.sdp))
 
@@ -73,7 +74,8 @@ fun ArabicWithTranslationTextCell(
             arabicColor = arabicColor,
             translationColor = translationColor,
             textSize = textSize,
-            arabicFont = arabicFont
+            arabicFont = arabicFont,
+            matchTextList = matchTextList
         )
 
         Spacer(modifier = Modifier.height(5.sdp))
@@ -83,15 +85,17 @@ fun ArabicWithTranslationTextCell(
         Spacer(modifier = Modifier.height(5.sdp))
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 5.sdp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 5.sdp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onPlayAudio) {
                 Icon(
-                    imageVector = Icons.Filled.PlayArrow,
+                    painter = painterResource(id = R.drawable.ic_play_icon),
                     contentDescription = "Play",
-                    tint = primary,
+                    tint = Color.Unspecified,
                     modifier = Modifier.size(22.sdp)
                 )
             }
@@ -99,20 +103,24 @@ fun ArabicWithTranslationTextCell(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onBookmarkedClick) {
                     Icon(
-                        imageVector = if (arabicWithTranslation.isFav()) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        painter = painterResource(
+                            id = if (arabicWithTranslation.isFav())
+                                R.drawable.ic_bookmark_selected_icon
+                            else R.drawable.ic_bookmark_light_icon
+                        ),
                         contentDescription = "Play",
-                        tint = lightTextGrayColor,
+                        tint = Color.Unspecified,
                         modifier = Modifier.size(22.sdp)
                     )
                 }
 
                 Spacer(modifier = Modifier.width(5.sdp))
 
-                IconButton(onClick = onBookmarkedClick) {
+                IconButton(onClick = onCopyClick) {
                     Icon(
-                        painter = painterResource(id = R.drawable.baseline_content_copy_24),
+                        painter = painterResource(id = R.drawable.ic_copy_icon),
                         contentDescription = "Copy",
-                        tint = lightTextGrayColor,
+                        tint = Color.Unspecified,
                         modifier = Modifier.size(22.sdp)
                     )
                 }
@@ -121,9 +129,9 @@ fun ArabicWithTranslationTextCell(
 
                 IconButton(onClick = onShareClick) {
                     Icon(
-                        imageVector = Icons.Filled.Share,
+                        painter = painterResource(id = R.drawable.ic_share_icon),
                         contentDescription = "Share",
-                        tint = lightTextGrayColor,
+                        tint = Color.Unspecified,
                         modifier = Modifier.size(22.sdp)
                     )
                 }

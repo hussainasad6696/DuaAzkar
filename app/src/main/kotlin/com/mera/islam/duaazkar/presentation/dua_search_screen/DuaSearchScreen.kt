@@ -23,8 +23,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.R
+import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
@@ -98,9 +100,11 @@ fun DuaSearchScreen(
                                 duaType = dua.getDuaType(),
                                 noOfDua = dua.count,
                                 onNextClick = {
+                                    "viewModel.keywords ${viewModel.keywords}".log()
                                     navController.navigate(
                                         NavControllerRoutes.DUA_LISTING_SCREEN(
-                                            duaListArray = dua.getIdList().toIntArray()
+                                            duaListArray = dua.getIdList().toIntArray(),
+                                            matchTextList = viewModel.keywords
                                         ).getPathWithNavArgs()
                                     )
                                 })

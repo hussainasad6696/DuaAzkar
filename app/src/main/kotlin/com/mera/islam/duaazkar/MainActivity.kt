@@ -16,6 +16,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.domain.models.DuaType
 import com.mera.islam.duaazkar.presentation.dua_bookmark_screen.DuaBookmarkScreen
 import com.mera.islam.duaazkar.presentation.dua_listing_screen.DuaListingScreen
@@ -64,10 +65,21 @@ fun Beginning() {
             popEnterTransition = { popEnterTransition() },
             popExitTransition = { popExitTransition() }
         ) { backStackEntry ->
-            val lastReadId = backStackEntry.arguments?.getInt("lastReadId") ?: -1
+            val lastReadId =
+                backStackEntry.arguments?.getInt("lastReadId") ?: -1
+
             val duaType =
                 DuaType.toDuaType(backStackEntry.arguments?.getInt("duaType") ?: DuaType.ALL.type)
-            DuaScreen(navHostController = navController, lastRead = lastReadId, duaType = duaType)
+
+            val matchTextList =
+                backStackEntry.arguments?.getString("matchTextList")?.split(",") ?: emptyList()
+
+            DuaScreen(
+                navHostController = navController,
+                lastRead = lastReadId,
+                duaType = duaType,
+                matchTextList = matchTextList
+            )
         }
         composable(NavControllerRoutes.DUA_SEARCH_SCREEN().route,
             enterTransition = { enterTransition() },
@@ -76,6 +88,7 @@ fun Beginning() {
             popExitTransition = { popExitTransition() }) {
             DuaSearchScreen(navController)
         }
+
         val duaListingNav = NavControllerRoutes.DUA_LISTING_SCREEN()
         composable(
             duaListingNav.getPath(),
@@ -86,8 +99,16 @@ fun Beginning() {
             popExitTransition = { popExitTransition() }
         ) { backStackEntry ->
             val arrayIds = backStackEntry.arguments?.getString("duaIds") ?: "0"
+            val matchTextList =
+                backStackEntry.arguments?.getString("matchTextList") ?: ""
 
-            DuaListingScreen(navHostController = navController, duaIds = arrayIds.split(",").mapNotNull { it.toIntOrNull() })
+            "composable DuaListingScreen $matchTextList".log()
+
+            DuaListingScreen(
+                navHostController = navController,
+                duaIds = arrayIds.split(",").mapNotNull { it.toIntOrNull() },
+                matchTextList = matchTextList.split(",")
+            )
         }
     }
 }
