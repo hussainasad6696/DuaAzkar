@@ -19,7 +19,8 @@ import  com.mera.islam.duaazkar.core.notificationManager
 import  com.mera.islam.duaazkar.core.utils.SdkHelper
 import  com.mera.islam.duaazkar.core.utils.alarmManager.AlarmScheduler
 import  com.mera.islam.duaazkar.core.utils.prayerTimes.PrayerUtils
-import  com.mera.islam.duaazkar.domain.repo.DuaTranslationRepo
+import com.mera.islam.duaazkar.domain.models.dua.DuaType
+import  com.mera.islam.duaazkar.domain.repo.dua.DuaTranslationRepo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +50,12 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         CoroutineScope(Dispatchers.IO).launch {
             intent?.action?.let {
+                context?.let {
+                    if (SdkHelper.isO()) notificationManager(it).createNotificationChannel(
+                        notificationChannel
+                    )
+                }
+
                 when (it) {
                     ACTION_DAILY_DUA_REMINDER -> {
                         context?.let { dailyDuaNotification(it) }
@@ -58,6 +65,7 @@ class AlarmReceiver : BroadcastReceiver() {
                             dailyDuaReminderId
                         )
                     }
+
                     ACTION_PRAYER_DUA_REMINDER -> {
                         intent.getStringExtra("prayerName")?.let { prayer ->
                             context?.let { prayerDuaNotification(prayer = prayer, context = it) }
@@ -67,7 +75,7 @@ class AlarmReceiver : BroadcastReceiver() {
                                     localDateTime = localDateTime,
                                     action = ACTION_PRAYER_DUA_REMINDER,
                                     alarmId = dailyPrayerReminderId,
-                                    Pair("prayerName",prayer.name)
+                                    Pair("prayerName", prayer.name)
                                 )
                             }
                         }
@@ -77,25 +85,17 @@ class AlarmReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun prayerDuaNotification(context: Context, prayer: String) {
-
-    }
-
-    @SuppressLint("MissingPermission")
-    private suspend fun dailyDuaNotification(context: Context) {
-        val item = duaTranslationRepo.getRandomDuaWithTranslation(
-            settings.getDuaSelectedTranslationIds().first().first()
-        )
-
-        if (SdkHelper.isO()) notificationManager(context).createNotificationChannel(
-            notificationChannel
+    private suspend fun prayerDuaNotification(context: Context, prayer: String) {
+        val item = duaTranslationRepo.getRandomDuaWithTranslationAndDuaType(
+            languageId = settings.getDuaSelectedTranslationIds().first().first(),
+            duaType = DuaType.Ibadah
         )
 
         createLargeNotification(
             context = context,
             title = item.duaModel.reason,
-            contentTitle = item.duaModel.duaType.getName(),
-            bigText =  com.mera.islam.duaazkar.core.extensions.build {
+            contentTitle = context.getString(R.string.after_prayer,prayer,item.duaModel.duaType.getName()),
+            bigText = com.mera.islam.duaazkar.core.extensions.build {
                 append(item.duaModel.arabic)
                 append("\n")
                 append(item.duaModel.translitration)
@@ -111,7 +111,38 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun createLargeNotification(context: Context,title: String,contentTitle: String,bigText: String,notificationId: Int) {
+    private suspend fun dailyDuaNotification(context: Context) {
+        val item = duaTranslationRepo.getRandomDuaWithTranslation(
+            settings.getDuaSelectedTranslationIds().first().first()
+        )
+
+        createLargeNotification(
+            context = context,
+            title = item.duaModel.reason,
+            contentTitle = item.duaModel.duaType.getName(),
+            bigText = com.mera.islam.duaazkar.core.extensions.build {
+                append(item.duaModel.arabic)
+                append("\n")
+                append(item.duaModel.translitration)
+                append("\n")
+                append(item.duaTranslationModel.translation)
+                append("\n")
+                append(item.duaModel.reason)
+                append("\n")
+                append("${item.duaModel.referenceType}-${item.duaModel.referenceFrom}")
+            },
+            notificationId = item.hashCode()
+        )
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun createLargeNotification(
+        context: Context,
+        title: String,
+        contentTitle: String,
+        bigText: String,
+        notificationId: Int
+    ) {
         if (SdkHelper.isO()) notificationManager(context).createNotificationChannel(
             notificationChannel
         )

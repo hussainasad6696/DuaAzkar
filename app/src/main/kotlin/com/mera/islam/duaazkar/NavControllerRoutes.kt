@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.mera.islam.duaazkar.core.extensions.log
-import com.mera.islam.duaazkar.domain.models.DuaType
+import com.mera.islam.duaazkar.domain.models.dua.DuaType
 
 
 sealed class NavControllerRoutes(val route: String) {
@@ -52,6 +52,8 @@ sealed class NavControllerRoutes(val route: String) {
 
     data class DUA_SEARCH_SCREEN(val rout: String = "duaSearchScreen") :
         NavControllerRoutes(rout)
+
+    data class ASMA_UL_HUSNA(val rout: String = "asmaulHusna"): NavControllerRoutes(rout)
 
     data class DUA_LISTING_SCREEN(
         val rout: String = "duaListingScreen",

@@ -1,8 +1,8 @@
 package com.mera.islam.duaazkar.domain.usecases
 
 import com.mera.islam.duaazkar.core.Settings
-import com.mera.islam.duaazkar.domain.repo.DuaRepo
-import com.mera.islam.duaazkar.domain.repo.DuaTranslationRepo
+import com.mera.islam.duaazkar.domain.repo.dua.DuaRepo
+import com.mera.islam.duaazkar.domain.repo.dua.DuaTranslationRepo
 import javax.inject.Inject
 
 class DuaByIdsWithTranslationUseCase @Inject constructor(

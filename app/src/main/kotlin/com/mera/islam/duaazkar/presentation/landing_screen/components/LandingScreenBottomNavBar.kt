@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,40 +35,60 @@ import ir.kaaveh.sdpcompose.ssp
 @Composable
 fun LandingScreenBottomNavBar(
     selectedScreen: BottomNavItems,
+    isVerticalNavBar: Boolean = false,
     onItemClick: (BottomNavItems) -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.sdp, vertical = 5.sdp)
-            .background(color = Color.White, shape = RoundedCornerShape(50)),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        BottomNavItems.entries.forEach {
-            Column(
-                modifier = Modifier.padding(10.sdp).clickable(
+    if (isVerticalNavBar) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(horizontal = 5.sdp, vertical = 10.sdp)
+                .background(color = Color.White, shape = RoundedCornerShape(20)),
+            verticalArrangement = Arrangement.SpaceAround,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            NavItems(selectedScreen = selectedScreen, onItemClick = onItemClick)
+        }
+    } else
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.sdp, vertical = 5.sdp)
+                .background(color = Color.White, shape = RoundedCornerShape(50)),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            NavItems(selectedScreen = selectedScreen, onItemClick = onItemClick)
+        }
+}
+
+@Composable
+fun NavItems(selectedScreen: BottomNavItems,isVerticalNavBar: Boolean = false, onItemClick: (BottomNavItems) -> Unit) {
+    BottomNavItems.entries.forEach {
+        Column(
+            modifier = Modifier
+                .padding(10.sdp)
+                .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple()
                 ) { onItemClick(it) },
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    painter = painterResource(id = if (selectedScreen == it) it.selectedIcon else it.unSelectedIcon),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(20.sdp)
-                )
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                painter = painterResource(id = if (selectedScreen == it) it.selectedIcon else it.unSelectedIcon),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier.size(if (!isVerticalNavBar) 20.sdp else 15.sdp)
+            )
 
-                Spacer(modifier = Modifier.height(4.sdp))
+            Spacer(modifier = Modifier.height(4.sdp))
 
-                Text(
-                    text = stringResource(it.navName),
-                    color = if (selectedScreen == it) primary else lightTextGrayColor,
-                    fontFamily = if (selectedScreen == it) RobotoFonts.ROBOTO_BOLD.getFont() else RobotoFonts.ROBOTO_REGULAR.getFont(),
-                    fontSize = 12.ssp
-                )
-            }
+            Text(
+                text = stringResource(it.navName),
+                color = if (selectedScreen == it) primary else lightTextGrayColor,
+                fontFamily = if (selectedScreen == it) RobotoFonts.ROBOTO_BOLD.getFont() else RobotoFonts.ROBOTO_REGULAR.getFont(),
+                fontSize = if (!isVerticalNavBar) 12.ssp else 8.ssp
+            )
         }
     }
 }

@@ -10,19 +10,17 @@ import  com.mera.islam.duaazkar.core.AppDatabase
 import  com.mera.islam.duaazkar.core.DAILY_DUA_NOTIFICATION_CHANNEL
 import  com.mera.islam.duaazkar.core.DAILY_DUA_NOTIFICATION_CHANNEL_ID
 import  com.mera.islam.duaazkar.core.EntityModelMapper
-import  com.mera.islam.duaazkar.core.utils.SdkHelper
-import  com.mera.islam.duaazkar.data.local.entities.DuaTranslationEntity
-import  com.mera.islam.duaazkar.data.local.entities.relationalEntities.DuaWithTranslationRelationalEntity
-import  com.mera.islam.duaazkar.data.repo.DuaTranslationRepoImpl
-import  com.mera.islam.duaazkar.domain.models.DuaTranslationModel
-import  com.mera.islam.duaazkar.domain.models.relationalModels.DuaWithTranslationRelationalModel
-import  com.mera.islam.duaazkar.domain.repo.DuaTranslationRepo
+import  com.mera.islam.duaazkar.data.local.entities.dua.DuaTranslationEntity
+import  com.mera.islam.duaazkar.data.local.entities.dua.relationalEntities.DuaWithTranslationRelationalEntity
+import  com.mera.islam.duaazkar.data.repo.dua.DuaTranslationRepoImpl
+import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslationModel
+import  com.mera.islam.duaazkar.domain.models.dua.relationalModels.DuaWithTranslationRelationalModel
+import  com.mera.islam.duaazkar.domain.repo.dua.DuaTranslationRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)

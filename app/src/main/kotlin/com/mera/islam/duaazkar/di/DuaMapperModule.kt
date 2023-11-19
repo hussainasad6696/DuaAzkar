@@ -1,21 +1,24 @@
 package  com.mera.islam.duaazkar.di
 
 import  com.mera.islam.duaazkar.core.EntityModelMapper
-import  com.mera.islam.duaazkar.data.local.entities.DuaAudioEntity
-import  com.mera.islam.duaazkar.data.local.entities.DuaEntity
-import  com.mera.islam.duaazkar.data.local.entities.DuaTranslationEntity
-import  com.mera.islam.duaazkar.data.local.entities.DuaTranslatorEntity
-import  com.mera.islam.duaazkar.data.local.entities.relationalEntities.DuaWithTranslationRelationalEntity
-import  com.mera.islam.duaazkar.data.mappers.DuaAudioEntityToModelMapper
-import  com.mera.islam.duaazkar.data.mappers.DuaEntityToModelMapper
-import  com.mera.islam.duaazkar.data.mappers.DuaTranslationEntityToModelMapper
-import  com.mera.islam.duaazkar.data.mappers.DuaTranslatorEntityToModel
-import  com.mera.islam.duaazkar.data.mappers.DuaWithTranslationRelationalEntityToModelMapper
-import  com.mera.islam.duaazkar.domain.models.DuaAudioModel
-import  com.mera.islam.duaazkar.domain.models.DuaModel
-import  com.mera.islam.duaazkar.domain.models.DuaTranslationModel
-import  com.mera.islam.duaazkar.domain.models.DuaTranslatorModel
-import  com.mera.islam.duaazkar.domain.models.relationalModels.DuaWithTranslationRelationalModel
+import com.mera.islam.duaazkar.data.local.entities.asmaUlHusna.AsmaulHusnaEntity
+import  com.mera.islam.duaazkar.data.local.entities.dua.DuaAudioEntity
+import  com.mera.islam.duaazkar.data.local.entities.dua.DuaEntity
+import  com.mera.islam.duaazkar.data.local.entities.dua.DuaTranslationEntity
+import  com.mera.islam.duaazkar.data.local.entities.dua.DuaTranslatorEntity
+import  com.mera.islam.duaazkar.data.local.entities.dua.relationalEntities.DuaWithTranslationRelationalEntity
+import com.mera.islam.duaazkar.data.mappers.asmaUlHusna.AsmaulHusnaEntityToModelMapper
+import  com.mera.islam.duaazkar.data.mappers.dua.DuaAudioEntityToModelMapper
+import  com.mera.islam.duaazkar.data.mappers.dua.DuaEntityToModelMapper
+import  com.mera.islam.duaazkar.data.mappers.dua.DuaTranslationEntityToModelMapper
+import  com.mera.islam.duaazkar.data.mappers.dua.DuaTranslatorEntityToModel
+import  com.mera.islam.duaazkar.data.mappers.dua.DuaWithTranslationRelationalEntityToModelMapper
+import com.mera.islam.duaazkar.domain.models.asmaUlHusna.AsmaulHusnaModel
+import  com.mera.islam.duaazkar.domain.models.dua.DuaAudioModel
+import  com.mera.islam.duaazkar.domain.models.dua.DuaModel
+import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslationModel
+import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslatorModel
+import  com.mera.islam.duaazkar.domain.models.dua.relationalModels.DuaWithTranslationRelationalModel
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -40,4 +43,9 @@ abstract class DuaMapperModule {
     abstract fun duaWithTranslationEntityToModelMapper(
         duaWithTranslationRelationalEntityToModelMapper: DuaWithTranslationRelationalEntityToModelMapper
     ): EntityModelMapper<DuaWithTranslationRelationalEntity, DuaWithTranslationRelationalModel>
+
+    @Binds
+    abstract fun asmaulHusnaEntityToModelMapper(
+        asmaulHusnaEntityToModelMapper: AsmaulHusnaEntityToModelMapper
+    ): EntityModelMapper<AsmaulHusnaEntity, AsmaulHusnaModel>
 }

@@ -1,15 +1,9 @@
 package  com.mera.islam.duaazkar.core.substitution
 
 import androidx.compose.ui.text.font.FontFamily
-import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.enums.LanguageDirection
-import  com.mera.islam.duaazkar.core.utils.fonts.LeftLangFonts
-import  com.mera.islam.duaazkar.domain.models.DuaTranslationModel
-import  com.mera.islam.duaazkar.domain.models.DuaTranslatorModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
+import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslationModel
+import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslatorModel
 
 data class DuaTranslationWithTranslators(
     val duaTranslation: DuaTranslationModel,

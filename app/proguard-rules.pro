@@ -19,8 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep class com.mera.islam.duaazkar.data.local.entities.DuaAudioEntity
--keep class com.mera.islam.duaazkar.data.local.entities.DuaEntity
--keep class com.mera.islam.duaazkar.data.local.entities.DuaTranslationEntity
--keep class com.mera.islam.duaazkar.data.local.entities.DuaTranslatorEntity
--keep class com.mera.islam.duaazkar.data.local.entities.relationalEntities.DuaWithTranslationRelationalEntity
+-keep class com.mera.islam.duaazkar.data.local.entities.dua.DuaAudioEntity
+-keep class com.mera.islam.duaazkar.data.local.entities.dua.DuaEntity
+-keep class com.mera.islam.duaazkar.data.local.entities.dua.DuaTranslationEntity
+-keep class com.mera.islam.duaazkar.data.local.entities.dua.DuaTranslatorEntity
+-keep class com.mera.islam.duaazkar.data.local.entities.dua.relationalEntities.DuaWithTranslationRelationalEntity

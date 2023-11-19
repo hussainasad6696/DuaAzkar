@@ -9,7 +9,7 @@ import  com.mera.islam.duaazkar.core.receivers.AlarmReceiver
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
-class AlarmSchedulerImpl constructor(private val context: Context) : AlarmScheduler {
+class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 

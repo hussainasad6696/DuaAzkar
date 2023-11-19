@@ -19,7 +19,8 @@ import ir.kaaveh.sdpcompose.sdp
 fun CategoriesScreen(
     modifier: Modifier = Modifier,
     viewModel: LandingScreenViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    isLandscape: Boolean = false
 ) {
     val allDuaTypes by viewModel.duaTypeWithCount.collectAsStateWithLifecycle()
 
@@ -32,6 +33,7 @@ fun CategoriesScreen(
                 modifier
                     .padding(horizontal = 10.sdp)
                     .padding(top = 5.sdp),
+                isLandscape = isLandscape,
                 content = {
                     items(data.size) { index ->
                         val dua = data[index]

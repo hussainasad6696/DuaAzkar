@@ -37,10 +37,17 @@
         </activity>
 
         <receiver android:name=".core.receivers.AlarmReceiver"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="${applicationId}.action.DAILY_DUA_REMINDER"/>
                 <action android:name="${applicationId}.action.AFTER_PRAYER_DUA_REMINDER"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".core.receivers.BootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 

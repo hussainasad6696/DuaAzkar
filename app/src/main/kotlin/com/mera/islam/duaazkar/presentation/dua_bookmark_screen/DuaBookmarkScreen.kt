@@ -34,7 +34,8 @@ import ir.kaaveh.sdpcompose.ssp
 fun DuaBookmarkScreen(
     modifier: Modifier = Modifier,
     viewModel: LandingScreenViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    isLandscape: Boolean = false
 ) {
     val bookmarked by viewModel.allBookmarkedDuasWithTranslations.collectAsStateWithLifecycle()
 
@@ -65,7 +66,8 @@ fun DuaBookmarkScreen(
                 CustomLazyList(
                     modifier = modifier
                         .fillMaxSize()
-                        .padding(horizontal = 10.sdp, vertical = 5.sdp)
+                        .padding(horizontal = 10.sdp, vertical = 5.sdp),
+                    isLandscape = isLandscape
                 ) {
                     items(bookmarkedList.size) {
                         val dua = bookmarkedList[it]

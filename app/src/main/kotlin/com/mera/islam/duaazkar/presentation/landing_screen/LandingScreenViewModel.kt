@@ -7,13 +7,12 @@ import  com.mera.islam.duaazkar.core.ACTION_PRAYER_DUA_REMINDER
 import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.dailyDuaReminderId
 import  com.mera.islam.duaazkar.core.dailyPrayerReminderId
-import com.mera.islam.duaazkar.core.extensions.log
 import  com.mera.islam.duaazkar.core.extensions.nextDayNoon
 import com.mera.islam.duaazkar.core.utils.Resources
 import  com.mera.islam.duaazkar.core.utils.alarmManager.AlarmScheduler
 import  com.mera.islam.duaazkar.core.utils.prayerTimes.PrayerUtils
-import com.mera.islam.duaazkar.data.local.dao.DuaNameAndCount
-import com.mera.islam.duaazkar.domain.models.DuaType
+import com.mera.islam.duaazkar.domain.models.dua.DuaType
+import com.mera.islam.duaazkar.domain.repo.asmaUlHusna.AsmaulHusnaRepo
 import com.mera.islam.duaazkar.domain.usecases.GetBookmarkedDuasWithTranslationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +32,6 @@ class LandingScreenViewModel @Inject constructor(
     private val prayers: PrayerUtils,
     settings: Settings,
 ) : ViewModel() {
-
 
     val allBookmarkedDuasWithTranslations = getBookmarkedDuasWithTranslationsUseCase()
         .map {

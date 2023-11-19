@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +19,6 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,13 +35,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import  com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.extensions.copy
-import com.mera.islam.duaazkar.core.extensions.log
 import  com.mera.islam.duaazkar.core.extensions.share
 import  com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
@@ -51,7 +47,7 @@ import  com.mera.islam.duaazkar.core.presentation.Loading
 import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationTextCell
 import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
 import  com.mera.islam.duaazkar.core.utils.Resources
-import  com.mera.islam.duaazkar.domain.models.DuaType
+import  com.mera.islam.duaazkar.domain.models.dua.DuaType
 import  com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomSheet
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import ir.kaaveh.sdpcompose.sdp

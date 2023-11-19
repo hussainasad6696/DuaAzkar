@@ -3,8 +3,8 @@ package com.mera.islam.duaazkar.presentation.dua_search_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mera.islam.duaazkar.core.utils.Resources
-import com.mera.islam.duaazkar.data.local.dao.DuaNameAndCount
-import com.mera.islam.duaazkar.domain.repo.DuaRepo
+import com.mera.islam.duaazkar.data.local.dao.dua.DuaNameAndCount
+import com.mera.islam.duaazkar.domain.repo.dua.DuaRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

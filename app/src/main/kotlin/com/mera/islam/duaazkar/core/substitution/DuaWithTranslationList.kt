@@ -1,7 +1,7 @@
 package  com.mera.islam.duaazkar.core.substitution
 
 import  com.mera.islam.duaazkar.core.extensions.build
-import  com.mera.islam.duaazkar.domain.models.DuaModel
+import  com.mera.islam.duaazkar.domain.models.dua.DuaModel
 
 data class DuaWithTranslationList(
     val duaModel: DuaModel,

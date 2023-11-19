@@ -12,9 +12,9 @@ import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
 import  com.mera.islam.duaazkar.core.utils.Resources
 import  com.mera.islam.duaazkar.core.utils.fonts.FontsType
 import  com.mera.islam.duaazkar.core.utils.fonts.LanguageFonts
-import  com.mera.islam.duaazkar.domain.models.DuaTranslatorModel
-import  com.mera.islam.duaazkar.domain.models.DuaType
-import  com.mera.islam.duaazkar.domain.repo.DuaTranslatorRepo
+import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslatorModel
+import  com.mera.islam.duaazkar.domain.models.dua.DuaType
+import  com.mera.islam.duaazkar.domain.repo.dua.DuaTranslatorRepo
 import  com.mera.islam.duaazkar.domain.usecases.DuaLastReadUseCase
 import  com.mera.islam.duaazkar.domain.usecases.GetAllDuaWithTranslationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,10 +25,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMap
-import kotlinx.coroutines.flow.flatten
 import kotlinx.coroutines.flow.flattenConcat
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn

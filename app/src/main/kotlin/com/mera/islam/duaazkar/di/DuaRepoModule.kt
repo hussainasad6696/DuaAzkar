@@ -2,14 +2,19 @@ package  com.mera.islam.duaazkar.di
 
 import  com.mera.islam.duaazkar.core.AppDatabase
 import  com.mera.islam.duaazkar.core.EntityModelMapper
-import  com.mera.islam.duaazkar.data.local.entities.DuaEntity
-import  com.mera.islam.duaazkar.data.local.entities.DuaTranslatorEntity
-import  com.mera.islam.duaazkar.data.repo.DuaRepoImpl
-import  com.mera.islam.duaazkar.data.repo.DuaTranslatorRepoImpl
-import  com.mera.islam.duaazkar.domain.models.DuaModel
-import  com.mera.islam.duaazkar.domain.models.DuaTranslatorModel
-import  com.mera.islam.duaazkar.domain.repo.DuaRepo
-import  com.mera.islam.duaazkar.domain.repo.DuaTranslatorRepo
+import com.mera.islam.duaazkar.data.local.entities.asmaUlHusna.AsmaulHusnaEntity
+import  com.mera.islam.duaazkar.data.local.entities.dua.DuaEntity
+import  com.mera.islam.duaazkar.data.local.entities.dua.DuaTranslatorEntity
+import com.mera.islam.duaazkar.data.mappers.asmaUlHusna.AsmaulHusnaEntityToModelMapper
+import com.mera.islam.duaazkar.data.repo.asmaUlHusna.AsmaulHusnaRepoImpl
+import  com.mera.islam.duaazkar.data.repo.dua.DuaRepoImpl
+import  com.mera.islam.duaazkar.data.repo.dua.DuaTranslatorRepoImpl
+import com.mera.islam.duaazkar.domain.models.asmaUlHusna.AsmaulHusnaModel
+import  com.mera.islam.duaazkar.domain.models.dua.DuaModel
+import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslatorModel
+import com.mera.islam.duaazkar.domain.repo.asmaUlHusna.AsmaulHusnaRepo
+import  com.mera.islam.duaazkar.domain.repo.dua.DuaRepo
+import  com.mera.islam.duaazkar.domain.repo.dua.DuaTranslatorRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,5 +43,15 @@ object DuaRepoModule {
     ): DuaTranslatorRepo = DuaTranslatorRepoImpl(
         duaTranslatorDao = appDatabase.duaTranslatorDao(),
         duaTranslatorMapper = duaTranslatorEntityToModelMapper
+    )
+
+    @Provides
+    @ViewModelScoped
+    fun asmaulHusna(
+        appDatabase: AppDatabase,
+        asmaulHusnaEntityToModelMapper: EntityModelMapper<AsmaulHusnaEntity, AsmaulHusnaModel>
+    ): AsmaulHusnaRepo = AsmaulHusnaRepoImpl(
+        asmaulHusnaDao = appDatabase.asmaulHusnaDao(),
+        asmaulHusnaEntityToModelMapper = asmaulHusnaEntityToModelMapper
     )
 }

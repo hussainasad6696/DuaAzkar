@@ -9,10 +9,10 @@ import androidx.compose.ui.Modifier
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun CustomLazyList(modifier: Modifier = Modifier,content: LazyGridScope.() -> Unit) {
+fun CustomLazyList(modifier: Modifier = Modifier,isLandscape: Boolean = false,content: LazyGridScope.() -> Unit) {
     LazyVerticalGrid(
         modifier = modifier,
-        columns = GridCells.Fixed(1),
+        columns = if (isLandscape) GridCells.Fixed(2) else GridCells.Fixed(1),
         verticalArrangement = Arrangement.spacedBy(10.sdp),
         horizontalArrangement = Arrangement.spacedBy(10.sdp)
     ) { content() }

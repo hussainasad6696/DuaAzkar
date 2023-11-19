@@ -5,8 +5,8 @@ import  com.mera.islam.duaazkar.core.enums.LanguageDirection
 import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
 import  com.mera.islam.duaazkar.core.substitution.DuaTranslationWithTranslators
 import  com.mera.islam.duaazkar.core.substitution.DuaWithTranslationList
-import  com.mera.islam.duaazkar.domain.models.DuaModel
-import  com.mera.islam.duaazkar.domain.repo.DuaTranslationRepo
+import  com.mera.islam.duaazkar.domain.models.dua.DuaModel
+import  com.mera.islam.duaazkar.domain.repo.dua.DuaTranslationRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first

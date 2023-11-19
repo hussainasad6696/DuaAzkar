@@ -126,12 +126,15 @@ fun DefaultTopAppBar(
                                 }
                             }
                         },
-                        colors = TextFieldDefaults.textFieldColors(
+                        colors = TextFieldDefaults.colors(
                             cursorColor = primary,
-                            textColor = darkTextGrayColor,
+                            focusedTextColor = darkTextGrayColor,
+                            unfocusedTextColor = darkTextGrayColor.copy(0.5f),
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
-                            containerColor = Color.Transparent
+                            focusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent
                         ),
                         textStyle = TextStyle(
                             background = Color.Transparent,

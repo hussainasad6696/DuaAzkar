@@ -8,17 +8,18 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mera.islam.duaazkar.core.extensions.log
-import com.mera.islam.duaazkar.domain.models.DuaType
-import com.mera.islam.duaazkar.presentation.dua_bookmark_screen.DuaBookmarkScreen
+import com.mera.islam.duaazkar.domain.models.dua.DuaType
+import com.mera.islam.duaazkar.presentation.asma_ul_husna_screen.AsmaulHusnaScreen
 import com.mera.islam.duaazkar.presentation.dua_listing_screen.DuaListingScreen
 import com.mera.islam.duaazkar.presentation.dua_screen.DuaScreen
 import com.mera.islam.duaazkar.presentation.dua_search_screen.DuaSearchScreen
@@ -28,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -37,7 +39,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Beginning()
+                    val windowSizeClass = calculateWindowSizeClass(activity = this)
+                    Beginning(windowSizeClass)
                 }
             }
         }
@@ -45,7 +48,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Beginning() {
+fun Beginning(windowSizeClass: WindowSizeClass) {
     val navController = rememberNavController()
     val root = NavControllerRoutes.ROOT()
     NavHost(navController = navController, startDestination = root.route) {
@@ -54,7 +57,7 @@ fun Beginning() {
             exitTransition = { exitTransition() },
             popEnterTransition = { popEnterTransition() },
             popExitTransition = { popExitTransition() }) {
-            LandingScreen(navController)
+            LandingScreen(navController = navController, windowSizeClass = windowSizeClass)
         }
         val duaScreenNav = NavControllerRoutes.DUA_SCREEN()
         composable(
@@ -109,6 +112,16 @@ fun Beginning() {
                 duaIds = arrayIds.split(",").mapNotNull { it.toIntOrNull() },
                 matchTextList = matchTextList.split(",")
             )
+        }
+
+        composable(
+            NavControllerRoutes.ASMA_UL_HUSNA().route,
+            enterTransition = { enterTransition() },
+            exitTransition = { exitTransition() },
+            popEnterTransition = { popEnterTransition() },
+            popExitTransition = { popExitTransition() }
+        ) {
+            AsmaulHusnaScreen(navController = navController)
         }
     }
 }

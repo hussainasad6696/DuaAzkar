@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
 import com.mera.islam.duaazkar.core.utils.Resources
-import com.mera.islam.duaazkar.domain.models.DuaType
+import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.domain.usecases.DuaByIdsWithTranslationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

@@ -31,4 +31,6 @@
     <string name="tasbih">Tasbih</string>
     <string name="last_read">Last Read</string>
     <string name="names_of_allah">Names Of Allah</string>
+    <string name="after_prayer">Dua after %1$s prayer %2$s</string>
+    <string name="asma_ul_husna">99 Names of Allah</string>
 </resources>

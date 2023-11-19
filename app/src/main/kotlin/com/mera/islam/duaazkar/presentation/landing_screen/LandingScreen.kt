@@ -8,12 +8,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Left
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Right
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,6 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,13 +37,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.NavControllerRoutes
 import  com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.extensions.listToString
+import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import  com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import  com.mera.islam.duaazkar.core.presentation.permissions.RequestPermission
+import com.mera.islam.duaazkar.core.utils.Resources
 import  com.mera.islam.duaazkar.core.utils.SdkHelper
 import com.mera.islam.duaazkar.presentation.categories_screen.CategoriesScreen
 import com.mera.islam.duaazkar.presentation.dua_bookmark_screen.DuaBookmarkScreen
@@ -54,7 +59,8 @@ import ir.kaaveh.sdpcompose.sdp
 @Composable
 fun LandingScreen(
     navController: NavHostController,
-    viewModel: LandingScreenViewModel = hiltViewModel()
+    viewModel: LandingScreenViewModel = hiltViewModel(),
+    windowSizeClass: WindowSizeClass
 ) {
     val context = LocalContext.current
 
@@ -70,7 +76,10 @@ fun LandingScreen(
         selectedScreen = BottomNavItems.Home
     }
 
-    DuaAzkarWithBackground(addScaffolding = true,
+    val isLandscape: Boolean = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded
+
+    DuaAzkarWithBackground(
+        addScaffolding = true,
         topBar = {
             if (selectedScreen == BottomNavItems.Home) LandingScreenTopBar {}
             else DefaultTopAppBar(
@@ -93,59 +102,78 @@ fun LandingScreen(
                 }
             )
         }, bottomBar = {
-            LandingScreenBottomNavBar(
-                selectedScreen = selectedScreen,
-                onItemClick = {
+            if (!isLandscape)
+                LandingScreenBottomNavBar(
+                    selectedScreen = selectedScreen,
+                    onItemClick = {
+                        selectedScreen = it
+                    }
+                )
+        }
+    ) { paddingValues ->
+
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+
+            if (isLandscape)
+                LandingScreenBottomNavBar(
+                    selectedScreen = selectedScreen,
+                    isVerticalNavBar = true
+                ) {
                     selectedScreen = it
                 }
-            )
-        }) { paddingValues ->
 
-        AnimatedContent(
-            targetState = selectedScreen,
-            transitionSpec = {
-                slideIntoContainer(
-                    animationSpec = tween(300, easing = EaseIn),
-                    towards = Right
-                ).togetherWith(
-                    slideOutOfContainer(
-                        animationSpec = tween(300, easing = EaseOut),
-                        towards = Left
+            AnimatedContent(
+                targetState = selectedScreen,
+                transitionSpec = {
+                    slideIntoContainer(
+                        animationSpec = tween(300, easing = EaseIn),
+                        towards = Right
+                    ).togetherWith(
+                        slideOutOfContainer(
+                            animationSpec = tween(300, easing = EaseOut),
+                            towards = Left
+                        )
                     )
-                )
-            },
-            label = "Bottom Nav Items"
-        ) { targetState ->
-            when (targetState) {
-                BottomNavItems.Home -> HomeScreen(
-                    navController = navController,
-                    modifier = Modifier.padding(paddingValues),
-                    viewModel = viewModel,
-                    onViewAllClick = { selectedScreen = BottomNavItems.Categories }
-                )
+                },
+                label = "Bottom Nav Items"
+            ) { targetState ->
+                when (targetState) {
+                    BottomNavItems.Home -> HomeScreen(
+                        navController = navController,
+                        modifier = Modifier.weight(1f),
+                        viewModel = viewModel,
+                        onViewAllClick = { selectedScreen = BottomNavItems.Categories },
+                        isLandscape = isLandscape
+                    )
 
-                BottomNavItems.Categories -> CategoriesScreen(
-                    modifier = Modifier.padding(
-                        paddingValues
-                    ),
-                    viewModel = viewModel,
-                    navController = navController
-                )
+                    BottomNavItems.Categories -> CategoriesScreen(
+                        modifier = Modifier.weight(1f),
+                        viewModel = viewModel,
+                        navController = navController,
+                        isLandscape = isLandscape
+                    )
 
-                BottomNavItems.Bookmarks -> DuaBookmarkScreen(
-                    modifier = Modifier.padding(
-                        paddingValues
-                    ),
-                    viewModel = viewModel,
-                    navController = navController
-                )
+                    BottomNavItems.Bookmarks -> DuaBookmarkScreen(
+                        modifier = Modifier.weight(1f),
+                        viewModel = viewModel,
+                        navController = navController,
+                        isLandscape = isLandscape
+                    )
+                }
             }
         }
     }
 
     RequestLocationPermission(context)
     RequestPostNotificationPermission(context)
+
 }
+
+//ACTION_REQUEST_SCHEDULE_EXACT_ALARM future add
 
 @Composable
 fun RequestLocationPermission(context: Context) {
