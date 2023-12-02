@@ -1,8 +1,8 @@
 package  com.mera.islam.duaazkar.core.substitution
 
-interface ArabicWithTranslation {
+interface ArabicModelWithTranslationModel {
     fun getArabic(): String
-    fun getTranslitration(): String? = null
+    fun getTransliteration(): String? = null
     fun getTranslation(): List<TranslationWithLanguageDirection>
     fun isFav(): Boolean
     fun getDataId(): Int

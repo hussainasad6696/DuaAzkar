@@ -1,6 +1,5 @@
 package  com.mera.islam.duaazkar.presentation.dua_screen
 
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -8,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
 import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationStateListener
-import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
-import  com.mera.islam.duaazkar.core.utils.Resources
+import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import  com.mera.islam.duaazkar.core.utils.EventResources
 import  com.mera.islam.duaazkar.core.utils.fonts.FontsType
 import  com.mera.islam.duaazkar.core.utils.fonts.LanguageFonts
 import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslatorModel
@@ -26,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flattenConcat
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -47,8 +47,13 @@ class DuaScreenViewModel @Inject constructor(
             settings = settings
         )
 
-    private val _duaTextSize: MutableStateFlow<TextUnit> = MutableStateFlow(TEXT_MIN_SIZE)
-    val duaTextSize = _duaTextSize.asStateFlow()
+    val duaTextSize = settings.getDuaTextSize()
+    .flowOn(Dispatchers.IO)
+    .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = TEXT_MIN_SIZE
+    )
 
     private val _translators: MutableStateFlow<List<DuaTranslatorModelWithSelection>> =
         MutableStateFlow(emptyList())
@@ -64,26 +69,18 @@ class DuaScreenViewModel @Inject constructor(
         .onEach {
             _title.value = it.map { it.getDataType() as DuaType }.distinctBy { it.type }.map { it.getName() }.joinToString(" / ")
         }
-        .map { Resources.SuccessList(it) }
+        .map { EventResources.SuccessList(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = Resources.Loading
+            initialValue = EventResources.Loading
         )
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            launch {
-                settings.getDuaTextSize().collect {
-                    _duaTextSize.value = it
-                }
-            }
-
-            launch {
-                translatorRepo.getAllTranslators().collect {
-                    _translators.value =
-                        it.map { DuaTranslatorModelWithSelection(duaTranslatorModel = it) }
-                }
+            translatorRepo.getAllTranslators().collect {
+                _translators.value =
+                    it.map { DuaTranslatorModelWithSelection(duaTranslatorModel = it) }
             }
         }
     }
@@ -155,8 +152,8 @@ class DuaScreenViewModel @Inject constructor(
     fun saveLastRead(firstVisibleItemIndex: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             kotlin.runCatching {
-                if (allDuaWithTranslations.value is Resources.SuccessList)
-                    duaLastReadUseCase((allDuaWithTranslations.value as Resources.SuccessList<ArabicWithTranslation>).data[firstVisibleItemIndex].getDataId())
+                if (allDuaWithTranslations.value is EventResources.SuccessList)
+                    duaLastReadUseCase((allDuaWithTranslations.value as EventResources.SuccessList<ArabicModelWithTranslationModel>).list[firstVisibleItemIndex].getDataId())
             }
         }
     }

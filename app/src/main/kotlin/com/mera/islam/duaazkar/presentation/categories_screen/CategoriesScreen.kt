@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.Loading
-import com.mera.islam.duaazkar.core.utils.Resources
+import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.presentation.home_screen.components.DuaTypesWithCountView
 import com.mera.islam.duaazkar.presentation.landing_screen.LandingScreenViewModel
 import ir.kaaveh.sdpcompose.sdp
@@ -25,9 +25,9 @@ fun CategoriesScreen(
     val allDuaTypes by viewModel.duaTypeWithCount.collectAsStateWithLifecycle()
 
     when (allDuaTypes) {
-        Resources.Loading -> Loading(modifier = modifier.fillMaxSize())
-        is Resources.SuccessList -> {
-            val data = (allDuaTypes as Resources.SuccessList).data
+        EventResources.Loading -> Loading(modifier = modifier.fillMaxSize())
+        is EventResources.SuccessList -> {
+            val data = (allDuaTypes as EventResources.SuccessList).list
 
             CustomLazyList(
                 modifier

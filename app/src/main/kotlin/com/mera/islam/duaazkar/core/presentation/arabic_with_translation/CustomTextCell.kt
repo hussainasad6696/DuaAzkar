@@ -13,37 +13,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.TextUnit
 import com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
-import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
-import  com.mera.islam.duaazkar.core.utils.ArabicContentType
+import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import  com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
-import com.mera.islam.duaazkar.ui.theme.lightTextGrayColor
-import com.mera.islam.duaazkar.ui.theme.primary
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
-fun ArabicWithTranslationTextCell(
-    arabicWithTranslation: ArabicWithTranslation,
+fun CustomTextCell(
+    arabicModelWithTranslationModel: ArabicModelWithTranslationModel,
     arabicFont: FontFamily = ArabicFonts.AL_QALAM_QURAN.getFont(),
     arabicColor: Color = darkTextGrayColor,
     translationColor: Color = darkTextGrayColor,
@@ -70,7 +60,7 @@ fun ArabicWithTranslationTextCell(
 
         ArabicWithTranslationText(
             modifier = Modifier.padding(horizontal = 5.sdp),
-            arabicWithTranslation = arabicWithTranslation,
+            arabicModelWithTranslationModel = arabicModelWithTranslationModel,
             arabicColor = arabicColor,
             translationColor = translationColor,
             textSize = textSize,
@@ -104,7 +94,7 @@ fun ArabicWithTranslationTextCell(
                 IconButton(onClick = onBookmarkedClick) {
                     Icon(
                         painter = painterResource(
-                            id = if (arabicWithTranslation.isFav())
+                            id = if (arabicModelWithTranslationModel.isFav())
                                 R.drawable.ic_bookmark_selected_icon
                             else R.drawable.ic_bookmark_light_icon
                         ),

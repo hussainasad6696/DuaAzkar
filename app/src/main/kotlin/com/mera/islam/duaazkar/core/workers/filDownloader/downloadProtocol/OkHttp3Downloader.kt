@@ -1,6 +1,6 @@
 package  com.mera.islam.duaazkar.core.workers.filDownloader.downloadProtocol
 
-import  com.mera.islam.duaazkar.core.utils.Result
+import  com.mera.islam.duaazkar.core.utils.EventResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -12,8 +12,8 @@ import javax.inject.Inject
 class OkHttp3Downloader @Inject constructor(
     private val client: OkHttpClient
 ) {
-    fun downloadUrl(url: String,fileOutputPath: String): Flow<Result<Int>> = flow {
-        emit(Result.Started)
+    fun downloadUrl(url: String,fileOutputPath: String): Flow<EventResult<Int>> = flow {
+        emit(EventResult.Started)
 
         val request = Request.Builder()
             .url(url)
@@ -23,14 +23,14 @@ class OkHttp3Downloader @Inject constructor(
             val response = client.newCall(request).execute()
 
             if (!response.isSuccessful) {
-                emit(Result.Error(Throwable("No response from url")))
+                emit(EventResult.Error(Throwable("No response from url")))
                 return@flow
             }
 
             val fOut = FileOutputStream(fileOutputPath)
 
             if (response.body == null) {
-                emit(Result.Error(Throwable("File not found")))
+                emit(EventResult.Error(Throwable("File not found")))
                 return@flow
             }
 
@@ -44,15 +44,15 @@ class OkHttp3Downloader @Inject constructor(
                 totalBytes += readBytes
                 fOut.write(byteArray,0,readBytes)
 
-                Result.Success(((totalBytes.toFloat() / fileSize.toFloat()) * 100).toInt())
+                EventResult.Success(((totalBytes.toFloat() / fileSize.toFloat()) * 100).toInt())
 
                 delay(400L)
             }
 
-            emit(Result.Completed)
+            emit(EventResult.Completed)
 
         }.onFailure {
-            emit(Result.Error(it))
+            emit(EventResult.Error(it))
         }
     }
 }

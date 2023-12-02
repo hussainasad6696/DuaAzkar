@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -29,7 +27,7 @@ import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.presentation.Loading
-import com.mera.islam.duaazkar.core.utils.Resources
+import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.data.local.dao.dua.DuaNameAndCount
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.home_screen.components.DuaTypesWithCountView
@@ -52,9 +50,9 @@ fun HomeScreen(
     val allDuaTypes by viewModel.duaTypeWithCount.collectAsStateWithLifecycle()
 
     when (allDuaTypes) {
-        Resources.Loading -> Loading(modifier = modifier.fillMaxSize())
-        is Resources.SuccessList -> {
-            val data = (allDuaTypes as Resources.SuccessList).data
+        EventResources.Loading -> Loading(modifier = modifier.fillMaxSize())
+        is EventResources.SuccessList -> {
+            val data = (allDuaTypes as EventResources.SuccessList).list
 
             if (!isLandscape) {
                 val localScreenConfig = LocalConfiguration.current.screenWidthDp.dp.value

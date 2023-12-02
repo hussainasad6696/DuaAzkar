@@ -1,7 +1,7 @@
 package  com.mera.islam.duaazkar.domain.usecases
 
 import  com.mera.islam.duaazkar.core.Settings
-import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
+import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import  com.mera.islam.duaazkar.domain.repo.dua.DuaRepo
 import  com.mera.islam.duaazkar.domain.repo.dua.DuaTranslationRepo
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +12,7 @@ class GetBookmarkedDuasWithTranslationsUseCase @Inject constructor(
     private val duaTranslationRepo: DuaTranslationRepo,
     private val settings: Settings
 ) {
-    operator fun invoke(): Flow<List<ArabicWithTranslation>> = duaRepo.getBookmarkedDuas()
+    operator fun invoke(): Flow<List<ArabicModelWithTranslationModel>> = duaRepo.getBookmarkedDuas()
         .mapDuaFlowToDuaWithTranslationListFlow(
             settings.getDuaSelectedTranslationIds(),
             duaTranslationRepo,

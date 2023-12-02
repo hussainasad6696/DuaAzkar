@@ -1,7 +1,7 @@
 package  com.mera.islam.duaazkar.domain.usecases
 
 import  com.mera.islam.duaazkar.core.Settings
-import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
+import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import  com.mera.islam.duaazkar.domain.models.dua.DuaType
 import  com.mera.islam.duaazkar.domain.repo.dua.DuaRepo
 import  com.mera.islam.duaazkar.domain.repo.dua.DuaTranslationRepo
@@ -13,7 +13,7 @@ class GetAllDuaWithTranslationsUseCase @Inject constructor(
     private val duaTranslationRepo: DuaTranslationRepo,
     private val settings: Settings
 ) {
-    operator fun invoke(duaType: DuaType): Flow<List<ArabicWithTranslation>> {
+    operator fun invoke(duaType: DuaType): Flow<List<ArabicModelWithTranslationModel>> {
         return (if (duaType == DuaType.ALL) duaRepo.getAllDuas()
         else duaRepo.getDuaByDuaType(duaType = duaType)).mapDuaFlowToDuaWithTranslationListFlow(
             languageIdsFlow = settings.getDuaSelectedTranslationIds(),

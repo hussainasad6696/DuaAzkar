@@ -1,6 +1,5 @@
 package com.mera.islam.duaazkar.presentation.asma_ul_husna_screen
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.items
@@ -17,7 +16,7 @@ import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
-import com.mera.islam.duaazkar.core.utils.Resources
+import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.domain.models.asmaUlHusna.AsmaulHusnaModel
 
 @Composable
@@ -35,11 +34,11 @@ fun AsmaulHusnaScreen(
         val asmaulHusna by viewModel.asma.collectAsStateWithLifecycle()
 
         when(asmaulHusna) {
-            Resources.Loading -> Loading(modifier = Modifier
+            EventResources.Loading -> Loading(modifier = Modifier
                 .fillMaxSize()
                 .padding(it))
-            is Resources.SuccessList -> {
-                val data = (asmaulHusna as Resources.SuccessList<AsmaulHusnaModel>).data
+            is EventResources.SuccessList -> {
+                val data = (asmaulHusna as EventResources.SuccessList<AsmaulHusnaModel>).list
 
                 CustomLazyList(modifier = Modifier
                     .fillMaxSize()

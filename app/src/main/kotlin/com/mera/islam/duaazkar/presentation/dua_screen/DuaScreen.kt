@@ -44,9 +44,9 @@ import  com.mera.islam.duaazkar.core.extensions.share
 import  com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import  com.mera.islam.duaazkar.core.presentation.Loading
-import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationTextCell
-import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
-import  com.mera.islam.duaazkar.core.utils.Resources
+import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.CustomTextCell
+import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import  com.mera.islam.duaazkar.core.utils.EventResources
 import  com.mera.islam.duaazkar.domain.models.dua.DuaType
 import  com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomSheet
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
@@ -75,12 +75,12 @@ fun DuaScreen(
         val allDuas by viewModel.allDuaWithTranslations.collectAsStateWithLifecycle()
 
         when (allDuas) {
-            is Resources.Loading -> Loading(
+            is EventResources.Loading -> Loading(
                 isLoading = true,
                 modifier = Modifier.fillMaxSize()
             )
 
-            is Resources.SuccessList<ArabicWithTranslation> -> {
+            is EventResources.SuccessList<ArabicModelWithTranslationModel> -> {
                 ModalBottomSheetLayout(
                     sheetContent = {
                         DuaBottomSheet(viewModel = viewModel)
@@ -179,7 +179,7 @@ fun DuaScreen(
 
                                 val listState = rememberLazyListState()
                                 val duas =
-                                    (allDuas as Resources.SuccessList<ArabicWithTranslation>).data
+                                    (allDuas as EventResources.SuccessList<ArabicModelWithTranslationModel>).list
 
                                 val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
                                 val arabicFonts by viewModel.arabicWithTranslationStateListener.arabicTextSize.collectAsStateWithLifecycle()
@@ -188,8 +188,8 @@ fun DuaScreen(
                                     content = {
                                         items(duas.size) { index ->
                                             val duaItem = duas[index]
-                                            ArabicWithTranslationTextCell(
-                                                arabicWithTranslation = duaItem,
+                                            CustomTextCell(
+                                                arabicModelWithTranslationModel = duaItem,
                                                 arabicFont = arabicFonts,
                                                 textSize = textSize,
                                                 matchTextList = matchTextList,

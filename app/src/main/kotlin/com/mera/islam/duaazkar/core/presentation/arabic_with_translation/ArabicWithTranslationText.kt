@@ -11,7 +11,6 @@ import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.TextUnit
@@ -19,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
 import com.mera.islam.duaazkar.core.enums.LanguageDirection
 import com.mera.islam.duaazkar.core.extensions.findWordPositions
-import com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
+import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.core.utils.fonts.LeftLangFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
@@ -29,7 +28,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun ArabicWithTranslationText(
     modifier: Modifier = Modifier,
-    arabicWithTranslation: ArabicWithTranslation,
+    arabicModelWithTranslationModel: ArabicModelWithTranslationModel,
     arabicColor: Color = darkTextGrayColor,
     translationColor: Color = darkTextGrayColor,
     textSize: TextUnit = TEXT_MIN_SIZE,
@@ -41,7 +40,7 @@ fun ArabicWithTranslationText(
         withStyle(style = ParagraphStyle(textAlign = TextAlign.End, lineHeight = 30.ssp)) {
             append(
                 AnnotatedString(
-                    text = arabicWithTranslation.getArabic().replace("\n"," "),
+                    text = arabicModelWithTranslationModel.getArabic().replace("\n"," "),
                     spanStyle = SpanStyle(
                         color = arabicColor,
                         fontFamily = arabicFont,
@@ -53,7 +52,7 @@ fun ArabicWithTranslationText(
 
         append("\n")
 
-        arabicWithTranslation.getTranslitration()?.let { translitration ->
+        arabicModelWithTranslationModel.getTransliteration()?.let { translitration ->
             withStyle(style = ParagraphStyle(textAlign = TextAlign.Start)) {
                 append(
                     AnnotatedString(
@@ -70,7 +69,7 @@ fun ArabicWithTranslationText(
 
         append("\n")
 
-        arabicWithTranslation.getTranslation().forEach { translationWithLanguageDirection ->
+        arabicModelWithTranslationModel.getTranslation().forEach { translationWithLanguageDirection ->
 
             withStyle(
                 style = ParagraphStyle(
@@ -96,7 +95,7 @@ fun ArabicWithTranslationText(
         withStyle(style = ParagraphStyle(textAlign = TextAlign.Start)) {
             append(
                 AnnotatedString(
-                    text = arabicWithTranslation.reasonOrReference(),
+                    text = arabicModelWithTranslationModel.reasonOrReference(),
                     spanStyle = SpanStyle(
                         color = translationColor.copy(0.5f),
                         fontFamily = LeftLangFonts.ROBOTO.getFont(),

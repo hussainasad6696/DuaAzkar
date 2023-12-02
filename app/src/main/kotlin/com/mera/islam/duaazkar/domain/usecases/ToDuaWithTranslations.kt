@@ -2,7 +2,7 @@ package  com.mera.islam.duaazkar.domain.usecases
 
 import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.enums.LanguageDirection
-import  com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
+import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import  com.mera.islam.duaazkar.core.substitution.DuaTranslationWithTranslators
 import  com.mera.islam.duaazkar.core.substitution.DuaWithTranslationList
 import  com.mera.islam.duaazkar.domain.models.dua.DuaModel
@@ -15,7 +15,7 @@ fun Flow<List<DuaModel>>.mapDuaFlowToDuaWithTranslationListFlow(
     languageIdsFlow: Flow<List<Int>>,
     duaTranslationRepo: DuaTranslationRepo,
     settings: Settings
-): Flow<List<ArabicWithTranslation>> {
+): Flow<List<ArabicModelWithTranslationModel>> {
 
     return combine(
         this,
@@ -57,7 +57,7 @@ suspend inline fun Flow<DuaModel>.mapDuaFlowToDuaWithTranslationModelFlow(
     languageIdsFlow: Flow<List<Int>>,
     duaTranslationRepo: DuaTranslationRepo,
     settings: Settings
-): Flow<ArabicWithTranslation> {
+): Flow<ArabicModelWithTranslationModel> {
     val duaTransFlow = duaTranslationRepo.getDuaTranslationByDuaIds(
         ids = listOf(this.first().id),
         translatorIds = languageIdsFlow.first()

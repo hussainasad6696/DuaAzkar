@@ -42,8 +42,10 @@ fun LandingScreenBottomNavBar(
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(horizontal = 5.sdp, vertical = 10.sdp)
-                .background(color = Color.White, shape = RoundedCornerShape(20)),
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(topEndPercent = 50, bottomEndPercent = 50)
+                ),
             verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -53,8 +55,10 @@ fun LandingScreenBottomNavBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.sdp, vertical = 5.sdp)
-                .background(color = Color.White, shape = RoundedCornerShape(50)),
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(topStartPercent = 20, topEndPercent = 20)
+                ),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -63,7 +67,11 @@ fun LandingScreenBottomNavBar(
 }
 
 @Composable
-fun NavItems(selectedScreen: BottomNavItems,isVerticalNavBar: Boolean = false, onItemClick: (BottomNavItems) -> Unit) {
+fun NavItems(
+    selectedScreen: BottomNavItems,
+    isVerticalNavBar: Boolean = false,
+    onItemClick: (BottomNavItems) -> Unit
+) {
     BottomNavItems.entries.forEach {
         Column(
             modifier = Modifier

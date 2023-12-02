@@ -6,9 +6,9 @@ import  com.mera.islam.duaazkar.domain.models.dua.DuaModel
 data class DuaWithTranslationList(
     val duaModel: DuaModel,
     val duaTranslations: List<DuaTranslationWithTranslators>
-): ArabicWithTranslation {
+): ArabicModelWithTranslationModel {
     override fun getArabic(): String = duaModel.arabic
-    override fun getTranslitration(): String = duaModel.translitration
+    override fun getTransliteration(): String = duaModel.translitration
     override fun getTranslation(): List<TranslationWithLanguageDirection> = duaTranslations
     override fun isFav(): Boolean = duaModel.isFav
     override fun getDataId(): Int = duaModel.id

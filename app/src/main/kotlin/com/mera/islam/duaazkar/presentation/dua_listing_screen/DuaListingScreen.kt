@@ -16,8 +16,8 @@ import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
-import com.mera.islam.duaazkar.core.substitution.ArabicWithTranslation
-import com.mera.islam.duaazkar.core.utils.Resources
+import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.dua_bookmark_screen.components.IndexedItems
 import ir.kaaveh.sdpcompose.sdp
@@ -51,9 +51,9 @@ fun DuaListingScreen(
         val duaByIds by viewModel.duaHeadingList.collectAsStateWithLifecycle()
 
         when (duaByIds) {
-            Resources.Loading -> Loading(modifier = Modifier.padding(paddingValues))
-            is Resources.SuccessList<ArabicWithTranslation> -> {
-                val data = (duaByIds as Resources.SuccessList).data
+            EventResources.Loading -> Loading(modifier = Modifier.padding(paddingValues))
+            is EventResources.SuccessList<ArabicModelWithTranslationModel> -> {
+                val data = (duaByIds as EventResources.SuccessList).list
 
                 CustomLazyList(
                     modifier = Modifier

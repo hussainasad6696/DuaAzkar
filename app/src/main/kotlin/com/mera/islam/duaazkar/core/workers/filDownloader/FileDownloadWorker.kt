@@ -33,17 +33,17 @@ class FileDownloadWorker @AssistedInject constructor(
 
         okHttp3Downloader.downloadUrl(url, fileOutputPath).collect { result ->
             when (result) {
-                is  com.mera.islam.duaazkar.core.utils.Result.Success -> {
-                    val progress = result.data
+                is  com.mera.islam.duaazkar.core.utils.EventResult.Success -> {
+                    val progress = result.resource
                     //todo update notification
                 }
 
-                is  com.mera.islam.duaazkar.core.utils.Result.Completed -> {
+                is  com.mera.islam.duaazkar.core.utils.EventResult.Completed -> {
                     //todo update user
                     workerResult = Result.success()
                 }
 
-                is  com.mera.islam.duaazkar.core.utils.Result.Error -> {
+                is  com.mera.islam.duaazkar.core.utils.EventResult.Error -> {
                     workerResult = Result.failure(
                         Data.Builder().putString(
                             "error",
@@ -52,7 +52,7 @@ class FileDownloadWorker @AssistedInject constructor(
                     )
                 }
 
-                is  com.mera.islam.duaazkar.core.utils.Result.Started -> {
+                is  com.mera.islam.duaazkar.core.utils.EventResult.Started -> {
                     //todo update user
                 }
             }

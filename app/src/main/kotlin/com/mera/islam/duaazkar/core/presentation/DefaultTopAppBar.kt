@@ -51,6 +51,7 @@ fun DefaultTopAppBar(
     hasBackButton: Boolean = true,
     hasSearch: Boolean = true,
     isSearchPressed: Boolean = false,
+    searchedText: String = "",
     navHostController: NavHostController,
     titleContent: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
@@ -90,18 +91,14 @@ fun DefaultTopAppBar(
                 }
 
                 AnimatedVisibility(visible = search) {
-                    var searchText by remember {
-                        mutableStateOf("")
-                    }
 
                     TextField(
-                        value = searchText,
+                        value = searchedText,
                         onValueChange = {
-                            searchText = it
-                            onSearchText(searchText)
+                            onSearchText(it)
                         },
                         placeholder = {
-                            if (searchText.isEmpty()) {
+                            if (searchedText.isEmpty()) {
                                 Text(
                                     text = stringResource(id = R.string.search, title ?: "here"),
                                     fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont(),
@@ -112,10 +109,9 @@ fun DefaultTopAppBar(
                             }
                         },
                         trailingIcon = {
-                            AnimatedVisibility(visible = searchText.isNotEmpty()) {
+                            AnimatedVisibility(visible = searchedText.isNotEmpty()) {
                                 IconButton(onClick = {
-                                    searchText = ""
-                                    onSearchText(searchText)
+                                    onSearchText(searchedText)
                                 }) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.ic_cancel_icon),
@@ -156,7 +152,6 @@ fun DefaultTopAppBar(
                     }
                 }
             } else actions()
-        },
-        modifier = Modifier.shadow(elevation = 5.sdp)
+        }
     )
 }

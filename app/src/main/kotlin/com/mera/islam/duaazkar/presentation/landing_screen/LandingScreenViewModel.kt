@@ -8,11 +8,10 @@ import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.dailyDuaReminderId
 import  com.mera.islam.duaazkar.core.dailyPrayerReminderId
 import  com.mera.islam.duaazkar.core.extensions.nextDayNoon
-import com.mera.islam.duaazkar.core.utils.Resources
+import com.mera.islam.duaazkar.core.utils.EventResources
 import  com.mera.islam.duaazkar.core.utils.alarmManager.AlarmScheduler
 import  com.mera.islam.duaazkar.core.utils.prayerTimes.PrayerUtils
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
-import com.mera.islam.duaazkar.domain.repo.asmaUlHusna.AsmaulHusnaRepo
 import com.mera.islam.duaazkar.domain.usecases.GetBookmarkedDuasWithTranslationsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -35,25 +34,25 @@ class LandingScreenViewModel @Inject constructor(
 
     val allBookmarkedDuasWithTranslations = getBookmarkedDuasWithTranslationsUseCase()
         .map {
-            Resources.SuccessList(it)
+            EventResources.SuccessList(it)
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = Resources.Loading
+            initialValue = EventResources.Loading
         )
 
     val duaTypeWithCount =
         getBookmarkedDuasWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
             .map {
-                Resources.SuccessList(it)
+                EventResources.SuccessList(it)
             }
             .flowOn(Dispatchers.IO)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = Resources.Loading
+                initialValue = EventResources.Loading
             )
 
     val settingsDuaLastRead = settings.getDuaLastReadId()
