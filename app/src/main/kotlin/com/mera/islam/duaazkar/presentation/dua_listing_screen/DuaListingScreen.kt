@@ -1,7 +1,9 @@
 package com.mera.islam.duaazkar.presentation.dua_listing_screen
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,7 +55,7 @@ fun DuaListingScreen(
         when (duaByIds) {
             EventResources.Loading -> Loading(modifier = Modifier.padding(paddingValues))
             is EventResources.SuccessList<ArabicModelWithTranslationModel> -> {
-                val data = (duaByIds as EventResources.SuccessList).list
+                val list = (duaByIds as EventResources.SuccessList).list
 
                 CustomLazyList(
                     modifier = Modifier
@@ -61,8 +63,8 @@ fun DuaListingScreen(
                         .fillMaxSize()
                         .padding(horizontal = 10.sdp, vertical = 5.sdp)
                 ) {
-                    items(data.size) {
-                        val dua = data[it]
+                    items(list.size) {
+                        val dua = list[it]
 
                         IndexedItems(
                             index = it + 1,
@@ -76,6 +78,9 @@ fun DuaListingScreen(
                                     )
                                 navHostController.navigate(duaNav.getPathWithNavArgs())
                             })
+
+                        if (it == list.lastIndex)
+                            Spacer(modifier = Modifier.height(15.sdp))
                     }
                 }
             }

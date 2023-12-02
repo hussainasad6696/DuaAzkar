@@ -1,6 +1,8 @@
 package com.mera.islam.duaazkar.presentation.categories_screen
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,7 +29,7 @@ fun CategoriesScreen(
     when (allDuaTypes) {
         EventResources.Loading -> Loading(modifier = modifier.fillMaxSize())
         is EventResources.SuccessList -> {
-            val data = (allDuaTypes as EventResources.SuccessList).list
+            val list = (allDuaTypes as EventResources.SuccessList).list
 
             CustomLazyList(
                 modifier
@@ -35,8 +37,8 @@ fun CategoriesScreen(
                     .padding(top = 5.sdp),
                 isLandscape = isLandscape,
                 content = {
-                    items(data.size) { index ->
-                        val dua = data[index]
+                    items(list.size) { index ->
+                        val dua = list[index]
 
                         DuaTypesWithCountView(
                             duaType = dua.getDuaType(),
@@ -48,6 +50,9 @@ fun CategoriesScreen(
                                     ).getPathWithNavArgs()
                                 )
                             })
+
+                        if (index == list.lastIndex)
+                            Spacer(modifier = Modifier.height(15.sdp))
                     }
                 })
         }

@@ -114,7 +114,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     //room
-    val room_version = "2.6.0"
+    val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
     annotationProcessor("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
@@ -122,7 +122,6 @@ dependencies {
 
     //dataStore
     val data_store_version = "1.0.0"
-
     implementation("androidx.datastore:datastore-core:$data_store_version")
     implementation("androidx.datastore:datastore-preferences:$data_store_version")
 
@@ -140,7 +139,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     //worker
-    val work_version = "2.8.1"
+    val work_version = "2.9.0"
     implementation("androidx.work:work-runtime-ktx:$work_version")
     implementation("androidx.hilt:hilt-work:1.1.0")
     kapt ("androidx.hilt:hilt-compiler:1.1.0")
@@ -148,4 +147,6 @@ dependencies {
     //adhan
     implementation(project(":adhan"))
 
+    //sliders
+    implementation(project(":slider"))
 }

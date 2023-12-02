@@ -23,7 +23,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.R
-import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
@@ -69,9 +68,9 @@ fun DuaSearchScreen(
             )
 
             is EventResources.SuccessList -> {
-                val data = (allDuas as EventResources.SuccessList).list
+                val list = (allDuas as EventResources.SuccessList).list
 
-                if (data.isEmpty()) {
+                if (list.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
@@ -96,8 +95,8 @@ fun DuaSearchScreen(
                             .padding(horizontal = 10.sdp)
                             .padding(top = 5.sdp)
                     ) {
-                        items(data.size) { index ->
-                            val dua = data[index]
+                        items(list.size) { index ->
+                            val dua = list[index]
 
                             DuaTypesWithCountView(
                                 duaType = dua.getDuaType(),
@@ -113,6 +112,9 @@ fun DuaSearchScreen(
                                         )
                                     }
                                 })
+
+                            if (index == list.lastIndex)
+                                Spacer(modifier = Modifier.height(15.sdp))
                         }
                     }
 

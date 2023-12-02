@@ -77,6 +77,9 @@ fun DuaBookmarkScreen(
                                 NavControllerRoutes.DUA_SCREEN(lastReadId = dua.getDataId())
                             navController.navigate(duaNav.getPathWithNavArgs())
                         })
+
+                        if (it == bookmarkedList.lastIndex)
+                            Spacer(modifier = Modifier.height(15.sdp))
                     }
                 }
             }

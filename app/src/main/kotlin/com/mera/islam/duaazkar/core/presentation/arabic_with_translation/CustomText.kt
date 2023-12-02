@@ -26,7 +26,7 @@ import ir.kaaveh.sdpcompose.ssp
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun ArabicWithTranslationText(
+fun CustomText(
     modifier: Modifier = Modifier,
     arabicModelWithTranslationModel: ArabicModelWithTranslationModel,
     arabicColor: Color = darkTextGrayColor,
@@ -52,13 +52,13 @@ fun ArabicWithTranslationText(
 
         append("\n")
 
-        arabicModelWithTranslationModel.getTransliteration()?.let { translitration ->
+        arabicModelWithTranslationModel.getTransliteration()?.let { transliteration ->
             withStyle(style = ParagraphStyle(textAlign = TextAlign.Start)) {
                 append(
                     AnnotatedString(
-                        text = translitration,
+                        text = transliteration,
                         spanStyle = SpanStyle(
-                            color = Color(0xFF01AD8E),
+                            color = Color(0xff1f67aa),
                             fontFamily = LeftLangFonts.ROBOTO.getFont(),
                             fontSize = (textSize.value * 0.8f).sp
                         )

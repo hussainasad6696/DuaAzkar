@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
+import com.mera.islam.duaazkar.core.extensions.log
 import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationStateListener
 import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import  com.mera.islam.duaazkar.core.utils.EventResources
@@ -24,6 +25,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flattenConcat
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -55,6 +57,18 @@ class DuaScreenViewModel @Inject constructor(
         initialValue = TEXT_MIN_SIZE
     )
 
+    val duaTypeWithCount =
+        getAllDuaWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
+            .map {
+                EventResources.SuccessList(it)
+            }
+            .flowOn(Dispatchers.IO)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = EventResources.Loading
+            )
+
     private val _translators: MutableStateFlow<List<DuaTranslatorModelWithSelection>> =
         MutableStateFlow(emptyList())
     val translators = _translators.asStateFlow()
@@ -64,8 +78,7 @@ class DuaScreenViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val allDuaWithTranslations = savedStateHandle.getStateFlow(DUA_TYPE, DuaType.ALL.type)
-        .map { getAllDuaWithTranslationsUseCase(DuaType.toDuaType(it)) }
-        .flattenConcat()
+        .flatMapLatest { getAllDuaWithTranslationsUseCase(DuaType.toDuaType(it)) }
         .onEach {
             _title.value = it.map { it.getDataType() as DuaType }.distinctBy { it.type }.map { it.getName() }.joinToString(" / ")
         }
@@ -86,6 +99,7 @@ class DuaScreenViewModel @Inject constructor(
     }
 
     fun loadDuasByDuaType(duaType: DuaType) {
+        "duaType $duaType".log()
         savedStateHandle[DUA_TYPE] = duaType.type
     }
 

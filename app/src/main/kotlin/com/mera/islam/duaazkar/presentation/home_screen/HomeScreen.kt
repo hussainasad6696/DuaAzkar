@@ -52,7 +52,7 @@ fun HomeScreen(
     when (allDuaTypes) {
         EventResources.Loading -> Loading(modifier = modifier.fillMaxSize())
         is EventResources.SuccessList -> {
-            val data = (allDuaTypes as EventResources.SuccessList).list
+            val list = (allDuaTypes as EventResources.SuccessList).list
 
             if (!isLandscape) {
                 val localScreenConfig = LocalConfiguration.current.screenWidthDp.dp.value
@@ -74,7 +74,7 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             MorningEveningAzkar(
-                                data = data,
+                                data = list,
                                 navController = navController,
                                 seventyPercentWidth = seventyPercentWidth
                             )
@@ -82,7 +82,7 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.width(5.sdp))
 
                             Tasbih(
-                                data = data,
+                                data = list,
                                 navController = navController,
                                 thirtyPercentWidth = thirtyPercentWidth
                             )
@@ -137,7 +137,7 @@ fun HomeScreen(
                         }
                     }
 
-                    runCatching { data.subList(0, 5) }.getOrNull()?.let {
+                    runCatching { list.subList(0, 5) }.getOrNull()?.let {
                         items(it.size) { index ->
                             val dua = it[index]
 
@@ -152,6 +152,9 @@ fun HomeScreen(
                                         ).getPathWithNavArgs()
                                     )
                                 })
+
+                            if (index == list.lastIndex)
+                                Spacer(modifier = Modifier.height(15.sdp))
                         }
                     }
                 }
@@ -163,14 +166,14 @@ fun HomeScreen(
                             .verticalScroll(rememberScrollState())
                     ) {
                         MorningEveningAzkar(
-                            data = data,
+                            data = list,
                             navController = navController
                         )
 
                         Spacer(modifier = Modifier.height(5.sdp))
 
                         Tasbih(
-                            data = data,
+                            data = list,
                             navController = navController
                         )
 
@@ -190,7 +193,7 @@ fun HomeScreen(
 
                     LazyColumn(modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(5.sdp)) {
-                        runCatching { data.subList(0, 5) }.getOrNull()?.let {
+                        runCatching { list.subList(0, 5) }.getOrNull()?.let {
                             items(it.size) { index ->
                                 val dua = it[index]
 
@@ -205,6 +208,9 @@ fun HomeScreen(
                                             ).getPathWithNavArgs()
                                         )
                                     })
+
+                                if (index == list.lastIndex)
+                                    Spacer(modifier = Modifier.height(15.sdp))
                             }
                         }
                     }

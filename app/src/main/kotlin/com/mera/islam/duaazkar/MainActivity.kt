@@ -14,6 +14,8 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -59,31 +61,9 @@ fun Beginning(windowSizeClass: WindowSizeClass) {
             popExitTransition = { popExitTransition() }) {
             LandingScreen(navController = navController, windowSizeClass = windowSizeClass)
         }
-        val duaScreenNav = NavControllerRoutes.DUA_SCREEN()
-        composable(
-            duaScreenNav.getPath(),
-            arguments = duaScreenNav.listOfArguments,
-            enterTransition = { enterTransition() },
-            exitTransition = { exitTransition() },
-            popEnterTransition = { popEnterTransition() },
-            popExitTransition = { popExitTransition() }
-        ) { backStackEntry ->
-            val lastReadId =
-                backStackEntry.arguments?.getInt("lastReadId") ?: -1
 
-            val duaType =
-                DuaType.toDuaType(backStackEntry.arguments?.getInt("duaType") ?: DuaType.ALL.type)
+        duaScreen(navController)
 
-            val matchTextList =
-                backStackEntry.arguments?.getString("matchTextList")?.split(",") ?: emptyList()
-
-            DuaScreen(
-                navHostController = navController,
-                lastRead = lastReadId,
-                duaType = duaType,
-                matchTextList = matchTextList
-            )
-        }
         composable(NavControllerRoutes.DUA_SEARCH_SCREEN().route,
             enterTransition = { enterTransition() },
             exitTransition = { exitTransition() },
@@ -92,27 +72,7 @@ fun Beginning(windowSizeClass: WindowSizeClass) {
             DuaSearchScreen(navController)
         }
 
-        val duaListingNav = NavControllerRoutes.DUA_LISTING_SCREEN()
-        composable(
-            duaListingNav.getPath(),
-            arguments = duaListingNav.listOfArguments,
-            enterTransition = { enterTransition() },
-            exitTransition = { exitTransition() },
-            popEnterTransition = { popEnterTransition() },
-            popExitTransition = { popExitTransition() }
-        ) { backStackEntry ->
-            val arrayIds = backStackEntry.arguments?.getString("duaIds") ?: "0"
-            val matchTextList =
-                backStackEntry.arguments?.getString("matchTextList") ?: ""
-
-            "composable DuaListingScreen $matchTextList".log()
-
-            DuaListingScreen(
-                navHostController = navController,
-                duaIds = arrayIds.split(",").mapNotNull { it.toIntOrNull() },
-                matchTextList = matchTextList.split(",")
-            )
-        }
+        duaListingScreen(navController)
 
         composable(
             NavControllerRoutes.ASMA_UL_HUSNA().route,
@@ -123,6 +83,56 @@ fun Beginning(windowSizeClass: WindowSizeClass) {
         ) {
             AsmaulHusnaScreen(navController = navController)
         }
+    }
+}
+
+fun NavGraphBuilder.duaListingScreen(navController: NavHostController) {
+    val duaListingNav = NavControllerRoutes.DUA_LISTING_SCREEN()
+    composable(
+        duaListingNav.getPath(),
+        arguments = duaListingNav.listOfArguments,
+        enterTransition = { enterTransition() },
+        exitTransition = { exitTransition() },
+        popEnterTransition = { popEnterTransition() },
+        popExitTransition = { popExitTransition() }
+    ) { backStackEntry ->
+        val arrayIds = backStackEntry.arguments?.getString("duaIds") ?: "0"
+        val matchTextList =
+            backStackEntry.arguments?.getString("matchTextList") ?: ""
+
+        DuaListingScreen(
+            navHostController = navController,
+            duaIds = arrayIds.split(",").mapNotNull { it.toIntOrNull() },
+            matchTextList = matchTextList.split(",")
+        )
+    }
+}
+
+fun NavGraphBuilder.duaScreen(navHostController: NavHostController) {
+    val duaScreenNav = NavControllerRoutes.DUA_SCREEN()
+    composable(
+        duaScreenNav.getPath(),
+        arguments = duaScreenNav.listOfArguments,
+        enterTransition = { enterTransition() },
+        exitTransition = { exitTransition() },
+        popEnterTransition = { popEnterTransition() },
+        popExitTransition = { popExitTransition() }
+    ) { backStackEntry ->
+        val lastReadId =
+            backStackEntry.arguments?.getInt("lastReadId") ?: -1
+
+        val duaType =
+            DuaType.toDuaType(backStackEntry.arguments?.getInt("duaType") ?: DuaType.ALL.type)
+
+        val matchTextList =
+            backStackEntry.arguments?.getString("matchTextList")?.split(",") ?: emptyList()
+
+        DuaScreen(
+            navHostController = navHostController,
+            lastRead = lastReadId,
+            duaType = duaType,
+            matchTextList = matchTextList
+        )
     }
 }
 

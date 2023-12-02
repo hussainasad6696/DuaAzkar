@@ -1,8 +1,11 @@
 package com.mera.islam.duaazkar.presentation.asma_ul_husna_screen
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,6 +21,7 @@ import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
 import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.domain.models.asmaUlHusna.AsmaulHusnaModel
+import ir.kaaveh.sdpcompose.sdp
 
 @Composable
 fun AsmaulHusnaScreen(
@@ -38,13 +42,16 @@ fun AsmaulHusnaScreen(
                 .fillMaxSize()
                 .padding(it))
             is EventResources.SuccessList -> {
-                val data = (asmaulHusna as EventResources.SuccessList<AsmaulHusnaModel>).list
+                val list = (asmaulHusna as EventResources.SuccessList<AsmaulHusnaModel>).list
 
                 CustomLazyList(modifier = Modifier
                     .fillMaxSize()
                     .padding(it)) {
-                    items(data, key = { item -> item.id }) {item ->
+                    itemsIndexed(list) { index, item ->
                         Text(text = item.name)
+
+                        if (index == list.lastIndex)
+                            Spacer(modifier = Modifier.height(15.sdp))
                     }
                 }
             }

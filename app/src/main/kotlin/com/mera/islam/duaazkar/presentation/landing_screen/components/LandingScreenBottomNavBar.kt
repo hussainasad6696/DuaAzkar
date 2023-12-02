@@ -86,7 +86,7 @@ fun NavItems(
                 painter = painterResource(id = if (selectedScreen == it) it.selectedIcon else it.unSelectedIcon),
                 contentDescription = null,
                 tint = Color.Unspecified,
-                modifier = Modifier.size(if (!isVerticalNavBar) 20.sdp else 15.sdp)
+                modifier = Modifier.size(if (!isVerticalNavBar) 18.sdp else 15.sdp)
             )
 
             Spacer(modifier = Modifier.height(4.sdp))
@@ -95,7 +95,7 @@ fun NavItems(
                 text = stringResource(it.navName),
                 color = if (selectedScreen == it) primary else lightTextGrayColor,
                 fontFamily = if (selectedScreen == it) RobotoFonts.ROBOTO_BOLD.getFont() else RobotoFonts.ROBOTO_REGULAR.getFont(),
-                fontSize = if (!isVerticalNavBar) 12.ssp else 8.ssp
+                fontSize = if (!isVerticalNavBar) 10.ssp else 8.ssp
             )
         }
     }

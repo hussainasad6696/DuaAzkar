@@ -17,4 +17,4 @@ dependencyResolutionManagement {
 rootProject.name = "DuaAzkar"
 include(":app")
 include(":adhan")
- 
+include(":slider")
