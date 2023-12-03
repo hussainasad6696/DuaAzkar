@@ -14,6 +14,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.extensions.listToString
 import  com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import  com.mera.islam.duaazkar.core.utils.fonts.LeftLangFonts
@@ -110,8 +111,8 @@ class Settings @Inject constructor(private val context: Context) {
         }
     }
 
-    fun getArabicFont(): Flow<FontFamily> = dataStore.data.map { settings ->
-        FontFamily(Font(settings[keyArabicFont] ?: ArabicFonts.AL_QALAM_QURAN.font))
+    fun getArabicFont(): Flow<Int> = dataStore.data.map { settings ->
+        settings[keyArabicFont] ?: ArabicFonts.AL_QALAM_QURAN.font
     }
 
     //**************************************************************//
@@ -124,8 +125,8 @@ class Settings @Inject constructor(private val context: Context) {
         }
     }
 
-    fun getLeftFont(): Flow<FontFamily> = dataStore.data.map { settings ->
-        FontFamily(Font(settings[keyLeftFont] ?: LeftLangFonts.ROBOTO.font))
+    fun getLeftFont(): Flow<Int> = dataStore.data.map { settings ->
+        settings[keyLeftFont] ?: LeftLangFonts.ROBOTO.font
     }
 
     //**************************************************************//
@@ -138,8 +139,8 @@ class Settings @Inject constructor(private val context: Context) {
         }
     }
 
-    fun getRightFont(): Flow<FontFamily> = dataStore.data.map { settings ->
-        FontFamily(Font(settings[keyRightFont] ?: RightLangFonts.JAMEEL_NOORI_URDU.font))
+    fun getRightFont(): Flow<Int> = dataStore.data.map { settings ->
+        settings[keyRightFont] ?: RightLangFonts.JAMEEL_NOORI_URDU.font
     }
 
     //**************************************************************//
@@ -154,5 +155,47 @@ class Settings @Inject constructor(private val context: Context) {
 
     fun getDuaLastReadId(): Flow<Int> = dataStore.data.map { settings ->
         settings[keyDuaLastRead] ?: -1
+    }
+
+    //**************************************************************//
+
+    private val keyDuaTheme = intPreferencesKey("DUA_THEME")
+
+    suspend fun setDuaTheme(theme: Int) {
+        dataStore.edit { setting ->
+            setting[keyDuaTheme] = theme
+        }
+    }
+
+    fun getDuaTheme(): Flow<Int> = dataStore.data.map { settings ->
+        settings[keyDuaTheme] ?: R.drawable.ic_white_theme
+    }
+
+    //**************************************************************//
+
+    private val keyDuaScreenBrightness = floatPreferencesKey("DUA_SCREEN_BRIGHTNESS")
+
+    suspend fun setDuaScreenBrightness(brightness: Float) {
+        dataStore.edit { setting ->
+            setting[keyDuaScreenBrightness] = brightness
+        }
+    }
+
+    fun getDuaScreenBrightness(): Flow<Float> = dataStore.data.map { settings ->
+        settings[keyDuaScreenBrightness] ?: 0.5f
+    }
+
+    //**************************************************************//
+
+    private val keyDuaKeepScreenOn = booleanPreferencesKey("DUA_KEEP_SCREEN_ON")
+
+    suspend fun setDuaKeepScreenOn(keepScreenOn: Boolean) {
+        dataStore.edit { setting ->
+            setting[keyDuaKeepScreenOn] = keepScreenOn
+        }
+    }
+
+    fun getDuaKeepScreenOn(): Flow<Boolean> = dataStore.data.map { settings ->
+        settings[keyDuaKeepScreenOn] ?: false
     }
 }

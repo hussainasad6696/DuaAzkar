@@ -4,12 +4,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
-import com.mera.islam.duaazkar.core.extensions.log
 import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationStateListener
 import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import  com.mera.islam.duaazkar.core.utils.EventResources
+import com.mera.islam.duaazkar.core.utils.SystemBrightnessSettings
 import  com.mera.islam.duaazkar.core.utils.fonts.FontsType
 import  com.mera.islam.duaazkar.core.utils.fonts.LanguageFonts
 import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslatorModel
@@ -22,11 +23,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flattenConcat
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -40,22 +43,18 @@ class DuaScreenViewModel @Inject constructor(
     private val translatorRepo: DuaTranslatorRepo,
     private val duaLastReadUseCase: DuaLastReadUseCase,
     private val savedStateHandle: SavedStateHandle,
+    private val systemBrightnessSettings: SystemBrightnessSettings,
     private val settings: Settings
 ) : ViewModel() {
+
+    private val _uiEvent: MutableSharedFlow<UiEvent> = MutableSharedFlow()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     val arabicWithTranslationStateListener =
         ArabicWithTranslationStateListener(
             coroutineContext = viewModelScope.coroutineContext,
             settings = settings
         )
-
-    val duaTextSize = settings.getDuaTextSize()
-    .flowOn(Dispatchers.IO)
-    .stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = TEXT_MIN_SIZE
-    )
 
     val duaTypeWithCount =
         getAllDuaWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
@@ -80,13 +79,48 @@ class DuaScreenViewModel @Inject constructor(
     val allDuaWithTranslations = savedStateHandle.getStateFlow(DUA_TYPE, DuaType.ALL.type)
         .flatMapLatest { getAllDuaWithTranslationsUseCase(DuaType.toDuaType(it)) }
         .onEach {
-            _title.value = it.map { it.getDataType() as DuaType }.distinctBy { it.type }.map { it.getName() }.joinToString(" / ")
+            _title.value =
+                it.map { it.getDataType() as DuaType }.distinctBy { it.type }.map { it.getName() }
+                    .joinToString(" / ")
         }
         .map { EventResources.SuccessList(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = EventResources.Loading
+        )
+
+    val selectedTheme = settings.getDuaTheme()
+        .distinctUntilChanged()
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = R.drawable.ic_white_theme
+        )
+
+    val screenBrightness = settings.getDuaScreenBrightness()
+        .onEach { brightness ->
+            if (hasWriteSettingsPermission())
+                systemBrightnessSettings.changeScreenBrightness(brightness)
+        }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = 0.5f
+        )
+
+    val keepScreenOn = settings.getDuaKeepScreenOn()
+        .distinctUntilChanged()
+        .onEach {
+            _uiEvent.emit(UiEvent.KeepScreenOn(it))
+        }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = false
         )
 
     init {
@@ -99,7 +133,6 @@ class DuaScreenViewModel @Inject constructor(
     }
 
     fun loadDuasByDuaType(duaType: DuaType) {
-        "duaType $duaType".log()
         savedStateHandle[DUA_TYPE] = duaType.type
     }
 
@@ -109,6 +142,27 @@ class DuaScreenViewModel @Inject constructor(
             is UserEvent.TranslationsOptionsChanged -> translationsOptionsChanged(userEvent)
             is UserEvent.SelectedFont -> selectedFont(userEvent)
             is UserEvent.IsBookmarked -> isBookmarked(userEvent)
+            is UserEvent.SelectedTheme -> setSelectedTheme(userEvent)
+            is UserEvent.ChangeSystemBrightness -> changeSystemBrightness(userEvent)
+            is UserEvent.KeepScreenOn -> keepScreenOn(userEvent)
+        }
+    }
+
+    private fun keepScreenOn(userEvent: UserEvent.KeepScreenOn) {
+        viewModelScope.launch {
+            settings.setDuaKeepScreenOn(userEvent.on)
+        }
+    }
+
+    private fun changeSystemBrightness(userEvent: UserEvent.ChangeSystemBrightness) {
+        viewModelScope.launch {
+            settings.setDuaScreenBrightness(userEvent.brightness)
+        }
+    }
+
+    private fun setSelectedTheme(userEvent: UserEvent.SelectedTheme) {
+        viewModelScope.launch {
+            settings.setDuaTheme(userEvent.theme)
         }
     }
 
@@ -163,6 +217,8 @@ class DuaScreenViewModel @Inject constructor(
         }
     }
 
+    fun hasWriteSettingsPermission(): Boolean = systemBrightnessSettings.hasWriteSettingsPermission()
+
     fun saveLastRead(firstVisibleItemIndex: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             kotlin.runCatching {
@@ -171,6 +227,10 @@ class DuaScreenViewModel @Inject constructor(
             }
         }
     }
+
+    fun requestWriteSettingsPermission() {
+        systemBrightnessSettings.changeWriteSettingsPermission()
+    }
 }
 
 sealed interface UserEvent {
@@ -178,6 +238,13 @@ sealed interface UserEvent {
     data class TranslationsOptionsChanged(val translatorId: Int) : UserEvent
     data class SelectedFont(val fonts: LanguageFonts) : UserEvent
     data class IsBookmarked(val bookmarked: Boolean, val duaId: Int) : UserEvent
+    data class SelectedTheme(val theme: Int) : UserEvent
+    data class ChangeSystemBrightness(val brightness: Float) : UserEvent
+    data class KeepScreenOn(val on: Boolean) : UserEvent
+}
+
+sealed interface UiEvent {
+    data class KeepScreenOn(val on: Boolean) : UiEvent
 }
 
 data class DuaTranslatorModelWithSelection(

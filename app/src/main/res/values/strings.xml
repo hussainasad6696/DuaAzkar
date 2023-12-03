@@ -40,4 +40,11 @@
     <string name="audio">Audio</string>
     <string name="settings">Settings</string>
     <string name="brightness">Brightness</string>
+    <string name="themes">Themes</string>
+    <string name="write_settings">Write Settings</string>
+    <string name="write_settings_exp">Write Settings permission is reuqired to change brightness.</string>
+    <string name="keep_screen_on">Keep Screen On</string>
+    <string name="font_size">Font Size</string>
+    <string name="english_translation">English Translation</string>
+    <string name="urdu_translation">Urdu Translation</string>
 </resources>

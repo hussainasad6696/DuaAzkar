@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlin.coroutines.CoroutineContext
 
-class ArabicWithTranslationStateListener constructor(
+class ArabicWithTranslationStateListener(
     override val coroutineContext: CoroutineContext,
     settings: Settings
 ) : CoroutineScope {
@@ -22,11 +22,11 @@ class ArabicWithTranslationStateListener constructor(
             initialValue = TEXT_MIN_SIZE
         )
 
-    val arabicTextSize = settings.getArabicFont()
+    val arabicFont = settings.getArabicFont()
         .flowOn(Dispatchers.IO)
         .stateIn(
             scope = this,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-            initialValue = ArabicFonts.AL_QALAM_QURAN.getFont()
+            initialValue = ArabicFonts.AL_QALAM_QURAN.font()
         )
 }

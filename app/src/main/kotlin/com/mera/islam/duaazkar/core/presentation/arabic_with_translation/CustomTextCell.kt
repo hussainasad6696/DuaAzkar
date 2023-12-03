@@ -1,5 +1,6 @@
 package  com.mera.islam.duaazkar.core.presentation.arabic_with_translation
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,8 +25,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,8 +44,10 @@ import  com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.applicationBackgroundColor
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
+import com.mera.islam.duaazkar.ui.theme.green
 import com.mera.islam.duaazkar.ui.theme.lightTextGrayColor
 import com.mera.islam.duaazkar.ui.theme.primary
+import com.mera.islam.duaazkar.ui.theme.transliterationBlurColor
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
@@ -51,9 +57,12 @@ fun CustomTextCell(
     arabicFont: FontFamily = ArabicFonts.AL_QALAM_QURAN.getFont(),
     arabicColor: Color = darkTextGrayColor,
     translationColor: Color = darkTextGrayColor,
+    transliterationColor: Color = transliterationBlurColor,
     textSize: TextUnit = TEXT_MIN_SIZE,
+    isDarkTheme: Boolean = false,
     matchTextList: List<String> = emptyList(),
     isPlaying: Boolean = false,
+    cardBackgroundColor: Color = Color.White,
     onBookmarkedClick: () -> Unit = {},
     onItemClick: () -> Unit = {},
     onShareClick: () -> Unit = {},
@@ -61,9 +70,19 @@ fun CustomTextCell(
     onCopyClick: () -> Unit = {},
     onOpenTashib: () -> Unit = {}
 ) {
+    val animatedBgColor by animateColorAsState(
+        cardBackgroundColor,
+        label = "color"
+    )
+
     Column(modifier = Modifier
         .fillMaxWidth()
-        .background(color = Color.White, shape = RoundedCornerShape(20.sdp))
+        .drawBehind {
+            drawRoundRect(
+                color = animatedBgColor,
+                cornerRadius = CornerRadius(20.dp.toPx(), 20.dp.toPx())
+            )
+        }
         .clickable(
             interactionSource = MutableInteractionSource(),
             indication = rememberRipple(
@@ -79,6 +98,7 @@ fun CustomTextCell(
             arabicModelWithTranslationModel = arabicModelWithTranslationModel,
             arabicColor = arabicColor,
             translationColor = translationColor,
+            transliterationColor = transliterationColor,
             textSize = textSize,
             arabicFont = arabicFont,
             matchTextList = matchTextList
@@ -89,6 +109,7 @@ fun CustomTextCell(
         CellClickEvents(
             isBookmarked = arabicModelWithTranslationModel.isFav(),
             isPlaying = isPlaying,
+            isDarkTheme = isDarkTheme,
             onPlayAudio = onPlayAudio,
             onOpenTasbih = onOpenTashib,
             onCopyClick = onCopyClick,
@@ -105,6 +126,7 @@ fun CellClickEvents(
     modifier: Modifier = Modifier,
     isPlaying: Boolean = false,
     isBookmarked: Boolean,
+    isDarkTheme: Boolean = false,
     onPlayAudio: () -> Unit,
     onOpenTasbih: () -> Unit,
     onCopyClick: () -> Unit,
@@ -115,7 +137,7 @@ fun CellClickEvents(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.sdp)
-            .background(color = Color.White, shape = RoundedCornerShape(15.sdp))
+            .background(color = Color.Transparent, shape = RoundedCornerShape(15.sdp))
             .border(width = 1.dp, shape = RoundedCornerShape(15.sdp), color = Color(0x0c252525))
             .then(modifier)
     ) {
@@ -124,7 +146,7 @@ fun CellClickEvents(
                 .fillMaxWidth()
                 .fillMaxHeight(0.5f)
                 .background(
-                    color = applicationBackgroundColor,
+                    color = if (isDarkTheme) Color(0x0cffffff) else Color(0x0c252525),
                     shape = RoundedCornerShape(topStart = 15.sdp, topEnd = 15.sdp)
                 )
                 .padding(horizontal = 10.sdp),
@@ -133,16 +155,21 @@ fun CellClickEvents(
         ) {
             IconButton(onClick = onPlayAudio) {
                 Icon(
-                    painter = painterResource(id = if(isPlaying) R.drawable.ic_resume_icon else R.drawable.ic_play_icon),
+                    painter = painterResource(id = if (isPlaying) R.drawable.ic_resume_icon else R.drawable.ic_play_icon),
                     contentDescription = "Play",
                     tint = Color.Unspecified,
                     modifier = Modifier.size(22.sdp)
                 )
             }
 
+            val animatedBgColor by animateColorAsState(
+                if (isDarkTheme) Color(0x1901ad8e) else Color.White,
+                label = "color"
+            )
+
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White
+                    containerColor = animatedBgColor
                 ),
                 modifier = Modifier
                     .fillMaxHeight(0.75f),
@@ -159,7 +186,7 @@ fun CellClickEvents(
 
                 Text(
                     text = stringResource(id = R.string.tasbih),
-                    color = primary,
+                    color = green,
                     fontSize = 11.ssp,
                     fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont()
                 )

@@ -1,5 +1,7 @@
 package  com.mera.islam.duaazkar.domain.usecases
 
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.enums.LanguageDirection
 import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
@@ -39,8 +41,8 @@ fun Flow<List<DuaModel>>.mapDuaFlowToDuaWithTranslationListFlow(
                     duaTranslation = it.duaTranslationModel,
                     duaTranslator = it.duaTranslatorModel,
                     fontFamily = when(it.duaTranslatorModel.languageDirection) {
-                        LanguageDirection.LEFT -> leftFont
-                        LanguageDirection.RIGHT -> rightFont
+                        LanguageDirection.LEFT -> FontFamily(Font(leftFont))
+                        LanguageDirection.RIGHT -> FontFamily(Font(rightFont))
                     }
                 )
             }
@@ -76,8 +78,8 @@ suspend inline fun Flow<DuaModel>.mapDuaFlowToDuaWithTranslationModelFlow(
                 duaTranslation = it.duaTranslationModel,
                 duaTranslator = it.duaTranslatorModel,
                 fontFamily = when(it.duaTranslatorModel.languageDirection) {
-                    LanguageDirection.LEFT -> leftFont
-                    LanguageDirection.RIGHT -> rightFont
+                    LanguageDirection.LEFT -> FontFamily(Font(leftFont))
+                    LanguageDirection.RIGHT -> FontFamily(Font(rightFont))
                 }
             )
         }

@@ -1,5 +1,6 @@
 package  com.mera.islam.duaazkar.presentation.dua_screen
 
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,10 +17,13 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -33,24 +37,29 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.mera.islam.duaazkar.MainActivity
+import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.extensions.copy
-import com.mera.islam.duaazkar.core.extensions.log
-import  com.mera.islam.duaazkar.core.extensions.share
-import  com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
+import com.mera.islam.duaazkar.core.extensions.share
+import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
-import  com.mera.islam.duaazkar.core.presentation.Loading
-import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.CustomTextCell
-import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
-import  com.mera.islam.duaazkar.core.utils.EventResources
-import  com.mera.islam.duaazkar.domain.models.dua.DuaType
+import com.mera.islam.duaazkar.core.presentation.Loading
+import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.CustomTextCell
+import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import com.mera.islam.duaazkar.core.utils.EventResources
+import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
+import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomBar
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomNavItems
-import  com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomSheet
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomSheetDisplay
+import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomSheetSettings
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaCategoriesDrawer
+import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
+import com.mera.islam.duaazkar.ui.theme.transliterationBlurColor
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 
@@ -74,6 +83,16 @@ fun DuaScreen(
 
         LaunchedEffect(key1 = Unit, block = {
             viewModel.loadDuasByDuaType(duaType)
+
+            viewModel.uiEvent.collect { uiEvent ->
+                when (uiEvent) {
+                    is UiEvent.KeepScreenOn -> {
+                        (context as MainActivity).window.addFlags(
+                            if (uiEvent.on) WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON else 0
+                        )
+                    }
+                }
+            }
         })
 
         var selectedOption by remember {
@@ -81,12 +100,11 @@ fun DuaScreen(
         }
 
         LaunchedEffect(key1 = selectedOption) {
-            when(selectedOption) {
+            when (selectedOption) {
                 DuaBottomNavItems.Categories -> drawerState.open()
                 DuaBottomNavItems.Display -> sheetState.show()
 //                DuaBottomNavItems.Audio -> TODO()
-//                DuaBottomNavItems.Settings -> TODO()
-//                DuaBottomNavItems.None -> TODO()
+                DuaBottomNavItems.Settings -> sheetState.show()
                 else -> {}
             }
         }
@@ -97,6 +115,14 @@ fun DuaScreen(
             }.collect {
                 selectedOption = if (it) DuaBottomNavItems.None
                 else DuaBottomNavItems.Categories
+            }
+        }
+
+        LaunchedEffect(key1 = Unit) {
+            snapshotFlow {
+                sheetState.isVisible
+            }.collect {
+                if (!it) selectedOption = DuaBottomNavItems.None
             }
         }
 
@@ -116,9 +142,82 @@ fun DuaScreen(
                         }
                     })
             }) {
+
+            var requestWriteSystemSettingsDialog by remember {
+                mutableStateOf(false)
+            }
+
+            if (requestWriteSystemSettingsDialog)
+                AlertDialog(
+                    onDismissRequest = {
+                        requestWriteSystemSettingsDialog = !requestWriteSystemSettingsDialog
+                    },
+                    title = {
+                        Text(text = stringResource(id = R.string.write_settings))
+                    },
+                    text = {
+                        Text(text = stringResource(id = R.string.write_settings_exp))
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            requestWriteSystemSettingsDialog = !requestWriteSystemSettingsDialog
+
+                            viewModel.requestWriteSettingsPermission()
+                        }) {
+                            Text(text = stringResource(id = R.string.grant))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            requestWriteSystemSettingsDialog = !requestWriteSystemSettingsDialog
+                        }) {
+                            Text(text = stringResource(id = R.string.deny))
+                        }
+                    }
+                )
+
+            val selectedTheme by viewModel.selectedTheme.collectAsStateWithLifecycle()
+
             ModalBottomSheetLayout(
                 sheetContent = {
-                    DuaBottomSheetDisplay()
+                    when(selectedOption) {
+                        DuaBottomNavItems.Display -> BottomSheetDisplay(
+                            selectedTheme = selectedTheme,
+                            viewModel = viewModel,
+                            onCloseBottomSheet = {
+                                selectedOption = DuaBottomNavItems.None
+                                coroutineScope.launch {
+                                    sheetState.hide()
+                                }
+                            }, onBrightnessChangeRequest = {
+                                if (!viewModel.hasWriteSettingsPermission()) requestWriteSystemSettingsDialog =
+                                    true
+                                else viewModel.onUserEvent(UserEvent.ChangeSystemBrightness(it))
+                            })
+
+                        DuaBottomNavItems.Settings -> {
+                            val duaTextSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
+                            val arabicFont by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
+
+                            DuaBottomSheetSettings(
+                                fontSize = duaTextSize,
+                                selectedArabicFont = ArabicFonts.getLanguageFont(arabicFont),
+                                onFontSizeChange = {
+                                    viewModel.onUserEvent(UserEvent.TextSizeChanged(it))
+                                },
+                                onCloseBottomSheet = {
+                                    selectedOption = DuaBottomNavItems.None
+                                    coroutineScope.launch {
+                                        sheetState.hide()
+                                    }
+                                },
+                                onArabicFontChange = {
+                                    viewModel.onUserEvent(UserEvent.SelectedFont(it))
+                                },
+                            )
+                        }
+                        else -> {}
+                    }
                 },
                 sheetBackgroundColor = Color.White,
                 sheetState = sheetState,
@@ -164,7 +263,7 @@ fun DuaScreen(
                                         (allDuas as EventResources.SuccessList<ArabicModelWithTranslationModel>).list
 
                                     val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
-                                    val arabicFonts by viewModel.arabicWithTranslationStateListener.arabicTextSize.collectAsStateWithLifecycle()
+                                    val arabicFonts by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
 
                                     LazyColumn(
                                         content = {
@@ -180,10 +279,33 @@ fun DuaScreen(
 
                                                 CustomTextCell(
                                                     arabicModelWithTranslationModel = duaItem,
-                                                    arabicFont = arabicFonts,
+                                                    arabicFont = ArabicFonts.getLanguageFont(arabicFonts).getFont(),
                                                     textSize = textSize,
                                                     matchTextList = matchTextList,
                                                     isPlaying = isPlaying,
+                                                    cardBackgroundColor = when (selectedTheme) {
+                                                        R.drawable.ic_white_theme -> Color.White
+                                                        R.drawable.ic_gray_theme -> Color(0xffe8f6f4)
+                                                        R.drawable.ic_skin_theme -> Color(0xfffff9eb)
+                                                        R.drawable.ic_dark_theme -> Color(0xff343434)
+                                                        else -> Color.White
+                                                    },
+                                                    arabicColor = when (selectedTheme) {
+                                                        R.drawable.ic_dark_theme -> Color.White
+                                                        else -> darkTextGrayColor
+                                                    },
+                                                    translationColor = when (selectedTheme) {
+                                                        R.drawable.ic_dark_theme -> Color.White
+                                                        else -> darkTextGrayColor
+                                                    },
+                                                    transliterationColor = when (selectedTheme) {
+                                                        R.drawable.ic_dark_theme -> Color(0xff24c2cc)
+                                                        else -> transliterationBlurColor
+                                                    },
+                                                    isDarkTheme = when (selectedTheme) {
+                                                        R.drawable.ic_dark_theme -> true
+                                                        else -> false
+                                                    },
                                                     onBookmarkedClick = {
                                                         viewModel.onUserEvent(
                                                             UserEvent.IsBookmarked(
@@ -243,4 +365,29 @@ fun DuaScreen(
             )
         }
     }
+}
+
+@Composable
+fun BottomSheetDisplay(
+    selectedTheme: Int,
+    viewModel: DuaScreenViewModel,
+    onCloseBottomSheet: () -> Unit,
+    onBrightnessChangeRequest: (Float) -> Unit
+) {
+    val brightness by viewModel.screenBrightness.collectAsStateWithLifecycle()
+    val keepScreenOn by viewModel.keepScreenOn.collectAsStateWithLifecycle()
+
+    DuaBottomSheetDisplay(
+        selectedTheme = selectedTheme,
+        currentBrightness = brightness,
+        isScreenCheckOn = keepScreenOn,
+        onThemeSelected = {
+            viewModel.onUserEvent(UserEvent.SelectedTheme(it))
+        },
+        onCloseBottomSheet = onCloseBottomSheet,
+        onBrightnessChangeRequest = onBrightnessChangeRequest,
+        keepScreenOn = {
+            viewModel.onUserEvent(UserEvent.KeepScreenOn(it))
+        }
+    )
 }

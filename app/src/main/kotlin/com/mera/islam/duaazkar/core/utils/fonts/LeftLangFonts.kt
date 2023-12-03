@@ -12,4 +12,18 @@ enum class LeftLangFonts(val font: Int): LanguageFonts {
     override fun getFont(): FontFamily = FontFamily(Font(font))
     override fun font(): Int = font
     override fun fontType(): FontsType = FontsType.LEFT_FONTS
+    companion object {
+        fun getLanguageFont(font: Int): LanguageFonts {
+            var defFont = ROBOTO
+
+            for (item in entries) {
+                if (item.font == font) {
+                    defFont = item
+                    break
+                }
+            }
+
+            return defFont
+        }
+    }
 }
