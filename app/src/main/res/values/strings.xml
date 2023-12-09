@@ -45,6 +45,7 @@
     <string name="write_settings_exp">Write Settings permission is reuqired to change brightness.</string>
     <string name="keep_screen_on">Keep Screen On</string>
     <string name="font_size">Font Size</string>
-    <string name="english_translation">English Translation</string>
-    <string name="urdu_translation">Urdu Translation</string>
+    <string name="translation">%1$s Translation</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
 </resources>

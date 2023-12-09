@@ -40,7 +40,7 @@ fun Flow<List<DuaModel>>.mapDuaFlowToDuaWithTranslationListFlow(
                 DuaTranslationWithTranslators(
                     duaTranslation = it.duaTranslationModel,
                     duaTranslator = it.duaTranslatorModel,
-                    fontFamily = when(it.duaTranslatorModel.languageDirection) {
+                    fontFamily = when (it.duaTranslatorModel.languageDirection) {
                         LanguageDirection.LEFT -> FontFamily(Font(leftFont))
                         LanguageDirection.RIGHT -> FontFamily(Font(rightFont))
                     }
@@ -55,29 +55,30 @@ fun Flow<List<DuaModel>>.mapDuaFlowToDuaWithTranslationListFlow(
     }
 }
 
-suspend inline fun Flow<DuaModel>.mapDuaFlowToDuaWithTranslationModelFlow(
+fun Flow<DuaModel>.mapDuaFlowToDuaWithTranslationModelFlow(
     languageIdsFlow: Flow<List<Int>>,
     duaTranslationRepo: DuaTranslationRepo,
     settings: Settings
 ): Flow<ArabicModelWithTranslationModel> {
-    val duaTransFlow = duaTranslationRepo.getDuaTranslationByDuaIds(
-        ids = listOf(this.first().id),
-        translatorIds = languageIdsFlow.first()
-    )
 
     return combine(
         this,
-        duaTransFlow,
+        languageIdsFlow,
         settings.getLeftFont(),
         settings.getRightFont()
-    ) { dua, translations, leftFont, rightFont ->
-        val translationList = translations.filter {
+    ) { dua, languageIds, leftFont, rightFont ->
+        val duaTrans = duaTranslationRepo.getDuaTranslationByDuaIds(
+            ids = listOf(dua.id),
+            translatorIds = languageIds
+        ).first()
+
+        val translationList = duaTrans.filter {
             it.duaModel.id == dua.id
         }.map {
             DuaTranslationWithTranslators(
                 duaTranslation = it.duaTranslationModel,
                 duaTranslator = it.duaTranslatorModel,
-                fontFamily = when(it.duaTranslatorModel.languageDirection) {
+                fontFamily = when (it.duaTranslatorModel.languageDirection) {
                     LanguageDirection.LEFT -> FontFamily(Font(leftFont))
                     LanguageDirection.RIGHT -> FontFamily(Font(rightFont))
                 }

@@ -9,6 +9,28 @@ import com.mera.islam.duaazkar.domain.models.dua.DuaType
 
 sealed class NavControllerRoutes(val route: String) {
     data class ROOT(val rout: String = "root") : NavControllerRoutes(rout)
+    data class DUA_TASBIH_SCREEN(
+        val rout: String = "duaTasbihScreen",
+        val duaId: Int = -1
+    ): NavControllerRoutes(rout) {
+        val listOfArguments = listOf(
+            navArgument("duaId") {
+                type = NavType.IntType
+                defaultValue = duaId
+            }
+        )
+
+        fun getPath() = "$rout?duaId={duaId}"
+
+        fun getPathWithNavArgs(): String {
+            var mainPath = rout
+
+            if (duaId != -1)
+                mainPath += "${if (mainPath.contains("?")) "&" else "?"}duaId=$duaId"
+
+            return mainPath
+        }
+    }
     data class DUA_SCREEN(
         val rout: String = "duaScreen",
         val lastReadId: Int = -1,
@@ -31,7 +53,7 @@ sealed class NavControllerRoutes(val route: String) {
             }
         )
 
-        fun getPath() = "$rout?lastReadId={lastReadId}&duaType={duaType}"
+        fun getPath() = "$rout?lastReadId={lastReadId}&duaType={duaType}&matchTextList={matchTextList}"
         fun getPathWithNavArgs(): String {
             var mainPath = rout
 
@@ -71,7 +93,7 @@ sealed class NavControllerRoutes(val route: String) {
             }
         )
 
-        fun getPath() = "$rout?duaIds={duaIds}"
+        fun getPath() = "$rout?duaIds={duaIds}&matchTextList={matchTextList}"
 
         fun getPathWithNavArgs(): String {
             var mainPath = rout

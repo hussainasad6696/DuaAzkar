@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,8 +40,8 @@ fun AsmaulHusnaScreen(
             EventResources.Loading -> Loading(modifier = Modifier
                 .fillMaxSize()
                 .padding(it))
-            is EventResources.SuccessList -> {
-                val list = (asmaulHusna as EventResources.SuccessList<AsmaulHusnaModel>).list
+            is EventResources.Success -> {
+                val list = (asmaulHusna as EventResources.Success<List<AsmaulHusnaModel>>).template
 
                 CustomLazyList(modifier = Modifier
                     .fillMaxSize()

@@ -4,22 +4,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mera.islam.duaazkar.core.utils.EventResources
-import com.mera.islam.duaazkar.data.local.dao.dua.DuaNameAndCount
 import com.mera.islam.duaazkar.domain.repo.dua.DuaRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +26,7 @@ class DuaSearchScreenViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     val searchedDua = savedStateHandle.getStateFlow(DUA_SEARCH, "")
         .map { keyword ->
-            EventResources.SuccessList(
+            EventResources.Success(
                 if (keyword.isEmpty()) duaRepo.getAllDuaTypesAndCounts().first()
                 else duaRepo.getAllDuaTypesAndCountsByKeyword(keyword).first()
             )

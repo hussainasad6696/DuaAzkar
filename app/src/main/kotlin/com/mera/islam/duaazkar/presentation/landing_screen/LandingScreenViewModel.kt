@@ -34,7 +34,7 @@ class LandingScreenViewModel @Inject constructor(
 
     val allBookmarkedDuasWithTranslations = getBookmarkedDuasWithTranslationsUseCase()
         .map {
-            EventResources.SuccessList(it)
+            EventResources.Success(it)
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
@@ -46,7 +46,7 @@ class LandingScreenViewModel @Inject constructor(
     val duaTypeWithCount =
         getBookmarkedDuasWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
             .map {
-                EventResources.SuccessList(it)
+                EventResources.Success(it)
             }
             .flowOn(Dispatchers.IO)
             .stateIn(

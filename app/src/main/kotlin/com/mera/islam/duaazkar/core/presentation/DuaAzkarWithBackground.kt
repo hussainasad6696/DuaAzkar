@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mera.islam.duaazkar.ui.theme.applicationBackgroundColor
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DuaAzkarWithBackground(
     modifier: Modifier = Modifier,

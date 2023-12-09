@@ -28,8 +28,8 @@ fun CategoriesScreen(
 
     when (allDuaTypes) {
         EventResources.Loading -> Loading(modifier = modifier.fillMaxSize())
-        is EventResources.SuccessList -> {
-            val list = (allDuaTypes as EventResources.SuccessList).list
+        is EventResources.Success -> {
+            val list = (allDuaTypes as EventResources.Success).template
 
             CustomLazyList(
                 modifier

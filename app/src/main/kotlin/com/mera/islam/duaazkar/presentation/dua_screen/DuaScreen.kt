@@ -42,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.MainActivity
+import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.extensions.copy
 import com.mera.islam.duaazkar.core.extensions.share
@@ -49,12 +50,14 @@ import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
 import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.CustomTextCell
+import com.mera.islam.duaazkar.core.presentation.springEffect
 import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomBar
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomNavItems
+import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomSheetAudio
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomSheetDisplay
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomSheetSettings
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaCategoriesDrawer
@@ -62,6 +65,13 @@ import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import com.mera.islam.duaazkar.ui.theme.transliterationBlurColor
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -103,7 +113,7 @@ fun DuaScreen(
             when (selectedOption) {
                 DuaBottomNavItems.Categories -> drawerState.open()
                 DuaBottomNavItems.Display -> sheetState.show()
-//                DuaBottomNavItems.Audio -> TODO()
+                DuaBottomNavItems.Audio -> sheetState.show()
                 DuaBottomNavItems.Settings -> sheetState.show()
                 else -> {}
             }
@@ -180,7 +190,7 @@ fun DuaScreen(
 
             ModalBottomSheetLayout(
                 sheetContent = {
-                    when(selectedOption) {
+                    when (selectedOption) {
                         DuaBottomNavItems.Display -> BottomSheetDisplay(
                             selectedTheme = selectedTheme,
                             viewModel = viewModel,
@@ -195,27 +205,17 @@ fun DuaScreen(
                                 else viewModel.onUserEvent(UserEvent.ChangeSystemBrightness(it))
                             })
 
-                        DuaBottomNavItems.Settings -> {
-                            val duaTextSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
-                            val arabicFont by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
+                        DuaBottomNavItems.Settings -> BottomSheetSettings(
+                            viewModel = viewModel,
+                            onCloseBottomSheet = {
+                                selectedOption = DuaBottomNavItems.None
+                                coroutineScope.launch {
+                                    sheetState.hide()
+                                }
+                            })
 
-                            DuaBottomSheetSettings(
-                                fontSize = duaTextSize,
-                                selectedArabicFont = ArabicFonts.getLanguageFont(arabicFont),
-                                onFontSizeChange = {
-                                    viewModel.onUserEvent(UserEvent.TextSizeChanged(it))
-                                },
-                                onCloseBottomSheet = {
-                                    selectedOption = DuaBottomNavItems.None
-                                    coroutineScope.launch {
-                                        sheetState.hide()
-                                    }
-                                },
-                                onArabicFontChange = {
-                                    viewModel.onUserEvent(UserEvent.SelectedFont(it))
-                                },
-                            )
-                        }
+                        DuaBottomNavItems.Audio -> DuaBottomSheetAudio()
+
                         else -> {}
                     }
                 },
@@ -256,11 +256,11 @@ fun DuaScreen(
                                     modifier = Modifier.fillMaxSize()
                                 )
 
-                                is EventResources.SuccessList<ArabicModelWithTranslationModel> -> {
+                                is EventResources.Success<List<ArabicModelWithTranslationModel>> -> {
 
                                     val listState = rememberLazyListState()
                                     val duas =
-                                        (allDuas as EventResources.SuccessList<ArabicModelWithTranslationModel>).list
+                                        (allDuas as EventResources.Success).template
 
                                     val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
                                     val arabicFonts by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
@@ -279,7 +279,9 @@ fun DuaScreen(
 
                                                 CustomTextCell(
                                                     arabicModelWithTranslationModel = duaItem,
-                                                    arabicFont = ArabicFonts.getLanguageFont(arabicFonts).getFont(),
+                                                    arabicFont = ArabicFonts.getLanguageFont(
+                                                        arabicFonts
+                                                    ).getFont(),
                                                     textSize = textSize,
                                                     matchTextList = matchTextList,
                                                     isPlaying = isPlaying,
@@ -315,6 +317,11 @@ fun DuaScreen(
                                                         )
                                                     },
                                                     onItemClick = {
+                                                        navHostController.navigate(
+                                                            NavControllerRoutes.DUA_TASBIH_SCREEN(
+                                                                duaId = duaItem.getDataId()
+                                                            ).getPathWithNavArgs()
+                                                        )
                                                     },
                                                     onShareClick = {
                                                         context share duaItem.getShareableString()
@@ -368,7 +375,36 @@ fun DuaScreen(
 }
 
 @Composable
-fun BottomSheetDisplay(
+private fun BottomSheetSettings(viewModel: DuaScreenViewModel, onCloseBottomSheet: () -> Unit = {}) {
+    val duaTextSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
+    val arabicFont by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
+    val translationOptions by viewModel.translators.collectAsStateWithLifecycle()
+
+    DuaBottomSheetSettings(
+        viewModel = viewModel,
+        fontSize = duaTextSize,
+        selectedArabicFont = ArabicFonts.getLanguageFont(arabicFont),
+        onFontSizeChange = {
+            viewModel.onUserEvent(UserEvent.TextSizeChanged(it))
+        },
+        onCloseBottomSheet = onCloseBottomSheet,
+        onArabicFontChange = {
+            viewModel.onUserEvent(UserEvent.SelectedFont(it))
+        },
+        duaTranslatorOptions = translationOptions,
+        onTranslationFontChanged = { languageFonts ->
+            viewModel.onUserEvent(UserEvent.SelectedFont(languageFonts))
+        },
+        onTranslationToggle = { translatorId, isEnabled ->
+            viewModel.onUserEvent(
+                UserEvent.TranslationsOptionsChanged(translatorId, isEnabled)
+            )
+        }
+    )
+}
+
+@Composable
+private fun BottomSheetDisplay(
     selectedTheme: Int,
     viewModel: DuaScreenViewModel,
     onCloseBottomSheet: () -> Unit,
@@ -390,4 +426,39 @@ fun BottomSheetDisplay(
             viewModel.onUserEvent(UserEvent.KeepScreenOn(it))
         }
     )
+}
+
+fun main() {
+    runBlocking {
+        val outPath = File("./hisnulMuslim/ia601201.us.archive.org/0/items/HisnulMuslimAudio_201510")
+        for (index in (1..500)) {
+            try {
+                val url = URL("https://ia601201.us.archive.org/0/items/HisnulMuslimAudio_201510/n$index.mp3")
+                val httpConnection = url.openConnection() as HttpURLConnection
+
+                val inputStream: InputStream = httpConnection.getInputStream()
+                val saveFilePath: String = outPath.absolutePath + File.separator + "n$index.mp3"
+
+                println("Downloading $saveFilePath")
+
+                if (!outPath.exists()) outPath.mkdirs()
+
+                // opens an output stream to save into file
+
+                // opens an output stream to save into file
+                val outputStream = FileOutputStream(saveFilePath)
+
+                var bytesRead: Int
+                val buffer = ByteArray(1024*4)
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
+                }
+
+                outputStream.close()
+                inputStream.close()
+            } catch (e: Exception) {
+
+            }
+        }
+    }
 }

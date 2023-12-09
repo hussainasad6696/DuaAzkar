@@ -25,6 +25,7 @@ import com.mera.islam.duaazkar.presentation.asma_ul_husna_screen.AsmaulHusnaScre
 import com.mera.islam.duaazkar.presentation.dua_listing_screen.DuaListingScreen
 import com.mera.islam.duaazkar.presentation.dua_screen.DuaScreen
 import com.mera.islam.duaazkar.presentation.dua_search_screen.DuaSearchScreen
+import com.mera.islam.duaazkar.presentation.dua_tasboh_screen.DuaTasbihScreen
 import com.mera.islam.duaazkar.presentation.landing_screen.LandingScreen
 import com.mera.islam.duaazkar.ui.theme.DuaAzkarTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -83,6 +84,24 @@ fun Beginning(windowSizeClass: WindowSizeClass) {
         ) {
             AsmaulHusnaScreen(navController = navController)
         }
+
+        duaTasbihScreen(navController)
+    }
+}
+
+fun NavGraphBuilder.duaTasbihScreen(navController: NavHostController) {
+    val duaTasbihNav = NavControllerRoutes.DUA_TASBIH_SCREEN()
+    composable(
+        duaTasbihNav.getPath(),
+        arguments = duaTasbihNav.listOfArguments,
+        enterTransition = { enterTransition() },
+        exitTransition = { exitTransition() },
+        popEnterTransition = { popEnterTransition() },
+        popExitTransition = { popExitTransition() }
+    ) { backStackEntry ->
+        val duaId = backStackEntry.arguments?.getInt("duaId") ?: -1
+
+        DuaTasbihScreen(navHostController = navController,duaId = duaId)
     }
 }
 

@@ -6,13 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.Settings
-import  com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
+import com.mera.islam.duaazkar.core.enums.LanguageDirection
 import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationStateListener
 import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import  com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.core.utils.SystemBrightnessSettings
 import  com.mera.islam.duaazkar.core.utils.fonts.FontsType
 import  com.mera.islam.duaazkar.core.utils.fonts.LanguageFonts
+import com.mera.islam.duaazkar.core.utils.fonts.LeftLangFonts
+import com.mera.islam.duaazkar.core.utils.fonts.RightLangFonts
 import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslatorModel
 import  com.mera.islam.duaazkar.domain.models.dua.DuaType
 import  com.mera.islam.duaazkar.domain.repo.dua.DuaTranslatorRepo
@@ -59,7 +61,7 @@ class DuaScreenViewModel @Inject constructor(
     val duaTypeWithCount =
         getAllDuaWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
             .map {
-                EventResources.SuccessList(it)
+                EventResources.Success(it)
             }
             .flowOn(Dispatchers.IO)
             .stateIn(
@@ -83,7 +85,7 @@ class DuaScreenViewModel @Inject constructor(
                 it.map { it.getDataType() as DuaType }.distinctBy { it.type }.map { it.getName() }
                     .joinToString(" / ")
         }
-        .map { EventResources.SuccessList(it) }
+        .map { EventResources.Success(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -97,6 +99,22 @@ class DuaScreenViewModel @Inject constructor(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = R.drawable.ic_white_theme
+        )
+
+    val leftFont = settings.getLeftFont()
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = LeftLangFonts.ROBOTO.font
+        )
+
+    val rightFont = settings.getRightFont()
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = RightLangFonts.JAMEEL_NOORI_URDU.font
         )
 
     val screenBrightness = settings.getDuaScreenBrightness()
@@ -194,7 +212,7 @@ class DuaScreenViewModel @Inject constructor(
                 val list = translators.value.toMutableList()
                 val indexItem = list[index]
                 list[index] = DuaTranslatorModelWithSelection(
-                    isSelected = !indexItem.isSelected,
+                    isSelected = userEvent.isSelected,
                     duaTranslatorModel = indexItem.duaTranslatorModel
                 )
 
@@ -222,8 +240,8 @@ class DuaScreenViewModel @Inject constructor(
     fun saveLastRead(firstVisibleItemIndex: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             kotlin.runCatching {
-                if (allDuaWithTranslations.value is EventResources.SuccessList)
-                    duaLastReadUseCase((allDuaWithTranslations.value as EventResources.SuccessList<ArabicModelWithTranslationModel>).list[firstVisibleItemIndex].getDataId())
+                if (allDuaWithTranslations.value is EventResources.Success)
+                    duaLastReadUseCase((allDuaWithTranslations.value as EventResources.Success).template[firstVisibleItemIndex].getDataId())
             }
         }
     }
@@ -235,7 +253,7 @@ class DuaScreenViewModel @Inject constructor(
 
 sealed interface UserEvent {
     data class TextSizeChanged(val size: Float) : UserEvent
-    data class TranslationsOptionsChanged(val translatorId: Int) : UserEvent
+    data class TranslationsOptionsChanged(val translatorId: Int, val isSelected: Boolean) : UserEvent
     data class SelectedFont(val fonts: LanguageFonts) : UserEvent
     data class IsBookmarked(val bookmarked: Boolean, val duaId: Int) : UserEvent
     data class SelectedTheme(val theme: Int) : UserEvent
@@ -250,6 +268,13 @@ sealed interface UiEvent {
 data class DuaTranslatorModelWithSelection(
     val isSelected: Boolean = true,
     val duaTranslatorModel: DuaTranslatorModel
-)
+) {
+    fun getLanguageFont(languageDirection: LanguageDirection,fontId: Int): LanguageFonts {
+        return when(languageDirection) {
+            LanguageDirection.RIGHT -> RightLangFonts.getLanguageFont(fontId)
+            LanguageDirection.LEFT -> LeftLangFonts.getLanguageFont(fontId)
+        }
+    }
+}
 
 private const val DUA_TYPE = "duaType"

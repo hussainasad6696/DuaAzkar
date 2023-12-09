@@ -18,6 +18,7 @@ import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
+import com.mera.islam.duaazkar.core.presentation.springEffect
 import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
@@ -33,7 +34,8 @@ fun DuaListingScreen(
 ) {
     val context = LocalContext.current
 
-    DuaAzkarWithBackground(addScaffolding = true,
+    DuaAzkarWithBackground(
+        addScaffolding = true,
         topBar = {
             val title by viewModel.title.collectAsStateWithLifecycle()
 
@@ -42,7 +44,8 @@ fun DuaListingScreen(
                 navHostController = navHostController,
                 hasSearch = false
             )
-        }) { paddingValues ->
+        }
+    ) { paddingValues ->
         if (duaIds.isEmpty())
             Toast.makeText(context, "Empty list", Toast.LENGTH_SHORT).show()
 
@@ -54,8 +57,8 @@ fun DuaListingScreen(
 
         when (duaByIds) {
             EventResources.Loading -> Loading(modifier = Modifier.padding(paddingValues))
-            is EventResources.SuccessList<ArabicModelWithTranslationModel> -> {
-                val list = (duaByIds as EventResources.SuccessList).list
+            is EventResources.Success -> {
+                val list = (duaByIds as EventResources.Success).template
 
                 CustomLazyList(
                     modifier = Modifier

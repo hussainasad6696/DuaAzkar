@@ -6,4 +6,6 @@ interface LanguageFonts {
     fun getFont(): FontFamily
     fun font(): Int
     fun fontType(): FontsType
+    fun getFontsList(): List<LanguageFonts>
+    fun getName(): String
 }

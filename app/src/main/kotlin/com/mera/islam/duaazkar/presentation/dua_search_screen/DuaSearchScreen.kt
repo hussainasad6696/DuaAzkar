@@ -67,8 +67,8 @@ fun DuaSearchScreen(
                     .fillMaxSize()
             )
 
-            is EventResources.SuccessList -> {
-                val list = (allDuas as EventResources.SuccessList).list
+            is EventResources.Success -> {
+                val list = (allDuas as EventResources.Success).template
 
                 if (list.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

@@ -19,7 +19,7 @@ class AsmaulHusnaScreenViewModel @Inject constructor(
 
     val asma = asmaulHusnaRepo.getAllAsmaulHusna()
         .map {
-            EventResources.SuccessList(it)
+            EventResources.Success(it)
         }
         .flowOn(Dispatchers.IO)
         .stateIn(

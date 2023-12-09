@@ -9,17 +9,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -27,13 +28,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.TEXT_MAX_SIZE
 import com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
+import com.mera.islam.duaazkar.core.enums.LanguageDirection
+import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.core.presentation.TitleAndSwitch
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
+import com.mera.islam.duaazkar.core.utils.fonts.LanguageFonts
 import com.mera.islam.duaazkar.core.utils.fonts.LeftLangFonts
 import com.mera.islam.duaazkar.core.utils.fonts.RightLangFonts
+import com.mera.islam.duaazkar.presentation.dua_screen.DuaScreenViewModel
+import com.mera.islam.duaazkar.presentation.dua_screen.DuaTranslatorModelWithSelection
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import com.mera.islam.duaazkar.ui.theme.green
@@ -47,23 +54,19 @@ import ir.kaaveh.sdpcompose.ssp
 
 @Composable
 fun DuaBottomSheetSettings(
+    viewModel: DuaScreenViewModel,
     fontSize: TextUnit = TEXT_MIN_SIZE,
     selectedArabicFont: ArabicFonts = ArabicFonts.AL_QALAM_QURAN,
-    isEnglishEnabled: Boolean = true,
-    selectedLeftFont: LeftLangFonts = LeftLangFonts.ROBOTO,
-    isUrduEnabled: Boolean = false,
-    selectedFont: RightLangFonts = RightLangFonts.JAMEEL_NOORI_URDU,
-    onUrduToggle: (Boolean) -> Unit = {},
-    onUrduFontChanged: (RightLangFonts) -> Unit = {},
-    onEnglishToggle: (Boolean) -> Unit = {},
-    onEnglishFontChanged: (LeftLangFonts) -> Unit = {},
+    duaTranslatorOptions: List<DuaTranslatorModelWithSelection> = emptyList(),
+    onTranslationToggle: (Int, Boolean) -> Unit = { _, _ -> },
+    onTranslationFontChanged: (LanguageFonts) -> Unit = {},
     onFontSizeChange: (Float) -> Unit = {},
     onCloseBottomSheet: () -> Unit = {},
     onArabicFontChange: (ArabicFonts) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
-            .fillMaxHeight(0.7f)
+            .wrapContentHeight()
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -83,59 +86,41 @@ fun DuaBottomSheetSettings(
 
         FontSizeSetting(fontSize = fontSize, onFontSizeChange = onFontSizeChange)
 
-        Spacer(modifier = Modifier.height(5.sdp))
+        Spacer(modifier = Modifier.height(10.sdp))
 
         ArabicFontsSetting(
             selectedFont = selectedArabicFont,
             onArabicFontChange = onArabicFontChange
         )
 
-        Spacer(modifier = Modifier.height(5.sdp))
-
-        EnglishTranslationsSetting(
-            isEnglishEnabled = isEnglishEnabled,
-            selectedFont = selectedLeftFont,
-            onEnglishToggle = onEnglishToggle,
-            onEnglishFontChanged = onEnglishFontChanged
-        )
-
-        Spacer(modifier = Modifier.height(5.sdp))
-
-        UrduTranslationsSetting(
-            isUrduEnabled = isUrduEnabled,
-            selectedFont = selectedFont,
-            onUrduToggle = onUrduToggle,
-            onUrduFontChanged = onUrduFontChanged
-        )
-    }
-}
-
-@Composable
-fun UrduTranslationsSetting(
-    isUrduEnabled: Boolean,
-    selectedFont: RightLangFonts,
-    onUrduToggle: (Boolean) -> Unit,
-    onUrduFontChanged: (RightLangFonts) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 15.sdp)
-    ) {
-        TitleAndSwitch(
-            title = stringResource(id = R.string.urdu_translation),
-            isChecked = isUrduEnabled,
-            onCheckedChange = onUrduToggle
-        )
-
         Spacer(modifier = Modifier.height(10.sdp))
 
-        AnimatedVisibility(visible = isUrduEnabled) {
-            ItemsAndSelection(
-                selected = selectedFont,
-                list = RightLangFonts.entries,
-                onItemSelected = onUrduFontChanged,
-                name = { it.name.replace("_", " ").lowercase() }
+        duaTranslatorOptions.forEach { duaTranslator ->
+            val font by when (duaTranslator.duaTranslatorModel.languageDirection) {
+                LanguageDirection.LEFT -> viewModel.leftFont
+                LanguageDirection.RIGHT -> viewModel.rightFont
+            }.collectAsStateWithLifecycle()
+
+            TranslationsSetting(
+                title = stringResource(
+                    id = R.string.translation,
+                    when (duaTranslator.duaTranslatorModel.languageDirection) {
+                        LanguageDirection.LEFT -> stringResource(R.string.left)
+                        LanguageDirection.RIGHT -> stringResource(R.string.right)
+                    }
+                ),
+                isTranslationEnabled = duaTranslator.isSelected,
+                selectedFont = duaTranslator.getLanguageFont(
+                    languageDirection = duaTranslator.duaTranslatorModel.languageDirection,
+                    fontId = font
+                ),
+                onTranslationToggle = {
+                    onTranslationToggle(
+                        duaTranslator.duaTranslatorModel.id,
+                        it
+                    )
+                },
+                onTranslationFontChanged = onTranslationFontChanged
             )
 
             Spacer(modifier = Modifier.height(10.sdp))
@@ -144,11 +129,12 @@ fun UrduTranslationsSetting(
 }
 
 @Composable
-fun EnglishTranslationsSetting(
-    isEnglishEnabled: Boolean,
-    selectedFont: LeftLangFonts,
-    onEnglishToggle: (Boolean) -> Unit,
-    onEnglishFontChanged: (LeftLangFonts) -> Unit
+fun TranslationsSetting(
+    title: String,
+    isTranslationEnabled: Boolean,
+    selectedFont: LanguageFonts,
+    onTranslationToggle: (Boolean) -> Unit,
+    onTranslationFontChanged: (LanguageFonts) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -156,23 +142,25 @@ fun EnglishTranslationsSetting(
             .padding(start = 15.sdp)
     ) {
         TitleAndSwitch(
-            title = stringResource(id = R.string.english_translation),
-            isChecked = isEnglishEnabled,
-            onCheckedChange = onEnglishToggle
+            title = title,
+            isChecked = isTranslationEnabled,
+            onCheckedChange = onTranslationToggle
         )
 
         Spacer(modifier = Modifier.height(10.sdp))
 
-        AnimatedVisibility(visible = isEnglishEnabled) {
+        AnimatedVisibility(visible = isTranslationEnabled) {
             ItemsAndSelection(
                 selected = selectedFont,
-                list = LeftLangFonts.entries,
-                onItemSelected = onEnglishFontChanged,
-                name = { it.name.replace("_", " ").lowercase() }
+                list = selectedFont.getFontsList(),
+                onItemSelected = onTranslationFontChanged,
+                name = { it.getName() }
             )
 
             Spacer(modifier = Modifier.height(10.sdp))
         }
+
+        Spacer(modifier = Modifier.height(10.sdp))
 
         Divider(thickness = 1.dp, color = darkTextGrayColor.copy(0.10f))
     }

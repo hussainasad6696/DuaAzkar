@@ -41,8 +41,8 @@ fun DuaBookmarkScreen(
 
     when (bookmarked) {
         is EventResources.Loading -> Loading(isLoading = true, modifier = modifier.fillMaxSize())
-        is EventResources.SuccessList -> {
-            val bookmarkedList = (bookmarked as EventResources.SuccessList).list
+        is EventResources.Success -> {
+            val bookmarkedList = (bookmarked as EventResources.Success).template
 
             if (bookmarkedList.isEmpty()) {
                 Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
