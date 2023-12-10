@@ -138,6 +138,7 @@ fun DuaScreen(
 
         ModalNavigationDrawer(
             drawerState = drawerState,
+            scrimColor = Color.Transparent,
             drawerContent = {
                 DuaCategoriesDrawer(viewModel = viewModel,
                     onCategorySelected = {
@@ -151,7 +152,8 @@ fun DuaScreen(
                             drawerState.close()
                         }
                     })
-            }) {
+            })
+        {
 
             var requestWriteSystemSettingsDialog by remember {
                 mutableStateOf(false)
@@ -221,9 +223,11 @@ fun DuaScreen(
                 },
                 sheetBackgroundColor = Color.White,
                 sheetState = sheetState,
+                scrimColor = Color.Transparent,
                 sheetShape = RoundedCornerShape(topEnd = 16.sdp, topStart = 16.sdp),
                 content = {
-                    Scaffold(modifier = Modifier.fillMaxSize(),
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
                         containerColor = Color.Transparent,
                         contentColor = MaterialTheme.colorScheme.onBackground,
                         topBar = {
@@ -316,7 +320,8 @@ fun DuaScreen(
                                                             )
                                                         )
                                                     },
-                                                    onItemClick = {
+                                                    onItemClick = {},
+                                                    onOpenTashib = {
                                                         navHostController.navigate(
                                                             NavControllerRoutes.DUA_TASBIH_SCREEN(
                                                                 duaId = duaItem.getDataId()

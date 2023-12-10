@@ -2,16 +2,21 @@ package  com.mera.islam.duaazkar.di
 
 import  com.mera.islam.duaazkar.core.AppDatabase
 import  com.mera.islam.duaazkar.core.EntityModelMapper
+import com.mera.islam.duaazkar.data.local.entities.TasbihEntity
 import com.mera.islam.duaazkar.data.local.entities.asmaUlHusna.AsmaulHusnaEntity
 import  com.mera.islam.duaazkar.data.local.entities.dua.DuaEntity
 import  com.mera.islam.duaazkar.data.local.entities.dua.DuaTranslatorEntity
+import com.mera.islam.duaazkar.data.mappers.TasbihEntityToModelMapper
 import com.mera.islam.duaazkar.data.mappers.asmaUlHusna.AsmaulHusnaEntityToModelMapper
+import com.mera.islam.duaazkar.data.repo.TasbihRepoImpl
 import com.mera.islam.duaazkar.data.repo.asmaUlHusna.AsmaulHusnaRepoImpl
 import  com.mera.islam.duaazkar.data.repo.dua.DuaRepoImpl
 import  com.mera.islam.duaazkar.data.repo.dua.DuaTranslatorRepoImpl
+import com.mera.islam.duaazkar.domain.models.TasbihModel
 import com.mera.islam.duaazkar.domain.models.asmaUlHusna.AsmaulHusnaModel
 import  com.mera.islam.duaazkar.domain.models.dua.DuaModel
 import  com.mera.islam.duaazkar.domain.models.dua.DuaTranslatorModel
+import com.mera.islam.duaazkar.domain.repo.TasbihRepo
 import com.mera.islam.duaazkar.domain.repo.asmaUlHusna.AsmaulHusnaRepo
 import  com.mera.islam.duaazkar.domain.repo.dua.DuaRepo
 import  com.mera.islam.duaazkar.domain.repo.dua.DuaTranslatorRepo
@@ -53,5 +58,15 @@ object DuaRepoModule {
     ): AsmaulHusnaRepo = AsmaulHusnaRepoImpl(
         asmaulHusnaDao = appDatabase.asmaulHusnaDao(),
         asmaulHusnaEntityToModelMapper = asmaulHusnaEntityToModelMapper
+    )
+
+    @Provides
+    @ViewModelScoped
+    fun tasbihRepo(
+        appDatabase: AppDatabase,
+        tasbihEntityToModelMapper: EntityModelMapper<TasbihEntity, TasbihModel>
+    ): TasbihRepo = TasbihRepoImpl(
+        tasbihDao = appDatabase.tasbihDao(),
+        tasbihEntityToModelMapper = tasbihEntityToModelMapper
     )
 }

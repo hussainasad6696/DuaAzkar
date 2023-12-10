@@ -48,4 +48,8 @@
     <string name="translation">%1$s Translation</string>
     <string name="left">Left</string>
     <string name="right">Right</string>
+    <string name="total_count">/%1$s</string>
+    <string name="set_goals">Set Goals</string>
+    <string name="tasbih_sound_on">Tasbih Sound On</string>
+    <string name="custom">Custom</string>
 </resources>

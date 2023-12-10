@@ -19,13 +19,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.asma_ul_husna_screen.AsmaulHusnaScreen
 import com.mera.islam.duaazkar.presentation.dua_listing_screen.DuaListingScreen
 import com.mera.islam.duaazkar.presentation.dua_screen.DuaScreen
 import com.mera.islam.duaazkar.presentation.dua_search_screen.DuaSearchScreen
-import com.mera.islam.duaazkar.presentation.dua_tasboh_screen.DuaTasbihScreen
+import com.mera.islam.duaazkar.presentation.dua_tasbih_screen.DuaTasbihScreen
 import com.mera.islam.duaazkar.presentation.landing_screen.LandingScreen
 import com.mera.islam.duaazkar.ui.theme.DuaAzkarTheme
 import dagger.hilt.android.AndroidEntryPoint

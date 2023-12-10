@@ -43,7 +43,7 @@ fun AudioPlayer(
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 20.sdp)
+                .padding(horizontal = 10.sdp)
                 .fillMaxWidth()
                 .background(color = Color(0xfff0f9f8), shape = RoundedCornerShape(50)),
             horizontalArrangement = Arrangement.SpaceAround,
@@ -117,8 +117,7 @@ fun AudioPlayer(
 
         LinearProgressIndicator(
             modifier = Modifier
-                .padding(horizontal = 40.sdp)
-                .width(50.sdp)
+                .padding(horizontal = 25.sdp)
                 .height(1.sdp),
             progress = progress,
             trackColor = Color.Transparent,

@@ -198,4 +198,18 @@ class Settings @Inject constructor(private val context: Context) {
     fun getDuaKeepScreenOn(): Flow<Boolean> = dataStore.data.map { settings ->
         settings[keyDuaKeepScreenOn] ?: false
     }
+
+    //**************************************************************//
+
+    private val keyTasbihSoundEnabled = booleanPreferencesKey("TASBIH_SOUND_ENABLED")
+
+    suspend fun setTasbihSoundEnabled(tasbihSoundEnabled: Boolean) {
+        dataStore.edit { setting ->
+            setting[keyTasbihSoundEnabled] = tasbihSoundEnabled
+        }
+    }
+
+    fun getTasbihSoundEnabled(): Flow<Boolean> = dataStore.data.map { settings ->
+        settings[keyTasbihSoundEnabled] ?: false
+    }
 }

@@ -44,13 +44,6 @@ interface DuaDao {
     )
     fun getAllDuaTypesAndCountsByKeyword(keyword: String): Flow<List<DuaNameAndCount>>
 
-    //    SELECT COUNT(*) AS count, dua.dua_type, dua.id
-//            FROM dua
-//            JOIN dua_translation ON dua.id = dua_translation.dua_id
-//            WHERE LOWER(dua.translitration) LIKE '%'||LOWER(:keyword)||'%' OR LOWER(dua.reason) LIKE '%'||LOWER(:keyword)||'%'
-//            OR LOWER(dua.reference_from) LIKE '%'||LOWER(:keyword)||'%' OR LOWER(dua.method) LIKE '%'||LOWER(:keyword)||'%'
-//            OR LOWER(dua_translation.translation) LIKE '%'||LOWER(:keyword)||'%'
-//            GROUP BY dua.dua_type
     @Query("SELECT * FROM dua WHERE id IN (:ids)")
     suspend fun getDuaByIds(ids: List<Int>): List<DuaEntity>
 }
