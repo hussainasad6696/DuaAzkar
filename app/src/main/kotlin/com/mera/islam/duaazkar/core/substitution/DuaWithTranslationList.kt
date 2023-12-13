@@ -1,11 +1,13 @@
 package  com.mera.islam.duaazkar.core.substitution
 
+import androidx.compose.ui.unit.TextUnit
 import  com.mera.islam.duaazkar.core.extensions.build
 import  com.mera.islam.duaazkar.domain.models.dua.DuaModel
 
 data class DuaWithTranslationList(
     val duaModel: DuaModel,
-    val duaTranslations: List<DuaTranslationWithTranslators>
+    val duaTranslations: List<DuaTranslationWithTranslators>,
+    val fontSize: TextUnit
 ): ArabicModelWithTranslationModel {
     override fun getArabic(): String = duaModel.arabic
     override fun getTransliteration(): String = duaModel.translitration
@@ -34,4 +36,5 @@ data class DuaWithTranslationList(
     }
 
     override fun getDataType(): Any = duaModel.duaType
+    override fun fontSize(): TextUnit = fontSize
 }

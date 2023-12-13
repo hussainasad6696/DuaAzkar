@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,14 +21,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,10 +33,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.presentation.TitleAndSwitch
+import com.mera.islam.duaazkar.core.presentation.custom_bottom_sheet.BottomSheetSettingsNavigationTitle
+import com.mera.islam.duaazkar.core.presentation.custom_bottom_sheet.CustomBottomSheet
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import com.mera.islam.duaazkar.ui.theme.green
@@ -63,26 +58,7 @@ fun DuaBottomSheetDisplay(
     onThemeSelected: (Int) -> Unit = {},
     keepScreenOn: (Boolean) -> Unit = {}
 ) {
-    Column(
-        modifier = Modifier
-            .wrapContentHeight()
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(10.sdp))
-
-        Box(
-            modifier = Modifier
-                .width(32.sdp)
-                .height(4.sdp)
-                .background(color = Color(0xffe3e3e3), shape = RoundedCornerShape(3.sdp))
-        )
-
-        DuaSettingsNavigationTitle(
-            title = stringResource(id = R.string.display),
-            onClose = onCloseBottomSheet
-        )
-
+    CustomBottomSheet(onCloseBottomSheet = onCloseBottomSheet) {
         BrightnessSettings(
             currentBrightness = currentBrightness,
             onBrightnessChangeRequest = onBrightnessChangeRequest
@@ -94,7 +70,14 @@ fun DuaBottomSheetDisplay(
 
         Spacer(modifier = Modifier.height(10.sdp))
 
-        TitleAndSwitch(title = stringResource(id = R.string.keep_screen_on), isChecked = isScreenCheckOn, onCheckedChange = keepScreenOn)
+        TitleAndSwitch(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.sdp),
+            title = stringResource(id = R.string.keep_screen_on),
+            isChecked = isScreenCheckOn,
+            onCheckedChange = keepScreenOn
+        )
 
         Spacer(modifier = Modifier.height(10.sdp))
     }
@@ -133,7 +116,7 @@ fun ThemeSettings(selectedTheme: Int, onThemeSelected: (Int) -> Unit) {
                         .clip(RoundedCornerShape(10.sdp))
                         .border(
                             width = if (selectedTheme == it) 1.dp else 0.5.dp,
-                            color = if (selectedTheme == it) green else darkTextGrayColor.copy(0.3f),
+                            color = if (selectedTheme == it) Color.green else Color.darkTextGrayColor.copy(0.3f),
                             shape = RoundedCornerShape(10.sdp)
                         )
                         .clickable(
@@ -168,8 +151,8 @@ fun BrightnessSettings(currentBrightness: Float, onBrightnessChangeRequest: (Flo
             },
             trackHeight = 34.sdp,
             colors = MaterialSliderDefaults.materialColors(
-                activeTrackColor = SliderBrushColor(color = green),
-                inactiveTrackColor = SliderBrushColor(color = lightGrayColor)
+                activeTrackColor = SliderBrushColor(color = Color.green),
+                inactiveTrackColor = SliderBrushColor(color = Color.lightGrayColor)
             ),
             thumb = {
                 val rotationState by animateFloatAsState(

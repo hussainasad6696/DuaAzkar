@@ -1,5 +1,6 @@
 package com.mera.islam.duaazkar.presentation.dua_tasbih_screen
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,8 +25,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +39,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -45,14 +52,25 @@ import com.mera.islam.duaazkar.core.presentation.bounceClickable
 import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
-import com.mera.islam.duaazkar.presentation.dua_screen.components.AudioPlayer
+import com.mera.islam.duaazkar.core.presentation.AudioPlayer
+import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomNavItems
 import com.mera.islam.duaazkar.presentation.dua_tasbih_screen.components.TasbihBottomSheetCustomLimit
+import com.mera.islam.duaazkar.presentation.dua_tasbih_screen.components.TasbihBottomSheetReset
+import com.mera.islam.duaazkar.presentation.dua_tasbih_screen.components.TasbihBottomSheetSetCustomGoals
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import com.mera.islam.duaazkar.ui.theme.transliterationBlurColor
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+
+enum class TasbihBottomSheets {
+    CUSTOM_LIMIT,
+    SET_GOALS,
+    RESET
+}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -69,30 +87,83 @@ fun DuaTasbihScreen(
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
+    var currentBottomSheet by remember {
+        mutableStateOf(TasbihBottomSheets.CUSTOM_LIMIT)
+    }
+
     ModalBottomSheetLayout(
         sheetContent = {
-            val totalCount by viewModel.tasbihTotalCount.collectAsStateWithLifecycle()
-            val tasbihSoundEnabled by viewModel.tasbihSoundEnabled.collectAsStateWithLifecycle()
 
-            TasbihBottomSheetCustomLimit(
-                selectedOptions = totalCount ?: 33,
-                isTasbihSoundOn = tasbihSoundEnabled,
-                onCloseBottomSheet = {
-                    coroutineScope.launch { sheetState.hide() }
-                },
-                onRadioOptionSelected = {
-                    viewModel.onUserEvent(
-                        UserEvent.TasbihTotalCountOption(
-                            totalCount = it,
-                            duaId = duaId
-                        )
-                    )
-                },
-                onSoundOptionsChanged = { viewModel.onUserEvent(UserEvent.OnSoundOptionChanged(it)) },
-                onCustomOption = {
 
+            LaunchedEffect(key1 = Unit) {
+                snapshotFlow {
+                    sheetState.isVisible
+                }.collect {
+                    if (!it) currentBottomSheet = TasbihBottomSheets.CUSTOM_LIMIT
                 }
-            )
+            }
+
+            AnimatedContent(
+                targetState = currentBottomSheet,
+                label = "BottomSheetChange"
+            ) { bottomSheet ->
+                when (bottomSheet) {
+                    TasbihBottomSheets.CUSTOM_LIMIT -> {
+                        val totalCount by viewModel.tasbihTotalCount.collectAsStateWithLifecycle()
+                        val tasbihSoundEnabled by viewModel.tasbihSoundEnabled.collectAsStateWithLifecycle()
+
+                        TasbihBottomSheetCustomLimit(
+                            selectedOptions = totalCount ?: 33,
+                            isTasbihSoundOn = tasbihSoundEnabled,
+                            onCloseBottomSheet = {
+                                coroutineScope.launch { sheetState.hide() }
+                            },
+                            onRadioOptionSelected = {
+                                viewModel.onUserEvent(
+                                    UserEvent.TasbihTotalCountOption(
+                                        totalCount = it,
+                                        duaId = duaId
+                                    )
+                                )
+                            },
+                            onSoundOptionsChanged = {
+                                viewModel.onUserEvent(
+                                    UserEvent.OnSoundOptionChanged(
+                                        it
+                                    )
+                                )
+                            },
+                            onCustomOption = {
+                                currentBottomSheet = TasbihBottomSheets.SET_GOALS
+                            }
+                        )
+                    }
+
+                    TasbihBottomSheets.SET_GOALS -> TasbihBottomSheetSetCustomGoals(
+                        onCloseBottomSheet = {
+                            coroutineScope.launch { sheetState.hide() }
+                        },
+                        onSaveClick = {
+                            it.toIntOrNull()?.let { count ->
+                                viewModel.onUserEvent(
+                                    UserEvent.TasbihTotalCountOption(
+                                        totalCount = count,
+                                        duaId = duaId
+                                    )
+                                )
+                                coroutineScope.launch { sheetState.hide() }
+                            }
+                        }
+                    )
+
+                    TasbihBottomSheets.RESET -> TasbihBottomSheetReset(
+                        onCancelClick = { coroutineScope.launch { sheetState.hide() } },
+                        onResetClick = {
+                            coroutineScope.launch { sheetState.hide() }
+                            viewModel.onUserEvent(UserEvent.ResetTasbih)
+                        })
+                }
+            }
         },
         sheetBackgroundColor = Color.White,
         sheetState = sheetState,
@@ -156,10 +227,10 @@ fun DuaTasbihScreen(
                                     .heightIn(min = 100.sdp, max = (0.4 * localScreenConfig).dp)
                                     .verticalScroll(rememberScrollState()),
                                 arabicModelWithTranslationModel = dua,
-                                arabicColor = darkTextGrayColor,
-                                translationColor = darkTextGrayColor,
-                                transliterationColor = transliterationBlurColor,
-                                textSize = textSize,
+                                arabicColor = Color.darkTextGrayColor,
+                                translationColor = Color.darkTextGrayColor,
+                                transliterationColor = Color.transliterationBlurColor,
+                                textSize = if (textSize == 0.sp) dua.fontSize() else textSize,
                                 arabicFont = ArabicFonts.getLanguageFont(
                                     arabicFonts
                                 ).getFont()
@@ -167,7 +238,7 @@ fun DuaTasbihScreen(
 
                             Divider(
                                 thickness = 1.dp,
-                                color = darkTextGrayColor.copy(0.10f),
+                                color = Color.darkTextGrayColor.copy(0.10f),
                                 modifier = Modifier.padding(10.sdp)
                             )
 
@@ -178,6 +249,12 @@ fun DuaTasbihScreen(
                                 duaId = dua.getDataId(),
                                 onEditTasbihOptions = {
                                     coroutineScope.launch { sheetState.show() }
+                                }, onResetTasbihClick = {
+                                    currentBottomSheet = TasbihBottomSheets.RESET
+                                    coroutineScope.launch {
+                                        delay(100L)
+                                        sheetState.show()
+                                    }
                                 })
 
                             Spacer(modifier = Modifier.height(10.sdp))
@@ -190,7 +267,12 @@ fun DuaTasbihScreen(
 }
 
 @Composable
-fun TasbihView(viewModel: DuaTasbihScreenViewModel, duaId: Int, onEditTasbihOptions: () -> Unit) {
+fun TasbihView(
+    viewModel: DuaTasbihScreenViewModel,
+    duaId: Int,
+    onEditTasbihOptions: () -> Unit,
+    onResetTasbihClick: () -> Unit
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         val count by viewModel.tasbihCount.collectAsStateWithLifecycle()
 
@@ -248,7 +330,7 @@ fun TasbihView(viewModel: DuaTasbihScreenViewModel, duaId: Int, onEditTasbihOpti
         ) {
 
             IconButton(
-                onClick = { viewModel.onUserEvent(UserEvent.ResetTasbih) }
+                onClick = onResetTasbihClick
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_reset_tasbih),

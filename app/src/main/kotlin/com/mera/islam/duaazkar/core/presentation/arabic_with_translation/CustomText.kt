@@ -32,9 +32,9 @@ import kotlinx.coroutines.runBlocking
 fun CustomText(
     modifier: Modifier = Modifier,
     arabicModelWithTranslationModel: ArabicModelWithTranslationModel,
-    arabicColor: Color = darkTextGrayColor,
-    translationColor: Color = darkTextGrayColor,
-    transliterationColor: Color = transliterationBlurColor,
+    arabicColor: Color = Color.darkTextGrayColor,
+    translationColor: Color = Color.darkTextGrayColor,
+    transliterationColor: Color = Color.transliterationBlurColor,
     textSize: TextUnit = TEXT_MIN_SIZE,
     arabicFont: FontFamily = ArabicFonts.AL_QALAM_QURAN.getFont(),
     matchTextList: List<String> = emptyList()

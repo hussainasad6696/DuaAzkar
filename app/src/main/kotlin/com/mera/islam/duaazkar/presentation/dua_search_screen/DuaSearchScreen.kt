@@ -82,7 +82,7 @@ fun DuaSearchScreen(
                             Spacer(modifier = Modifier.height(5.sdp))
                             Text(
                                 text = stringResource(R.string.no_search_found),
-                                color = darkTextGrayColor,
+                                color = Color.darkTextGrayColor,
                                 fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont(),
                                 fontSize = 16.ssp
                             )

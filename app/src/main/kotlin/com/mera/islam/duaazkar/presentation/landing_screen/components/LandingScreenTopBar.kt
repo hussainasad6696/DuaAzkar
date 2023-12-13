@@ -38,7 +38,7 @@ fun LandingScreenTopBar(modifier: Modifier = Modifier, onSettingsClick: () -> Un
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.as_salamu_alaykum),
-                color = lightTextGrayColor,
+                color = Color.lightTextGrayColor,
                 fontSize = 10.ssp,
                 fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
             )
@@ -48,7 +48,7 @@ fun LandingScreenTopBar(modifier: Modifier = Modifier, onSettingsClick: () -> Un
                     text = AnnotatedString(
                         text = stringResource(id = R.string.dua),
                         spanStyle = SpanStyle(
-                            color = darkTextGrayColor
+                            color = Color.darkTextGrayColor
                         )
                     )
                 )
@@ -57,7 +57,7 @@ fun LandingScreenTopBar(modifier: Modifier = Modifier, onSettingsClick: () -> Un
                     text = AnnotatedString(
                         text = stringResource(id = R.string.and),
                         spanStyle = SpanStyle(
-                            color = primary
+                            color = Color.primary
                         )
                     )
                 )
@@ -66,7 +66,7 @@ fun LandingScreenTopBar(modifier: Modifier = Modifier, onSettingsClick: () -> Un
                     text = AnnotatedString(
                         text = stringResource(id = R.string.azkar),
                         spanStyle = SpanStyle(
-                            color = darkTextGrayColor
+                            color = Color.darkTextGrayColor
                         )
                     )
                 )

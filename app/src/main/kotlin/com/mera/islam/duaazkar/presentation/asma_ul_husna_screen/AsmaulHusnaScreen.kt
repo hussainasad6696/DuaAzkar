@@ -20,6 +20,7 @@ import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
 import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.domain.models.asmaUlHusna.AsmaulHusnaModel
+import com.mera.islam.duaazkar.presentation.asma_ul_husna_screen.components.AsmaListItem
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
@@ -36,18 +37,29 @@ fun AsmaulHusnaScreen(
     }) {
         val asmaulHusna by viewModel.asma.collectAsStateWithLifecycle()
 
-        when(asmaulHusna) {
-            EventResources.Loading -> Loading(modifier = Modifier
-                .fillMaxSize()
-                .padding(it))
+        when (asmaulHusna) {
+            EventResources.Loading -> Loading(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+            )
+
             is EventResources.Success -> {
                 val list = (asmaulHusna as EventResources.Success<List<AsmaulHusnaModel>>).template
 
-                CustomLazyList(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)) {
+                CustomLazyList(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                ) {
                     itemsIndexed(list) { index, item ->
-                        Text(text = item.name)
+                        AsmaListItem(
+                            index = index + 1,
+                            title = item.transliteration,
+                            subTitle = item.enMeaning
+                        ) {
+
+                        }
 
                         if (index == list.lastIndex)
                             Spacer(modifier = Modifier.height(15.sdp))

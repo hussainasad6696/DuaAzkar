@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.mera.islam.duaazkar.core.presentation.AudioPlayer
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable

@@ -33,12 +33,11 @@ import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.TEXT_MAX_SIZE
 import com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
 import com.mera.islam.duaazkar.core.enums.LanguageDirection
-import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.core.presentation.TitleAndSwitch
+import com.mera.islam.duaazkar.core.presentation.custom_bottom_sheet.BottomSheetSettingsNavigationTitle
+import com.mera.islam.duaazkar.core.presentation.custom_bottom_sheet.CustomBottomSheet
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.core.utils.fonts.LanguageFonts
-import com.mera.islam.duaazkar.core.utils.fonts.LeftLangFonts
-import com.mera.islam.duaazkar.core.utils.fonts.RightLangFonts
 import com.mera.islam.duaazkar.presentation.dua_screen.DuaScreenViewModel
 import com.mera.islam.duaazkar.presentation.dua_screen.DuaTranslatorModelWithSelection
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
@@ -64,26 +63,10 @@ fun DuaBottomSheetSettings(
     onCloseBottomSheet: () -> Unit = {},
     onArabicFontChange: (ArabicFonts) -> Unit = {}
 ) {
-    Column(
-        modifier = Modifier
-            .wrapContentHeight()
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    CustomBottomSheet(
+        title = stringResource(id = R.string.settings),
+        onCloseBottomSheet = onCloseBottomSheet
     ) {
-        Spacer(modifier = Modifier.height(10.sdp))
-
-        Box(
-            modifier = Modifier
-                .width(32.sdp)
-                .height(4.sdp)
-                .background(color = Color(0xffe3e3e3), shape = RoundedCornerShape(3.sdp))
-        )
-
-        DuaSettingsNavigationTitle(
-            title = stringResource(id = R.string.settings),
-            onClose = onCloseBottomSheet
-        )
-
         FontSizeSetting(fontSize = fontSize, onFontSizeChange = onFontSizeChange)
 
         Spacer(modifier = Modifier.height(10.sdp))
@@ -142,6 +125,9 @@ fun TranslationsSetting(
             .padding(start = 15.sdp)
     ) {
         TitleAndSwitch(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.sdp),
             title = title,
             isChecked = isTranslationEnabled,
             onCheckedChange = onTranslationToggle
@@ -162,7 +148,7 @@ fun TranslationsSetting(
 
         Spacer(modifier = Modifier.height(10.sdp))
 
-        Divider(thickness = 1.dp, color = darkTextGrayColor.copy(0.10f))
+        Divider(thickness = 1.dp, color = Color.darkTextGrayColor.copy(0.10f))
     }
 }
 
@@ -191,7 +177,7 @@ fun ArabicFontsSetting(selectedFont: ArabicFonts, onArabicFontChange: (ArabicFon
 
         Spacer(modifier = Modifier.height(10.sdp))
 
-        Divider(thickness = 1.dp, color = darkTextGrayColor.copy(0.10f))
+        Divider(thickness = 1.dp, color = Color.darkTextGrayColor.copy(0.10f))
     }
 }
 
@@ -215,12 +201,12 @@ private fun <T> ItemsAndSelection(
                 shape = RoundedCornerShape(10.sdp),
                 border = BorderStroke(
                     width = 1.dp,
-                    color = if (selected == it) green else lightGrayColor
+                    color = if (selected == it) Color.green else Color.lightGrayColor
                 ),
                 content = {
                     Text(
                         text = name(it),
-                        color = if (selected == it) green else Color(0xff5c5c5c),
+                        color = if (selected == it) Color.green else Color(0xff5c5c5c),
                         fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont(),
                         fontSize = 13.ssp
                     )
@@ -255,7 +241,7 @@ fun FontSizeSetting(fontSize: TextUnit, onFontSizeChange: (Float) -> Unit) {
             Text(
                 text = "-Aa",
                 fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont(),
-                color = lightTextGrayColor,
+                color = Color.lightTextGrayColor,
                 fontSize = 12.ssp,
                 modifier = Modifier.padding(bottom = 10.sdp)
             )
@@ -267,8 +253,8 @@ fun FontSizeSetting(fontSize: TextUnit, onFontSizeChange: (Float) -> Unit) {
                 onValueChange = onFontSizeChange,
                 trackHeight = 34.sdp,
                 colors = MaterialSliderDefaults.materialColors(
-                    activeTrackColor = SliderBrushColor(color = green),
-                    inactiveTrackColor = SliderBrushColor(color = lightGrayColor)
+                    activeTrackColor = SliderBrushColor(color = Color.green),
+                    inactiveTrackColor = SliderBrushColor(color = Color.lightGrayColor)
                 ),
                 coerceThumbInTrack = false,
                 label = {
@@ -276,7 +262,7 @@ fun FontSizeSetting(fontSize: TextUnit, onFontSizeChange: (Float) -> Unit) {
                         text = "${fontSize.value.toInt()}",
                         modifier = Modifier
                             .shadow(1.dp, shape = RoundedCornerShape(7.sdp))
-                            .background(green, shape = RoundedCornerShape(7.sdp))
+                            .background(Color.green, shape = RoundedCornerShape(7.sdp))
                             .padding(vertical = 3.sdp, horizontal = 10.sdp),
                         color = Color.White
                     )
@@ -290,12 +276,12 @@ fun FontSizeSetting(fontSize: TextUnit, onFontSizeChange: (Float) -> Unit) {
             Text(
                 text = "+Aa",
                 fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont(),
-                color = lightTextGrayColor,
+                color = Color.lightTextGrayColor,
                 fontSize = 14.ssp,
                 modifier = Modifier.padding(bottom = 10.sdp)
             )
         }
 
-        Divider(thickness = 1.dp, color = darkTextGrayColor.copy(0.10f))
+        Divider(thickness = 1.dp, color = Color.darkTextGrayColor.copy(0.10f))
     }
 }

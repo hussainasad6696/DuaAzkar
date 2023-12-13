@@ -1,5 +1,6 @@
 package com.mera.islam.duaazkar.ui.theme
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -10,10 +11,24 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-internal val primary = Color(0xFF27A570)
-internal val green = Color(0xff01ad8e)
-internal val applicationBackgroundColor = Color(0xFFF5F5F5)
-internal val lightTextGrayColor = Color(0xFF676767)
-internal val darkTextGrayColor = Color(0xFF252525)
-internal val transliterationBlurColor = Color(0xff1f67aa)
-internal val lightGrayColor = Color(0xfff2f2f2)
+@Stable
+internal val Color.Companion.primary
+    get() = Color(0xFF27A570)
+@Stable
+internal val Color.Companion.green
+    get() = Color(0xff01ad8e)
+@Stable
+internal val Color.Companion.applicationBackgroundColor
+    get() = Color(0xFFF5F5F5)
+@Stable
+internal val Color.Companion.lightTextGrayColor
+    get() = Color(0xFF676767)
+@Stable
+internal val Color.Companion.darkTextGrayColor
+    get() = Color(0xFF252525)
+@Stable
+internal val Color.Companion.transliterationBlurColor
+    get() = Color(0xff1f67aa)
+@Stable
+internal val Color.Companion.lightGrayColor
+    get() = Color(0xfff2f2f2)

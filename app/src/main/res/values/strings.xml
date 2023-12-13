@@ -52,4 +52,9 @@
     <string name="set_goals">Set Goals</string>
     <string name="tasbih_sound_on">Tasbih Sound On</string>
     <string name="custom">Custom</string>
+    <string name="custom_tasbih_round">Custom Tasbih Round</string>
+    <string name="save">Save</string>
+    <string name="reset">Reset</string>
+    <string name="do_you_really_want_to_reset_the_tasbih_counter">Do you really want to reset the Tasbih counter?</string>
+    <string name="cancel">Cancel</string>
 </resources>

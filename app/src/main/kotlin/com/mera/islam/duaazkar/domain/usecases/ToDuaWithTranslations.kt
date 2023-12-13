@@ -17,60 +17,22 @@ fun Flow<List<DuaModel>>.mapDuaFlowToDuaWithTranslationListFlow(
     languageIdsFlow: Flow<List<Int>>,
     duaTranslationRepo: DuaTranslationRepo,
     settings: Settings
-): Flow<List<ArabicModelWithTranslationModel>> {
+): Flow<List<ArabicModelWithTranslationModel>> = combine(
+    this,
+    languageIdsFlow,
+    settings.getLeftFont(),
+    settings.getRightFont()
+) { duas, languageIds, leftFont, rightFont ->
 
-    return combine(
-        this,
-        languageIdsFlow,
-        settings.getLeftFont(),
-        settings.getRightFont()
-    ) { duas, languageIds, leftFont, rightFont ->
+    val fontSize = settings.getDuaTextSize().first()
 
-        val duaTrans = duaTranslationRepo.getDuaTranslationByDuaIds(
-            ids = duas.map { it.id },
-            translatorIds = languageIds
-        ).first()
+    val duaTrans = duaTranslationRepo.getDuaTranslationByDuaIds(
+        ids = duas.map { it.id },
+        translatorIds = languageIds
+    ).first()
 
-        List(duas.size) { index ->
-            val dua = duas[index]
-
-            val translationList = duaTrans.filter {
-                it.duaModel.id == dua.id
-            }.map {
-                DuaTranslationWithTranslators(
-                    duaTranslation = it.duaTranslationModel,
-                    duaTranslator = it.duaTranslatorModel,
-                    fontFamily = when (it.duaTranslatorModel.languageDirection) {
-                        LanguageDirection.LEFT -> FontFamily(Font(leftFont))
-                        LanguageDirection.RIGHT -> FontFamily(Font(rightFont))
-                    }
-                )
-            }
-
-            DuaWithTranslationList(
-                duaModel = dua,
-                duaTranslations = translationList
-            )
-        }
-    }
-}
-
-fun Flow<DuaModel>.mapDuaFlowToDuaWithTranslationModelFlow(
-    languageIdsFlow: Flow<List<Int>>,
-    duaTranslationRepo: DuaTranslationRepo,
-    settings: Settings
-): Flow<ArabicModelWithTranslationModel> {
-
-    return combine(
-        this,
-        languageIdsFlow,
-        settings.getLeftFont(),
-        settings.getRightFont()
-    ) { dua, languageIds, leftFont, rightFont ->
-        val duaTrans = duaTranslationRepo.getDuaTranslationByDuaIds(
-            ids = listOf(dua.id),
-            translatorIds = languageIds
-        ).first()
+    List(duas.size) { index ->
+        val dua = duas[index]
 
         val translationList = duaTrans.filter {
             it.duaModel.id == dua.id
@@ -87,7 +49,45 @@ fun Flow<DuaModel>.mapDuaFlowToDuaWithTranslationModelFlow(
 
         DuaWithTranslationList(
             duaModel = dua,
-            duaTranslations = translationList
+            duaTranslations = translationList,
+            fontSize = fontSize
         )
     }
+}
+
+fun Flow<DuaModel>.mapDuaFlowToDuaWithTranslationModelFlow(
+    languageIdsFlow: Flow<List<Int>>,
+    duaTranslationRepo: DuaTranslationRepo,
+    settings: Settings
+): Flow<ArabicModelWithTranslationModel> = combine(
+    this,
+    languageIdsFlow,
+    settings.getLeftFont(),
+    settings.getRightFont()
+) { dua, languageIds, leftFont, rightFont ->
+    val fontSize = settings.getDuaTextSize().first()
+
+    val duaTrans = duaTranslationRepo.getDuaTranslationByDuaIds(
+        ids = listOf(dua.id),
+        translatorIds = languageIds
+    ).first()
+
+    val translationList = duaTrans.filter {
+        it.duaModel.id == dua.id
+    }.map {
+        DuaTranslationWithTranslators(
+            duaTranslation = it.duaTranslationModel,
+            duaTranslator = it.duaTranslatorModel,
+            fontFamily = when (it.duaTranslatorModel.languageDirection) {
+                LanguageDirection.LEFT -> FontFamily(Font(leftFont))
+                LanguageDirection.RIGHT -> FontFamily(Font(rightFont))
+            }
+        )
+    }
+
+    DuaWithTranslationList(
+        duaModel = dua,
+        duaTranslations = translationList,
+        fontSize = fontSize
+    )
 }

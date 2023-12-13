@@ -51,6 +51,13 @@ android {
                 "proguard-rules.pro"
             )
         }
+
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+        }
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -150,4 +157,7 @@ dependencies {
 
     //sliders
     implementation(project(":slider"))
+
+    //coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }

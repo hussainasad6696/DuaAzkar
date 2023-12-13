@@ -1,6 +1,7 @@
 package com.mera.islam.duaazkar.presentation.dua_tasbih_screen.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -29,7 +29,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.presentation.TitleAndSwitch
-import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaSettingsNavigationTitle
+import com.mera.islam.duaazkar.core.presentation.custom_bottom_sheet.BottomSheetSettingsNavigationTitle
+import com.mera.islam.duaazkar.core.presentation.custom_bottom_sheet.CustomBottomSheet
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
 import com.mera.islam.duaazkar.ui.theme.green
@@ -45,26 +46,10 @@ fun TasbihBottomSheetCustomLimit(
     onSoundOptionsChanged: (Boolean) -> Unit = {},
     onCustomOption: () -> Unit = {}
 ) {
-    Column(
-        modifier = Modifier
-            .wrapContentHeight()
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    CustomBottomSheet(
+        title = stringResource(id = R.string.set_goals),
+        onCloseBottomSheet = onCloseBottomSheet
     ) {
-        Spacer(modifier = Modifier.height(10.sdp))
-
-        Box(
-            modifier = Modifier
-                .width(32.sdp)
-                .height(4.sdp)
-                .background(color = Color(0xffe3e3e3), shape = RoundedCornerShape(3.sdp))
-        )
-
-        DuaSettingsNavigationTitle(
-            title = stringResource(id = R.string.set_goals),
-            onClose = onCloseBottomSheet
-        )
-
         PreDefinedCounts(
             selectedOptions = selectedOptions,
             onRadioOptionSelected = onRadioOptionSelected
@@ -72,7 +57,7 @@ fun TasbihBottomSheetCustomLimit(
 
         Divider(
             thickness = 1.dp,
-            color = darkTextGrayColor.copy(0.10f),
+            color = Color.darkTextGrayColor.copy(0.10f),
             modifier = Modifier.padding(10.sdp)
         )
 
@@ -94,7 +79,7 @@ fun TasbihBottomSheetCustomLimit(
                 Text(
                     text = stringResource(R.string.custom),
                     fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont(),
-                    color = darkTextGrayColor,
+                    color = Color.darkTextGrayColor,
                     fontSize = 18.ssp
                 )
 
@@ -108,13 +93,16 @@ fun TasbihBottomSheetCustomLimit(
 
         Divider(
             thickness = 1.dp,
-            color = darkTextGrayColor.copy(0.10f),
+            color = Color.darkTextGrayColor.copy(0.10f),
             modifier = Modifier.padding(10.sdp)
         )
 
         Spacer(modifier = Modifier.height(10.sdp))
 
         TitleAndSwitch(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 15.sdp),
             title = stringResource(id = R.string.tasbih_sound_on),
             isChecked = isTasbihSoundOn,
             onCheckedChange = onSoundOptionsChanged
@@ -149,19 +137,19 @@ private fun CustomRadioButton(
     isSelected: Boolean = false,
     onRadioOptionSelected: () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { onRadioOptionSelected() }) {
         RadioButton(
             selected = isSelected,
             onClick = onRadioOptionSelected,
             colors = RadioButtonDefaults.colors(
-                selectedColor = green,
+                selectedColor = Color.green,
                 unselectedColor = Color(0xffc8c8c8)
             )
         )
 
         Text(
             text = name,
-            color = darkTextGrayColor,
+            color = Color.darkTextGrayColor,
             fontSize = 20.ssp,
             fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont()
         )

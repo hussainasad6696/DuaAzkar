@@ -2,6 +2,7 @@ package com.mera.islam.duaazkar.data.repo
 
 import com.mera.islam.duaazkar.core.EntityModelMapper
 import com.mera.islam.duaazkar.core.enums.TasbihType
+import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.data.local.dao.TasbihDao
 import com.mera.islam.duaazkar.data.local.entities.TasbihEntity
 import com.mera.islam.duaazkar.domain.models.TasbihModel

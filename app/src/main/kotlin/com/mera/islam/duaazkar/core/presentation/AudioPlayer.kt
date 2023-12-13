@@ -1,4 +1,4 @@
-package com.mera.islam.duaazkar.presentation.dua_screen.components
+package com.mera.islam.duaazkar.core.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -74,7 +74,7 @@ fun AudioPlayer(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_skip_previous_icon),
                         contentDescription = "Repeat icon",
-                        tint = lightTextGrayColor
+                        tint = Color.lightTextGrayColor
                     )
                 }
 
@@ -96,7 +96,7 @@ fun AudioPlayer(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_skip_next_icon),
                         contentDescription = "Repeat icon",
-                        tint = lightTextGrayColor
+                        tint = Color.lightTextGrayColor
                     )
                 }
             }
@@ -121,7 +121,7 @@ fun AudioPlayer(
                 .height(1.sdp),
             progress = progress,
             trackColor = Color.Transparent,
-            color = green,
+            color = Color.green,
             strokeCap = StrokeCap.Round
         )
     }

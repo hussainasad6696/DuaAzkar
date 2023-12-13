@@ -93,7 +93,7 @@ fun NavItems(
 
             Text(
                 text = stringResource(it.navName),
-                color = if (selectedScreen == it) primary else lightTextGrayColor,
+                color = if (selectedScreen == it) Color.primary else Color.lightTextGrayColor,
                 fontFamily = if (selectedScreen == it) RobotoFonts.ROBOTO_BOLD.getFont() else RobotoFonts.ROBOTO_REGULAR.getFont(),
                 fontSize = if (!isVerticalNavBar) 10.ssp else 8.ssp
             )

@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.lerp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,9 +56,9 @@ import ir.kaaveh.sdpcompose.ssp
 fun CustomTextCell(
     arabicModelWithTranslationModel: ArabicModelWithTranslationModel,
     arabicFont: FontFamily = ArabicFonts.AL_QALAM_QURAN.getFont(),
-    arabicColor: Color = darkTextGrayColor,
-    translationColor: Color = darkTextGrayColor,
-    transliterationColor: Color = transliterationBlurColor,
+    arabicColor: Color = Color.darkTextGrayColor,
+    translationColor: Color = Color.darkTextGrayColor,
+    transliterationColor: Color = Color.transliterationBlurColor,
     textSize: TextUnit = TEXT_MIN_SIZE,
     isDarkTheme: Boolean = false,
     matchTextList: List<String> = emptyList(),
@@ -137,18 +138,25 @@ fun CellClickEvents(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.sdp)
-            .background(color = Color.Transparent, shape = RoundedCornerShape(15.sdp))
-            .border(width = 1.dp, shape = RoundedCornerShape(15.sdp), color = Color(0x0c252525))
+            .drawBehind {
+                drawRoundRect(
+                    color = Color.Transparent,
+                    cornerRadius = CornerRadius(15.dp.toPx(), 15.dp.toPx()),
+                )
+            }
+            .border(width = 1.dp, shape = RoundedCornerShape(15.dp), color = Color(0x0c252525))
             .then(modifier)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.5f)
-                .background(
-                    color = if (isDarkTheme) Color(0x0cffffff) else Color(0x0c252525),
-                    shape = RoundedCornerShape(topStart = 15.sdp, topEnd = 15.sdp)
-                )
+                .drawBehind {
+                    drawRoundRect(
+                        color = if (isDarkTheme) Color(0x0cffffff) else Color(0x0c252525),
+                        cornerRadius = CornerRadius(15.dp.toPx(), 15.dp.toPx()),
+                    )
+                }
                 .padding(horizontal = 10.sdp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -186,7 +194,7 @@ fun CellClickEvents(
 
                 Text(
                     text = stringResource(id = R.string.tasbih),
-                    color = green,
+                    color = Color.green,
                     fontSize = 11.ssp,
                     fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont()
                 )
@@ -219,7 +227,7 @@ fun CellClickEvents(
                     text = stringResource(id = R.string.copy),
                     fontSize = 10.ssp,
                     fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont(),
-                    color = lightTextGrayColor
+                    color = Color.lightTextGrayColor
                 )
             }
 
@@ -247,7 +255,7 @@ fun CellClickEvents(
                     text = stringResource(id = R.string.bookmark),
                     fontSize = 10.ssp,
                     fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont(),
-                    color = if (isBookmarked) primary else lightTextGrayColor
+                    color = if (isBookmarked) Color.primary else Color.lightTextGrayColor
                 )
             }
 
@@ -271,7 +279,7 @@ fun CellClickEvents(
                     text = stringResource(id = R.string.share),
                     fontSize = 10.ssp,
                     fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont(),
-                    color = lightTextGrayColor
+                    color = Color.lightTextGrayColor
                 )
             }
         }

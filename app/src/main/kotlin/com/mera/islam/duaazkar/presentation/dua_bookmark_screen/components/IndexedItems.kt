@@ -1,9 +1,7 @@
 package com.mera.islam.duaazkar.presentation.dua_bookmark_screen.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,19 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
@@ -38,7 +35,12 @@ fun IndexedItems(index: Int,dua: String,onItemClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Color.White, shape = RoundedCornerShape(35))
+            .drawBehind {
+                drawRoundRect(
+                    color = Color.White,
+                    cornerRadius = CornerRadius(50.dp.toPx(), 50.dp.toPx()),
+                )
+            }
             .clickable(
                 interactionSource = MutableInteractionSource(),
                 indication = rememberRipple()
@@ -60,7 +62,7 @@ fun IndexedItems(index: Int,dua: String,onItemClick: () -> Unit) {
 
                 Text(
                     text = index.toString(),
-                    color = lightTextGrayColor,
+                    color = Color.lightTextGrayColor,
                     fontSize = 12.ssp,
                     fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont()
                 )
@@ -69,7 +71,7 @@ fun IndexedItems(index: Int,dua: String,onItemClick: () -> Unit) {
 
             Text(
                 text = dua,
-                color = darkTextGrayColor,
+                color = Color.darkTextGrayColor,
                 fontSize = 13.ssp,
                 fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont(),
                 maxLines = 2,

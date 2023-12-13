@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.Loading
+import com.mera.islam.duaazkar.core.presentation.custom_bottom_sheet.BottomSheetSettingsNavigationTitle
 import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.dua_screen.DuaScreenViewModel
@@ -31,7 +32,7 @@ fun DuaCategoriesDrawer(
         drawerContainerColor = Color.White,
         drawerShape = RoundedCornerShape(0)
     ) {
-        DuaSettingsNavigationTitle(title = stringResource(id = R.string.categories), onClose = onCloseDrawerClick)
+        BottomSheetSettingsNavigationTitle(title = stringResource(id = R.string.categories), onClose = onCloseDrawerClick)
 
         val duaCategories by viewModel.duaTypeWithCount.collectAsStateWithLifecycle()
 

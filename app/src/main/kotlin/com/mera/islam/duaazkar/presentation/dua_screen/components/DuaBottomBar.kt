@@ -55,7 +55,7 @@ fun DuaBottomBar(selectedScreen: DuaBottomNavItems, onItemClick: (DuaBottomNavIt
                 Icon(
                     painter = painterResource(id = it.icon),
                     contentDescription = null,
-                    tint = if (selectedScreen == it) primary else Color.Unspecified,
+                    tint = if (selectedScreen == it) Color.primary else Color.Unspecified,
                     modifier = Modifier.size(18.sdp)
                 )
 
@@ -63,7 +63,7 @@ fun DuaBottomBar(selectedScreen: DuaBottomNavItems, onItemClick: (DuaBottomNavIt
 
                 Text(
                     text = stringResource(it.navName),
-                    color = if (selectedScreen == it) primary else lightTextGrayColor,
+                    color = if (selectedScreen == it) Color.primary else Color.lightTextGrayColor,
                     fontFamily = if (selectedScreen == it) RobotoFonts.ROBOTO_BOLD.getFont() else RobotoFonts.ROBOTO_REGULAR.getFont(),
                     fontSize = 10.ssp
                 )

@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -122,7 +123,7 @@ fun HomeScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.duas),
-                                color = lightTextGrayColor,
+                                color = Color.lightTextGrayColor,
                                 fontSize = 11.ssp,
                                 fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
                             )
@@ -130,7 +131,7 @@ fun HomeScreen(
                             TextButton(onClick = onViewAllClick) {
                                 Text(
                                     text = stringResource(R.string.view_all),
-                                    color = primary,
+                                    color = Color.primary,
                                     fontSize = 11.ssp,
                                     fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont()
                                 )

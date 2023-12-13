@@ -56,7 +56,7 @@ fun DuaBookmarkScreen(
                         Spacer(modifier = Modifier.height(5.sdp))
                         Text(
                             text = stringResource(R.string.no_bookmarks_yet),
-                            color = darkTextGrayColor,
+                            color = Color.darkTextGrayColor,
                             fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont(),
                             fontSize = 16.ssp
                         )

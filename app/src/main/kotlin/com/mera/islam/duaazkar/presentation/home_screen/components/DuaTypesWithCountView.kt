@@ -69,7 +69,7 @@ fun DuaTypesWithCountView(
                 Column {
                     Text(
                         text = duaType.getName(),
-                        color = darkTextGrayColor,
+                        color = Color.darkTextGrayColor,
                         fontSize = 13.ssp,
                         fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont(),
                         maxLines = 1,
@@ -80,7 +80,7 @@ fun DuaTypesWithCountView(
 
                     Text(
                         text = stringResource(id = R.string.chapters, noOfDua),
-                        color = lightTextGrayColor,
+                        color = Color.lightTextGrayColor,
                         fontSize = 11.ssp,
                         fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
                     )

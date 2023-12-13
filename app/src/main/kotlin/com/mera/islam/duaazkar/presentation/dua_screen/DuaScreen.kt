@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -88,8 +89,6 @@ fun DuaScreen(
     DuaAzkarWithBackground {
         val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-
-        val allDuas by viewModel.allDuaWithTranslations.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit, block = {
             viewModel.loadDuasByDuaType(duaType)
@@ -247,129 +246,129 @@ fun DuaScreen(
                             )
                         })
                     { paddingValues ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(paddingValues)
-                                .background(color = Color.Transparent)
-                        ) {
+                        val allDuas by viewModel.allDuaWithTranslations.collectAsStateWithLifecycle()
 
-                            when (allDuas) {
-                                is EventResources.Loading -> Loading(
-                                    isLoading = true,
-                                    modifier = Modifier.fillMaxSize()
+                        when (allDuas) {
+                            is EventResources.Loading -> Loading(
+                                isLoading = true,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(paddingValues)
+                                    .background(color = Color.Transparent)
+                            )
+
+                            is EventResources.Success<List<ArabicModelWithTranslationModel>> -> {
+
+                                val listState = rememberLazyListState()
+                                val duas =
+                                    (allDuas as EventResources.Success).template
+
+                                val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
+                                val arabicFonts by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
+
+                                LazyColumn(
+                                    content = {
+                                        items(duas.size) { index ->
+                                            val duaItem = duas[index]
+
+                                            /**
+                                             * demo play icon
+                                             * */
+                                            var isPlaying by remember {
+                                                mutableStateOf(false)
+                                            }
+
+                                            CustomTextCell(
+                                                arabicModelWithTranslationModel = duaItem,
+                                                arabicFont = ArabicFonts.getLanguageFont(
+                                                    arabicFonts
+                                                ).getFont(),
+                                                textSize = if (textSize == 0.sp) duaItem.fontSize() else textSize,
+                                                matchTextList = matchTextList,
+                                                isPlaying = isPlaying,
+                                                cardBackgroundColor = when (selectedTheme) {
+                                                    R.drawable.ic_white_theme -> Color.White
+                                                    R.drawable.ic_gray_theme -> Color(0xffe8f6f4)
+                                                    R.drawable.ic_skin_theme -> Color(0xfffff9eb)
+                                                    R.drawable.ic_dark_theme -> Color(0xff343434)
+                                                    else -> Color.White
+                                                },
+                                                arabicColor = when (selectedTheme) {
+                                                    R.drawable.ic_dark_theme -> Color.White
+                                                    else -> Color.darkTextGrayColor
+                                                },
+                                                translationColor = when (selectedTheme) {
+                                                    R.drawable.ic_dark_theme -> Color.White
+                                                    else -> Color.darkTextGrayColor
+                                                },
+                                                transliterationColor = when (selectedTheme) {
+                                                    R.drawable.ic_dark_theme -> Color(0xff24c2cc)
+                                                    else -> Color.transliterationBlurColor
+                                                },
+                                                isDarkTheme = when (selectedTheme) {
+                                                    R.drawable.ic_dark_theme -> true
+                                                    else -> false
+                                                },
+                                                onBookmarkedClick = {
+                                                    viewModel.onUserEvent(
+                                                        UserEvent.IsBookmarked(
+                                                            !duaItem.isFav(),
+                                                            duaItem.getDataId()
+                                                        )
+                                                    )
+                                                },
+                                                onItemClick = {},
+                                                onOpenTashib = {
+                                                    navHostController.navigate(
+                                                        NavControllerRoutes.DUA_TASBIH_SCREEN(
+                                                            duaId = duaItem.getDataId()
+                                                        ).getPathWithNavArgs()
+                                                    )
+                                                },
+                                                onShareClick = {
+                                                    context share duaItem.getShareableString()
+                                                },
+                                                onCopyClick = {
+                                                    context copy duaItem.getShareableString()
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Copied",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                },
+                                                onPlayAudio = {
+                                                    isPlaying = !isPlaying
+                                                }
+                                            )
+
+                                            if (index == duas.lastIndex)
+                                                Spacer(modifier = Modifier.height(15.sdp))
+                                        }
+                                    },
+                                    contentPadding = PaddingValues(5.sdp),
+                                    verticalArrangement = Arrangement.spacedBy(5.sdp),
+                                    state = listState,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(paddingValues)
+                                        .background(color = Color.Transparent)
                                 )
 
-                                is EventResources.Success<List<ArabicModelWithTranslationModel>> -> {
+                                if (duas.isNotEmpty() && lastRead != -1)
+                                    LaunchedEffect(key1 = Unit, block = {
+                                        val index =
+                                            duas.indexOfFirst { it.getDataId() == lastRead }
+                                        if (index == -1) return@LaunchedEffect
 
-                                    val listState = rememberLazyListState()
-                                    val duas =
-                                        (allDuas as EventResources.Success).template
-
-                                    val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
-                                    val arabicFonts by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
-
-                                    LazyColumn(
-                                        content = {
-                                            items(duas.size) { index ->
-                                                val duaItem = duas[index]
-
-                                                /**
-                                                 * demo play icon
-                                                 * */
-                                                var isPlaying by remember {
-                                                    mutableStateOf(false)
-                                                }
-
-                                                CustomTextCell(
-                                                    arabicModelWithTranslationModel = duaItem,
-                                                    arabicFont = ArabicFonts.getLanguageFont(
-                                                        arabicFonts
-                                                    ).getFont(),
-                                                    textSize = textSize,
-                                                    matchTextList = matchTextList,
-                                                    isPlaying = isPlaying,
-                                                    cardBackgroundColor = when (selectedTheme) {
-                                                        R.drawable.ic_white_theme -> Color.White
-                                                        R.drawable.ic_gray_theme -> Color(0xffe8f6f4)
-                                                        R.drawable.ic_skin_theme -> Color(0xfffff9eb)
-                                                        R.drawable.ic_dark_theme -> Color(0xff343434)
-                                                        else -> Color.White
-                                                    },
-                                                    arabicColor = when (selectedTheme) {
-                                                        R.drawable.ic_dark_theme -> Color.White
-                                                        else -> darkTextGrayColor
-                                                    },
-                                                    translationColor = when (selectedTheme) {
-                                                        R.drawable.ic_dark_theme -> Color.White
-                                                        else -> darkTextGrayColor
-                                                    },
-                                                    transliterationColor = when (selectedTheme) {
-                                                        R.drawable.ic_dark_theme -> Color(0xff24c2cc)
-                                                        else -> transliterationBlurColor
-                                                    },
-                                                    isDarkTheme = when (selectedTheme) {
-                                                        R.drawable.ic_dark_theme -> true
-                                                        else -> false
-                                                    },
-                                                    onBookmarkedClick = {
-                                                        viewModel.onUserEvent(
-                                                            UserEvent.IsBookmarked(
-                                                                !duaItem.isFav(),
-                                                                duaItem.getDataId()
-                                                            )
-                                                        )
-                                                    },
-                                                    onItemClick = {},
-                                                    onOpenTashib = {
-                                                        navHostController.navigate(
-                                                            NavControllerRoutes.DUA_TASBIH_SCREEN(
-                                                                duaId = duaItem.getDataId()
-                                                            ).getPathWithNavArgs()
-                                                        )
-                                                    },
-                                                    onShareClick = {
-                                                        context share duaItem.getShareableString()
-                                                    },
-                                                    onCopyClick = {
-                                                        context copy duaItem.getShareableString()
-                                                        Toast.makeText(
-                                                            context,
-                                                            "Copied",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                    },
-                                                    onPlayAudio = {
-                                                        isPlaying = !isPlaying
-                                                    }
-                                                )
-
-                                                if (index == duas.lastIndex)
-                                                    Spacer(modifier = Modifier.height(15.sdp))
-                                            }
-                                        },
-                                        contentPadding = PaddingValues(5.sdp),
-                                        verticalArrangement = Arrangement.spacedBy(5.sdp),
-                                        state = listState,
-                                        modifier = Modifier
-                                    )
-
-                                    if (duas.isNotEmpty() && lastRead != -1)
-                                        LaunchedEffect(key1 = Unit, block = {
-                                            val index =
-                                                duas.indexOfFirst { it.getDataId() == lastRead }
-                                            if (index == -1) return@LaunchedEffect
-
-                                            listState.scrollToItem(index)
-                                        })
-
-                                    DisposableEffect(key1 = Unit, effect = {
-                                        onDispose {
-                                            viewModel.saveLastRead(listState.firstVisibleItemIndex)
-                                        }
+                                        listState.scrollToItem(index)
                                     })
 
-                                }
+                                DisposableEffect(key1 = Unit, effect = {
+                                    onDispose {
+                                        viewModel.saveLastRead(listState.firstVisibleItemIndex)
+                                    }
+                                })
+
                             }
                         }
                     }
@@ -380,7 +379,10 @@ fun DuaScreen(
 }
 
 @Composable
-private fun BottomSheetSettings(viewModel: DuaScreenViewModel, onCloseBottomSheet: () -> Unit = {}) {
+private fun BottomSheetSettings(
+    viewModel: DuaScreenViewModel,
+    onCloseBottomSheet: () -> Unit = {}
+) {
     val duaTextSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
     val arabicFont by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
     val translationOptions by viewModel.translators.collectAsStateWithLifecycle()
@@ -435,10 +437,12 @@ private fun BottomSheetDisplay(
 
 fun main() {
     runBlocking {
-        val outPath = File("./hisnulMuslim/ia601201.us.archive.org/0/items/HisnulMuslimAudio_201510")
+        val outPath =
+            File("./hisnulMuslim/ia601201.us.archive.org/0/items/HisnulMuslimAudio_201510")
         for (index in (1..500)) {
             try {
-                val url = URL("https://ia601201.us.archive.org/0/items/HisnulMuslimAudio_201510/n$index.mp3")
+                val url =
+                    URL("https://ia601201.us.archive.org/0/items/HisnulMuslimAudio_201510/n$index.mp3")
                 val httpConnection = url.openConnection() as HttpURLConnection
 
                 val inputStream: InputStream = httpConnection.getInputStream()
@@ -454,7 +458,7 @@ fun main() {
                 val outputStream = FileOutputStream(saveFilePath)
 
                 var bytesRead: Int
-                val buffer = ByteArray(1024*4)
+                val buffer = ByteArray(1024 * 4)
                 while (inputStream.read(buffer).also { bytesRead = it } != -1) {
                     outputStream.write(buffer, 0, bytesRead)
                 }

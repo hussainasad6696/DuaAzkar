@@ -62,7 +62,7 @@ fun DefaultTopAppBar(
             title?.let {
                 Text(
                     text = title,
-                    color = darkTextGrayColor,
+                    color = Color.darkTextGrayColor,
                     fontSize = 20.ssp,
                     fontFamily = RobotoFonts.ROBOTO_BOLD.getFont(),
                     maxLines = 1,
@@ -71,7 +71,7 @@ fun DefaultTopAppBar(
             } ?: titleContent()
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = applicationBackgroundColor
+            containerColor = Color.applicationBackgroundColor
         ),
         navigationIcon = {
             if (hasBackButton) {
@@ -103,7 +103,7 @@ fun DefaultTopAppBar(
                                     text = stringResource(id = R.string.search, title ?: "here"),
                                     fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont(),
                                     fontSize = 16.ssp,
-                                    color = darkTextGrayColor.copy(0.8f),
+                                    color = Color.darkTextGrayColor.copy(0.8f),
                                     fontStyle = FontStyle.Italic
                                 )
                             }
@@ -123,9 +123,9 @@ fun DefaultTopAppBar(
                             }
                         },
                         colors = TextFieldDefaults.colors(
-                            cursorColor = primary,
-                            focusedTextColor = darkTextGrayColor,
-                            unfocusedTextColor = darkTextGrayColor.copy(0.5f),
+                            cursorColor = Color.primary,
+                            focusedTextColor = Color.darkTextGrayColor,
+                            unfocusedTextColor = Color.darkTextGrayColor.copy(0.5f),
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             focusedContainerColor = Color.Transparent,

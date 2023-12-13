@@ -24,7 +24,7 @@ fun DuaAzkarWithBackground(
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
-        color = applicationBackgroundColor
+        color = Color.applicationBackgroundColor
     ) {
         CompositionLocalProvider(LocalAbsoluteTonalElevation provides 0.dp) {
             if (!addScaffolding)

@@ -1,5 +1,9 @@
 package com.mera.islam.duaazkar.presentation.dua_tasbih_screen
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,6 +41,7 @@ class DuaTasbihScreenViewModel @Inject constructor(
             settings = settings
         )
 
+    private var tasbihId = -1
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val duaWithTranslation = savedStateHandle.getStateFlow(DUA_ID, -1)
@@ -54,6 +59,8 @@ class DuaTasbihScreenViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val tasbihCount = savedStateHandle.getStateFlow(TASBIH_ID, -1)
         .flatMapLatest { tasbihId ->
+            if (tasbihId != this.tasbihId)
+                this.tasbihId = tasbihId
             tasbihRepo.getTasbihCountByTasbihId(
                 id = tasbihId
             )
@@ -68,6 +75,8 @@ class DuaTasbihScreenViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val tasbihTotalCount = savedStateHandle.getStateFlow(TASBIH_ID, -1)
         .flatMapLatest { tasbihId ->
+            if (tasbihId != this.tasbihId)
+                this.tasbihId = tasbihId
             tasbihRepo.getTasbihTotalCountByTasbihId(
                 id = tasbihId
             )
@@ -125,16 +134,15 @@ class DuaTasbihScreenViewModel @Inject constructor(
 
     private fun tasbihTotalCountOption(userEvent: UserEvent.TasbihTotalCountOption) {
         viewModelScope.launch(Dispatchers.IO) {
-            tasbihRepo.updateTotalCount(id = userEvent.duaId, count = userEvent.totalCount)
+            tasbihRepo.updateTotalCount(id = tasbihId, count = userEvent.totalCount)
         }
     }
 
     private fun resetTasbih() {
         viewModelScope.launch(Dispatchers.IO) {
-            val tasbihId = savedStateHandle.getStateFlow(TASBIH_ID, -1).value
             tasbihRepo.updateTotalCount(id = tasbihId, count = 33)
             tasbihRepo.updateCount(
-                id = savedStateHandle.getStateFlow(TASBIH_ID, -1).value,
+                id = tasbihId,
                 count = 0
             )
         }
@@ -144,7 +152,7 @@ class DuaTasbihScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val count = userEvent.count ?: 0
             tasbihRepo.updateCount(
-                id = savedStateHandle.getStateFlow(TASBIH_ID, -1).value,
+                id = tasbihId,
                 count = count + 1
             )
         }

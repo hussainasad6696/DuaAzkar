@@ -18,3 +18,4 @@ rootProject.name = "DuaAzkar"
 include(":app")
 include(":adhan")
 include(":slider")
+include(":benchmark")

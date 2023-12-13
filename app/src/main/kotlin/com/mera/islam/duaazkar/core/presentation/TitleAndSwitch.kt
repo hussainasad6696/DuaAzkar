@@ -20,17 +20,15 @@ import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
-fun TitleAndSwitch(title: String,isChecked: Boolean = false,onCheckedChange: (Boolean) -> Unit) {
+fun TitleAndSwitch(modifier: Modifier = Modifier,title: String,isChecked: Boolean = false,onCheckedChange: (Boolean) -> Unit) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.sdp),
+        modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = title,
-            color = darkTextGrayColor,
+            color = Color.darkTextGrayColor,
             fontSize = 16.ssp,
             fontFamily = RobotoFonts.ROBOTO_MEDIUM.getFont()
         )
@@ -39,7 +37,7 @@ fun TitleAndSwitch(title: String,isChecked: Boolean = false,onCheckedChange: (Bo
             checked = isChecked,
             onCheckedChange = onCheckedChange,
             colors = SwitchDefaults.colors(
-                checkedTrackColor = green,
+                checkedTrackColor = Color.green,
                 checkedThumbColor = Color.White,
                 uncheckedTrackColor = Color(0xffdedede),
                 uncheckedThumbColor = Color(0xff9d9d9d),

@@ -1,8 +1,8 @@
 package  com.mera.islam.duaazkar.core.presentation.arabic_with_translation
 
-import  com.mera.islam.duaazkar.core.Settings
-import  com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
-import  com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
+import androidx.compose.ui.unit.sp
+import com.mera.islam.duaazkar.core.Settings
+import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +19,7 @@ class ArabicWithTranslationStateListener(
         .stateIn(
             scope = this,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-            initialValue = TEXT_MIN_SIZE
+            initialValue = 0.sp
         )
 
     val arabicFont = settings.getArabicFont()
