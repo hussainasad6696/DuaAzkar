@@ -2,6 +2,7 @@ package  com.mera.islam.duaazkar.presentation.dua_screen
 
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -89,6 +90,10 @@ fun DuaScreen(
     DuaAzkarWithBackground {
         val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+        BackHandler(sheetState.isVisible) {
+            coroutineScope.launch { sheetState.hide() }
+        }
 
         LaunchedEffect(key1 = Unit, block = {
             viewModel.loadDuasByDuaType(duaType)

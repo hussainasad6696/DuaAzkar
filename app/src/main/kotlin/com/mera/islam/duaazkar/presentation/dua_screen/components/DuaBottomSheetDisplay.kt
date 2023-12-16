@@ -40,6 +40,7 @@ import com.mera.islam.duaazkar.core.presentation.custom_bottom_sheet.BottomSheet
 import com.mera.islam.duaazkar.core.presentation.custom_bottom_sheet.CustomBottomSheet
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
+import com.mera.islam.duaazkar.ui.theme.gray9fColor
 import com.mera.islam.duaazkar.ui.theme.green
 import com.mera.islam.duaazkar.ui.theme.lightGrayColor
 import com.smarttoolfactory.slider.ColorfulIconSlider
@@ -95,7 +96,7 @@ fun ThemeSettings(selectedTheme: Int, onThemeSelected: (Int) -> Unit) {
     Column(modifier = Modifier.padding(horizontal = 10.sdp)) {
         Text(
             text = stringResource(id = R.string.themes),
-            color = Color(0xff9f9f9f),
+            color = Color.gray9fColor,
             fontSize = 13.ssp,
             fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
         )
@@ -137,7 +138,7 @@ fun BrightnessSettings(currentBrightness: Float, onBrightnessChangeRequest: (Flo
     Column(modifier = Modifier.padding(horizontal = 15.sdp)) {
         Text(
             text = stringResource(id = R.string.brightness),
-            color = Color(0xff9f9f9f),
+            color = Color.gray9fColor,
             fontSize = 13.ssp,
             fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
         )

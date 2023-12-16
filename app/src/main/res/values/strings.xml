@@ -57,4 +57,8 @@
     <string name="reset">Reset</string>
     <string name="do_you_really_want_to_reset_the_tasbih_counter">Do you really want to reset the Tasbih counter?</string>
     <string name="cancel">Cancel</string>
+    <string name="select_preview">Select Preview</string>
+    <string name="list_view">List View</string>
+    <string name="grid_view">Grid View</string>
+    <string name="image_view">Image View</string>
 </resources>

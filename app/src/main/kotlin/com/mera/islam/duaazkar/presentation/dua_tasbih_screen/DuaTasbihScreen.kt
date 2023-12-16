@@ -1,5 +1,7 @@
 package com.mera.islam.duaazkar.presentation.dua_tasbih_screen
 
+import android.media.MediaPlayer
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,8 +37,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -91,10 +97,12 @@ fun DuaTasbihScreen(
         mutableStateOf(TasbihBottomSheets.CUSTOM_LIMIT)
     }
 
+    BackHandler(sheetState.isVisible) {
+        coroutineScope.launch { sheetState.hide() }
+    }
+
     ModalBottomSheetLayout(
         sheetContent = {
-
-
             LaunchedEffect(key1 = Unit) {
                 snapshotFlow {
                     sheetState.isVisible
@@ -190,9 +198,9 @@ fun DuaTasbihScreen(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(5.sdp))
+                        Spacer(modifier = Modifier.height(10.sdp))
                         AudioPlayer()
-                        Spacer(modifier = Modifier.height(5.sdp))
+                        Spacer(modifier = Modifier.height(10.sdp))
                     }
                 }
             ) {
@@ -273,8 +281,19 @@ fun TasbihView(
     onEditTasbihOptions: () -> Unit,
     onResetTasbihClick: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Box(modifier = Modifier.fillMaxSize()) {
         val count by viewModel.tasbihCount.collectAsStateWithLifecycle()
+        val tasbihSoundEnabled by viewModel.tasbihSoundEnabled.collectAsStateWithLifecycle()
+
+        val player = remember {
+            MediaPlayer.create(context, R.raw.click_sound)
+        }
+
+        DisposableEffect(key1 = Unit) {
+            onDispose { player.release() }
+        }
 
         Box(modifier = Modifier.align(Alignment.Center), contentAlignment = Alignment.Center) {
             Image(
@@ -287,6 +306,8 @@ fun TasbihView(
                 contentDescription = "button",
                 modifier = Modifier
                     .bounceClickable {
+                        if (tasbihSoundEnabled)
+                            player.start()
                         viewModel.onUserEvent(
                             UserEvent.TasbihCount(
                                 count = count,

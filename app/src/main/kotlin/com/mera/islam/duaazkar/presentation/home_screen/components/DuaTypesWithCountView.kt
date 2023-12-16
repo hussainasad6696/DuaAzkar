@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -19,11 +20,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.mera.islam.duaazkar.R
+import com.mera.islam.duaazkar.core.extensions.dpToPx
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
@@ -42,8 +47,14 @@ fun DuaTypesWithCountView(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .defaultMinSize(minWidth = 50.sdp)
             .then(
-                if (addBackground) Modifier.background(color = Color.White, shape = RoundedCornerShape(35))
+                if (addBackground) Modifier.drawBehind {
+                    drawRoundRect(
+                        color = Color.White,
+                        cornerRadius = CornerRadius(35.dp.toPx(), 35.dp.toPx())
+                    )
+                }
                 else Modifier
             )
             .clickable(

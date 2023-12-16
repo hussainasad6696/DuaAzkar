@@ -1,5 +1,6 @@
 package com.mera.islam.duaazkar.presentation.dua_tasbih_screen
 
+import android.media.MediaPlayer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember

@@ -23,7 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.TextUnit
@@ -42,6 +44,7 @@ import com.mera.islam.duaazkar.presentation.dua_screen.DuaScreenViewModel
 import com.mera.islam.duaazkar.presentation.dua_screen.DuaTranslatorModelWithSelection
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
+import com.mera.islam.duaazkar.ui.theme.gray9fColor
 import com.mera.islam.duaazkar.ui.theme.green
 import com.mera.islam.duaazkar.ui.theme.lightGrayColor
 import com.mera.islam.duaazkar.ui.theme.lightTextGrayColor
@@ -161,7 +164,7 @@ fun ArabicFontsSetting(selectedFont: ArabicFonts, onArabicFontChange: (ArabicFon
     ) {
         Text(
             text = stringResource(id = R.string.arabic_fonts),
-            color = Color(0xff9f9f9f),
+            color = Color.gray9fColor,
             fontSize = 13.ssp,
             fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
         )
@@ -226,7 +229,7 @@ fun FontSizeSetting(fontSize: TextUnit, onFontSizeChange: (Float) -> Unit) {
     ) {
         Text(
             text = stringResource(id = R.string.font_size),
-            color = Color(0xff9f9f9f),
+            color = Color.gray9fColor,
             fontSize = 13.ssp,
             fontFamily = RobotoFonts.ROBOTO_REGULAR.getFont()
         )
@@ -262,7 +265,12 @@ fun FontSizeSetting(fontSize: TextUnit, onFontSizeChange: (Float) -> Unit) {
                         text = "${fontSize.value.toInt()}",
                         modifier = Modifier
                             .shadow(1.dp, shape = RoundedCornerShape(7.sdp))
-                            .background(Color.green, shape = RoundedCornerShape(7.sdp))
+                            .drawBehind {
+                                drawRoundRect(
+                                    color = Color.green,
+                                    cornerRadius = CornerRadius(7.dp.toPx(),7.dp.toPx())
+                                )
+                            }
                             .padding(vertical = 3.sdp, horizontal = 10.sdp),
                         color = Color.White
                     )

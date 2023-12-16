@@ -212,4 +212,18 @@ class Settings @Inject constructor(private val context: Context) {
     fun getTasbihSoundEnabled(): Flow<Boolean> = dataStore.data.map { settings ->
         settings[keyTasbihSoundEnabled] ?: false
     }
+
+    //**************************************************************//
+
+    private val keySelectedAsmaPreview = intPreferencesKey("SELECTED_ASMA_PREVIEW")
+
+    suspend fun setSelectedAsmaPreview(selectedAsmaPreview: Int) {
+        dataStore.edit { setting ->
+            setting[keySelectedAsmaPreview] = selectedAsmaPreview
+        }
+    }
+
+    fun getSelectedAsmaPreview(): Flow<Int> = dataStore.data.map { settings ->
+        settings[keySelectedAsmaPreview] ?: R.drawable.frame_72
+    }
 }

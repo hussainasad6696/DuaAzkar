@@ -92,9 +92,9 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     //lifecycle aware components
-    val lifecycle_version = "2.6.2"
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
+    val lifecycleVersion = "2.6.2"
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:$lifecycleVersion")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.8.1")
@@ -116,26 +116,26 @@ dependencies {
     implementation("androidx.compose.animation:animation:1.5.4")
 
     //hilt
-    val hilt_version = "2.48.1"
-    implementation("com.google.dagger:hilt-android:$hilt_version")
-    kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
+    val hiltVersion = "2.48.1"
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     //room
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     //dataStore
-    val data_store_version = "1.0.0"
-    implementation("androidx.datastore:datastore-core:$data_store_version")
-    implementation("androidx.datastore:datastore-preferences:$data_store_version")
+    val dataStoreVersion = "1.0.0"
+    implementation("androidx.datastore:datastore-core:$dataStoreVersion")
+    implementation("androidx.datastore:datastore-preferences:$dataStoreVersion")
 
     //navController
-    val nav_version = "2.7.5"
-    implementation("androidx.navigation:navigation-compose:$nav_version")
+    val navVersion = "2.7.5"
+    implementation("androidx.navigation:navigation-compose:$navVersion")
 
     //sdp
     implementation("com.github.Kaaveh:sdp-compose:1.1.0")
@@ -147,8 +147,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     //worker
-    val work_version = "2.9.0"
-    implementation("androidx.work:work-runtime-ktx:$work_version")
+    val workVersion = "2.9.0"
+    implementation("androidx.work:work-runtime-ktx:$workVersion")
     implementation("androidx.hilt:hilt-work:1.1.0")
     kapt ("androidx.hilt:hilt-compiler:1.1.0")
 

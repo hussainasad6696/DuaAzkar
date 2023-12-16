@@ -1,11 +1,12 @@
 package  com.mera.islam.duaazkar.core.extensions
 
-import android.R.attr.text
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.temporal.ChronoUnit
@@ -32,4 +33,11 @@ fun LocalDateTime.nextDayNoon(): LocalDateTime {
     if (this.toLocalTime().isAfter(desiredTime))
         nextDayAtNoon = nextDayAtNoon.plus(1, ChronoUnit.DAYS)
     return nextDayAtNoon.also { "${it.dayOfMonth}/${it.month}/${it.year}".log() }
+}
+
+@Composable
+fun Dp.dpToPx(): Float {
+    val localDensity = LocalDensity.current
+
+    return with(localDensity) { this@dpToPx.toPx() }
 }

@@ -37,6 +37,7 @@ fun AsmaListItem(
     index: Int = 1,
     title: String = "Ar-Rahman",
     subTitle: String = "The Beneficent",
+    imageTint: Color,
     isPlaying: Boolean = false,
     onPlayClickIcon: () -> Unit
 ) {
@@ -67,7 +68,8 @@ fun AsmaListItem(
             modifier = Modifier
                 .padding(top = 15.sdp)
                 .align(Alignment.TopCenter)
-                .size(70.sdp)
+                .size(70.sdp),
+            colorFilter = ColorFilter.tint(color = imageTint)
         )
 
         Row(

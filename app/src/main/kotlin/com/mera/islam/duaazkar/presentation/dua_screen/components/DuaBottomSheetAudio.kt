@@ -12,7 +12,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.mera.islam.duaazkar.core.presentation.AudioPlayer
 import ir.kaaveh.sdpcompose.sdp
 
@@ -38,7 +41,12 @@ fun DuaBottomSheetAudio(
             modifier = Modifier
                 .width(32.sdp)
                 .height(4.sdp)
-                .background(color = Color(0xffe3e3e3), shape = RoundedCornerShape(3.sdp))
+                .drawBehind {
+                    drawRoundRect(
+                        color = Color(0xffe3e3e3),
+                        cornerRadius = CornerRadius(3.dp.toPx(),3.dp.toPx())
+                    )
+                }
         )
 
         Spacer(modifier = Modifier.height(10.sdp))
