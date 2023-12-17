@@ -40,14 +40,29 @@ internal val Color.Companion.yellowColor
 internal val Color.Companion.purpleColor
     get() = Color(0xff7154ca)
 @Stable
-internal val Color.Companion.seaGreenColor
-    get() = Color(0xff01ad8e)
-@Stable
 internal val Color.Companion.pinkColor
-    get() = Color(0xfffb4570)
+    get() = Color(0xffca1584)
 @Stable
 internal val Color.Companion.orangeColor
     get() = Color(0xffe46000)
 @Stable
 internal val Color.Companion.skyBlueColor
     get() = Color(0xff0094b0)
+@Stable
+internal val Color.Companion.redColor
+    get() = Color(0xffe12a2a)
+@Stable
+internal val Color.Companion.blueColor
+    get() = Color(0xff446af8)
+@Stable
+internal val Color.Companion.greyColor
+    get() = Color(0xff647d80)
+@Stable
+internal val Color.Companion.lightOrangeColor
+    get() = Color(0xffee8627)
+@Stable
+internal val Color.Companion.lightGreenColor
+    get() = Color(0xff4acd0e)
+@Stable
+internal val Color.Companion.lightBlueColor
+    get() = Color(0xff21b4b6)

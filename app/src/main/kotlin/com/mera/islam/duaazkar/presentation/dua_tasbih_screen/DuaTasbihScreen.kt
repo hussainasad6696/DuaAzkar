@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,8 +38,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -59,7 +58,6 @@ import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
 import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.core.presentation.AudioPlayer
-import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomNavItems
 import com.mera.islam.duaazkar.presentation.dua_tasbih_screen.components.TasbihBottomSheetCustomLimit
 import com.mera.islam.duaazkar.presentation.dua_tasbih_screen.components.TasbihBottomSheetReset
 import com.mera.islam.duaazkar.presentation.dua_tasbih_screen.components.TasbihBottomSheetSetCustomGoals
@@ -252,9 +250,14 @@ fun DuaTasbihScreen(
 
                             Spacer(modifier = Modifier.height(10.sdp))
 
+                            val count by viewModel.tasbihCount.collectAsStateWithLifecycle()
+                            val tasbihSoundEnabled by viewModel.tasbihSoundEnabled.collectAsStateWithLifecycle()
+                            val totalCount by viewModel.tasbihTotalCount.collectAsStateWithLifecycle()
+
                             TasbihView(
-                                viewModel = viewModel,
-                                duaId = dua.getDataId(),
+                                count = count,
+                                tasbihSoundEnabled = tasbihSoundEnabled,
+                                totalCount = totalCount,
                                 onEditTasbihOptions = {
                                     coroutineScope.launch { sheetState.show() }
                                 }, onResetTasbihClick = {
@@ -263,6 +266,13 @@ fun DuaTasbihScreen(
                                         delay(100L)
                                         sheetState.show()
                                     }
+                                }, onTasbihClick = {
+                                    viewModel.onUserEvent(
+                                        UserEvent.TasbihCount(
+                                            count = count,
+                                            duaId = duaId
+                                        )
+                                    )
                                 })
 
                             Spacer(modifier = Modifier.height(10.sdp))
@@ -276,16 +286,19 @@ fun DuaTasbihScreen(
 
 @Composable
 fun TasbihView(
-    viewModel: DuaTasbihScreenViewModel,
-    duaId: Int,
+    modifier: Modifier = Modifier,
+    count: Int?,
+    tasbihSoundEnabled: Boolean,
+    totalCount: Int?,
     onEditTasbihOptions: () -> Unit,
-    onResetTasbihClick: () -> Unit
+    onResetTasbihClick: () -> Unit,
+    onTasbihClick: () -> Unit,
+    topContent: @Composable BoxScope.() -> Unit = {}
 ) {
     val context = LocalContext.current
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        val count by viewModel.tasbihCount.collectAsStateWithLifecycle()
-        val tasbihSoundEnabled by viewModel.tasbihSoundEnabled.collectAsStateWithLifecycle()
+    Box(modifier = Modifier.fillMaxSize().then(modifier)) {
+        topContent()
 
         val player = remember {
             MediaPlayer.create(context, R.raw.click_sound)
@@ -308,12 +321,7 @@ fun TasbihView(
                     .bounceClickable {
                         if (tasbihSoundEnabled)
                             player.start()
-                        viewModel.onUserEvent(
-                            UserEvent.TasbihCount(
-                                count = count,
-                                duaId = duaId
-                            )
-                        )
+                        onTasbihClick()
                     }
             )
 
@@ -328,7 +336,6 @@ fun TasbihView(
                     color = Color.White
                 )
 
-                val totalCount by viewModel.tasbihTotalCount.collectAsStateWithLifecycle()
 
                 Text(
                     text = stringResource(

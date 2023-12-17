@@ -12,6 +12,8 @@ import com.mera.islam.duaazkar.core.Settings
 import com.mera.islam.duaazkar.core.enums.TasbihType
 import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationStateListener
+import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.TASBIH_ID
+import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.TasbihStateListener
 import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.domain.models.TasbihModel
 import com.mera.islam.duaazkar.domain.repo.TasbihRepo
@@ -20,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
@@ -31,9 +34,9 @@ import javax.inject.Inject
 @HiltViewModel
 class DuaTasbihScreenViewModel @Inject constructor(
     private val getDuaByIdWithTranslationUseCase: GetDuaByIdWithTranslationUseCase,
-    private val savedStateHandle: SavedStateHandle,
-    private val tasbihRepo: TasbihRepo,
-    private val settings: Settings
+    savedStateHandle: SavedStateHandle,
+    tasbihRepo: TasbihRepo,
+    settings: Settings
 ) : ViewModel() {
 
     val arabicWithTranslationStateListener =
@@ -42,7 +45,23 @@ class DuaTasbihScreenViewModel @Inject constructor(
             settings = settings
         )
 
-    private var tasbihId = -1
+    private val tasbihStateListener = TasbihStateListener(
+        coroutineContext = viewModelScope.coroutineContext,
+        savedStateHandle = savedStateHandle,
+        tasbihRepo = tasbihRepo,
+        settings = settings
+    )
+
+    val tasbihCount: StateFlow<Int?>
+        get() = tasbihStateListener.tasbihCount
+
+    val tasbihTotalCount: StateFlow<Int?>
+        get() = tasbihStateListener.tasbihTotalCount
+
+    val tasbihSoundEnabled: StateFlow<Boolean>
+        get() = tasbihStateListener.tasbihSoundEnabled
+
+    fun setDuaId(duaId: Int) = tasbihStateListener.setDuaId(duaId)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val duaWithTranslation = savedStateHandle.getStateFlow(DUA_ID, -1)
@@ -57,106 +76,17 @@ class DuaTasbihScreenViewModel @Inject constructor(
             initialValue = EventResources.Loading
         )
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val tasbihCount = savedStateHandle.getStateFlow(TASBIH_ID, -1)
-        .flatMapLatest { tasbihId ->
-            if (tasbihId != this.tasbihId)
-                this.tasbihId = tasbihId
-            tasbihRepo.getTasbihCountByTasbihId(
-                id = tasbihId
-            )
-        }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 0
-        )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val tasbihTotalCount = savedStateHandle.getStateFlow(TASBIH_ID, -1)
-        .flatMapLatest { tasbihId ->
-            if (tasbihId != this.tasbihId)
-                this.tasbihId = tasbihId
-            tasbihRepo.getTasbihTotalCountByTasbihId(
-                id = tasbihId
-            )
-        }
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = 33
-        )
-
-    val tasbihSoundEnabled = settings.getTasbihSoundEnabled()
-        .flowOn(Dispatchers.IO)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = false
-        )
-
-    fun setDuaId(duaId: Int) {
-        savedStateHandle[DUA_ID] = duaId
-
-        viewModelScope.launch {
-            val tasbih = tasbihRepo.getTasbihDetailByTasbihTypeAndKey(
-                tasbihType = TasbihType.Dua,
-                key = duaId
-            )
-            savedStateHandle[TASBIH_ID] = tasbih?.id
-                ?: tasbihRepo.insert(
-                    TasbihModel(
-                        count = 0,
-                        totalCount = 33,
-                        key = duaId,
-                        tasbihType = TasbihType.Dua,
-                        id = 1
-                    )
-                )
-        }
-    }
 
     fun onUserEvent(userEvent: UserEvent) {
         when (userEvent) {
-            is UserEvent.TasbihCount -> incrementUserEvent(userEvent)
-            is UserEvent.TasbihTotalCountOption -> tasbihTotalCountOption(userEvent)
-            is UserEvent.OnSoundOptionChanged -> onSoundOptionChanged(userEvent)
-            UserEvent.ResetTasbih -> resetTasbih()
+            is UserEvent.TasbihCount -> tasbihStateListener.incrementUserEvent(userEvent)
+            is UserEvent.TasbihTotalCountOption -> tasbihStateListener.tasbihTotalCountOption(userEvent)
+            is UserEvent.OnSoundOptionChanged -> tasbihStateListener.onSoundOptionChanged(userEvent)
+            UserEvent.ResetTasbih -> tasbihStateListener.resetTasbih()
         }
     }
 
-    private fun onSoundOptionChanged(userEvent: UserEvent.OnSoundOptionChanged) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settings.setTasbihSoundEnabled(userEvent.options)
-        }
-    }
 
-    private fun tasbihTotalCountOption(userEvent: UserEvent.TasbihTotalCountOption) {
-        viewModelScope.launch(Dispatchers.IO) {
-            tasbihRepo.updateTotalCount(id = tasbihId, count = userEvent.totalCount)
-        }
-    }
-
-    private fun resetTasbih() {
-        viewModelScope.launch(Dispatchers.IO) {
-            tasbihRepo.updateTotalCount(id = tasbihId, count = 33)
-            tasbihRepo.updateCount(
-                id = tasbihId,
-                count = 0
-            )
-        }
-    }
-
-    private fun incrementUserEvent(userEvent: UserEvent.TasbihCount) =
-        viewModelScope.launch(Dispatchers.IO) {
-            val count = userEvent.count ?: 0
-            tasbihRepo.updateCount(
-                id = tasbihId,
-                count = count + 1
-            )
-        }
 }
 
 sealed interface UserEvent {
@@ -166,5 +96,4 @@ sealed interface UserEvent {
     data class OnSoundOptionChanged(val options: Boolean) : UserEvent
 }
 
-private const val DUA_ID = "duaId"
-private const val TASBIH_ID = "tasbihId"
+const val DUA_ID = "duaId"
