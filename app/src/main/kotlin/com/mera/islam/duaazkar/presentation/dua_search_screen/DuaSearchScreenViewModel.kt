@@ -3,7 +3,7 @@ package com.mera.islam.duaazkar.presentation.dua_search_screen
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mera.islam.duaazkar.core.utils.EventResources
+import com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.domain.repo.dua.DuaRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +26,7 @@ class DuaSearchScreenViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     val searchedDua = savedStateHandle.getStateFlow(DUA_SEARCH, "")
         .map { keyword ->
-            EventResources.Success(
+            UiStates.Success(
                 if (keyword.isEmpty()) duaRepo.getAllDuaTypesAndCounts().first()
                 else duaRepo.getAllDuaTypesAndCountsByKeyword(keyword).first()
             )
@@ -37,7 +37,7 @@ class DuaSearchScreenViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = EventResources.Loading
+            initialValue = UiStates.Loading
         )
 
     val searchedText = savedStateHandle.getStateFlow(DUA_SEARCH,"")

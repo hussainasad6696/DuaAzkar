@@ -27,7 +27,7 @@ import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
-import com.mera.islam.duaazkar.core.utils.EventResources
+import com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.presentation.home_screen.components.DuaTypesWithCountView
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
@@ -61,14 +61,14 @@ fun DuaSearchScreen(
         val allDuas by viewModel.searchedDua.collectAsStateWithLifecycle()
 
         when (allDuas) {
-            EventResources.Loading -> Loading(
+            UiStates.Loading -> Loading(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
             )
 
-            is EventResources.Success -> {
-                val list = (allDuas as EventResources.Success).template
+            is UiStates.Success -> {
+                val list = (allDuas as UiStates.Success).template
 
                 if (list.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

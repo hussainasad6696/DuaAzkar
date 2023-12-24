@@ -30,7 +30,7 @@ import androidx.navigation.NavHostController
 import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.presentation.Loading
-import com.mera.islam.duaazkar.core.utils.EventResources
+import com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.data.local.dao.dua.DuaNameAndCount
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.home_screen.components.DuaTypesWithCountView
@@ -54,9 +54,9 @@ fun HomeScreen(
     val allDuaTypes by viewModel.duaTypeWithCount.collectAsStateWithLifecycle()
 
     when (allDuaTypes) {
-        EventResources.Loading -> Loading(modifier = modifier.fillMaxSize())
-        is EventResources.Success -> {
-            val list = (allDuaTypes as EventResources.Success).template
+        UiStates.Loading -> Loading(modifier = modifier.fillMaxSize())
+        is UiStates.Success -> {
+            val list = (allDuaTypes as UiStates.Success).template
 
             if (!isLandscape) {
                 val localScreenConfig = LocalConfiguration.current.screenWidthDp.dp.value

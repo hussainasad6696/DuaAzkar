@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,9 +51,8 @@ import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
 import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.CustomTextCell
-import com.mera.islam.duaazkar.core.presentation.springEffect
 import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
-import com.mera.islam.duaazkar.core.utils.EventResources
+import com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomBar
@@ -96,8 +94,6 @@ fun DuaScreen(
         }
 
         LaunchedEffect(key1 = Unit, block = {
-            viewModel.loadDuasByDuaType(duaType)
-
             viewModel.uiEvent.collect { uiEvent ->
                 when (uiEvent) {
                     is UiEvent.KeepScreenOn -> {
@@ -254,7 +250,7 @@ fun DuaScreen(
                         val allDuas by viewModel.allDuaWithTranslations.collectAsStateWithLifecycle()
 
                         when (allDuas) {
-                            is EventResources.Loading -> Loading(
+                            is UiStates.Loading -> Loading(
                                 isLoading = true,
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -262,11 +258,11 @@ fun DuaScreen(
                                     .background(color = Color.Transparent)
                             )
 
-                            is EventResources.Success<List<ArabicModelWithTranslationModel>> -> {
+                            is UiStates.Success<List<ArabicModelWithTranslationModel>> -> {
 
                                 val listState = rememberLazyListState()
                                 val duas =
-                                    (allDuas as EventResources.Success).template
+                                    (allDuas as UiStates.Success).template
 
                                 val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
                                 val arabicFonts by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()

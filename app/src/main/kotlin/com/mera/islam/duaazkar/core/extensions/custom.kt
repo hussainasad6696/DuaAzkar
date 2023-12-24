@@ -1,5 +1,6 @@
 package  com.mera.islam.duaazkar.core.extensions
 
+import android.app.DownloadManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -38,6 +39,8 @@ fun LocalDateTime.nextDayNoon(): LocalDateTime {
 @Composable
 fun Dp.dpToPx(): Float {
     val localDensity = LocalDensity.current
-
     return with(localDensity) { this@dpToPx.toPx() }
 }
+
+inline val Context.downloadService: DownloadManager
+    get() = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager

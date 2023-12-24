@@ -1,9 +1,9 @@
 package  com.mera.islam.duaazkar.core.utils
 
 
-sealed interface EventResources<out T> {
-    data object Loading: EventResources<Nothing>
-    data class Success<T>(var template: T): EventResources<T>
+sealed interface UiStates<out T> {
+    data object Loading: UiStates<Nothing>
+    data class Success<T>(var template: T): UiStates<T>
 }
 
 sealed interface EventResult<out T> {

@@ -16,7 +16,7 @@ import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.presentation.CustomLazyList
 import com.mera.islam.duaazkar.core.presentation.Loading
 import com.mera.islam.duaazkar.core.presentation.custom_bottom_sheet.BottomSheetSettingsNavigationTitle
-import com.mera.islam.duaazkar.core.utils.EventResources
+import com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.dua_screen.DuaScreenViewModel
 import com.mera.islam.duaazkar.presentation.home_screen.components.DuaTypesWithCountView
@@ -37,9 +37,9 @@ fun DuaCategoriesDrawer(
         val duaCategories by viewModel.duaTypeWithCount.collectAsStateWithLifecycle()
 
         when (duaCategories) {
-            EventResources.Loading -> Loading(modifier = Modifier.fillMaxSize())
-            is EventResources.Success -> {
-                val list = (duaCategories as EventResources.Success).template
+            UiStates.Loading -> Loading(modifier = Modifier.fillMaxSize())
+            is UiStates.Success -> {
+                val list = (duaCategories as UiStates.Success).template
 
                 CustomLazyList(
                     Modifier

@@ -8,8 +8,7 @@ import com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.Settings
 import com.mera.islam.duaazkar.core.enums.LanguageDirection
 import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationStateListener
-import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
-import  com.mera.islam.duaazkar.core.utils.EventResources
+import  com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.core.utils.SystemBrightnessSettings
 import  com.mera.islam.duaazkar.core.utils.fonts.FontsType
 import  com.mera.islam.duaazkar.core.utils.fonts.LanguageFonts
@@ -61,13 +60,13 @@ class DuaScreenViewModel @Inject constructor(
     val duaTypeWithCount =
         getAllDuaWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
             .map {
-                EventResources.Success(it)
+                UiStates.Success(it)
             }
             .flowOn(Dispatchers.IO)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = EventResources.Loading
+                initialValue = UiStates.Loading
             )
 
     private val _translators: MutableStateFlow<List<DuaTranslatorModelWithSelection>> =
@@ -85,11 +84,11 @@ class DuaScreenViewModel @Inject constructor(
                 it.map { it.getDataType() as DuaType }.distinctBy { it.type }.map { it.getName() }
                     .joinToString(" / ")
         }
-        .map { EventResources.Success(it) }
+        .map { UiStates.Success(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = EventResources.Loading
+            initialValue = UiStates.Loading
         )
 
     val selectedTheme = settings.getDuaTheme()
@@ -240,8 +239,8 @@ class DuaScreenViewModel @Inject constructor(
     fun saveLastRead(firstVisibleItemIndex: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             kotlin.runCatching {
-                if (allDuaWithTranslations.value is EventResources.Success)
-                    duaLastReadUseCase((allDuaWithTranslations.value as EventResources.Success).template[firstVisibleItemIndex].getDataId())
+                if (allDuaWithTranslations.value is UiStates.Success)
+                    duaLastReadUseCase((allDuaWithTranslations.value as UiStates.Success).template[firstVisibleItemIndex].getDataId())
             }
         }
     }

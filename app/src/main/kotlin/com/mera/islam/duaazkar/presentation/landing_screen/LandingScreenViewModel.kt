@@ -8,7 +8,7 @@ import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.dailyDuaReminderId
 import  com.mera.islam.duaazkar.core.dailyPrayerReminderId
 import  com.mera.islam.duaazkar.core.extensions.nextDayNoon
-import com.mera.islam.duaazkar.core.utils.EventResources
+import com.mera.islam.duaazkar.core.utils.UiStates
 import  com.mera.islam.duaazkar.core.utils.alarmManager.AlarmScheduler
 import  com.mera.islam.duaazkar.core.utils.prayerTimes.PrayerUtils
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
@@ -34,25 +34,25 @@ class LandingScreenViewModel @Inject constructor(
 
     val allBookmarkedDuasWithTranslations = getBookmarkedDuasWithTranslationsUseCase()
         .map {
-            EventResources.Success(it)
+            UiStates.Success(it)
         }
         .flowOn(Dispatchers.IO)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = EventResources.Loading
+            initialValue = UiStates.Loading
         )
 
     val duaTypeWithCount =
         getBookmarkedDuasWithTranslationsUseCase.duaRepo.getAllDuaTypesAndCounts()
             .map {
-                EventResources.Success(it)
+                UiStates.Success(it)
             }
             .flowOn(Dispatchers.IO)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = EventResources.Loading
+                initialValue = UiStates.Loading
             )
 
     val settingsDuaLastRead = settings.getDuaLastReadId()

@@ -6,12 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.Settings
-import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.TasbihStateListener
-import com.mera.islam.duaazkar.core.utils.EventResources
 import com.mera.islam.duaazkar.core.utils.PaletteGenerator
+import com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.domain.models.asmaUlHusna.AsmaulHusnaModel
-import com.mera.islam.duaazkar.domain.repo.TasbihRepo
 import com.mera.islam.duaazkar.domain.repo.asmaUlHusna.AsmaulHusnaRepo
+import com.mera.islam.duaazkar.presentation.dua_tasbih_screen.DUA_ID
 import com.mera.islam.duaazkar.ui.theme.blueColor
 import com.mera.islam.duaazkar.ui.theme.green
 import com.mera.islam.duaazkar.ui.theme.greyColor
@@ -27,11 +26,9 @@ import com.mera.islam.duaazkar.ui.theme.yellowColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class AsmaWithAssets(
@@ -43,16 +40,15 @@ data class AsmaWithAssets(
 
 @HiltViewModel
 class AsmaulHusnaScreenViewModel @Inject constructor(
-    private val settings: Settings,
-    asmaulHusnaRepo: AsmaulHusnaRepo,
+    settings: Settings,
     private val paletteGenerator: PaletteGenerator,
-    savedStateHandle: SavedStateHandle,
-    tasbihRepo: TasbihRepo
+    val savedStateHandle: SavedStateHandle,
+    asmaulHusnaRepo: AsmaulHusnaRepo
 ) : ViewModel() {
 
     val asma = asmaulHusnaRepo.getAllAsmaulHusna()
         .map {
-            EventResources.Success(it.map { asmaulHusnaModel ->
+            UiStates.Success(it.map { asmaulHusnaModel ->
                 AsmaWithAssets(
                     color = randomColor(),
                     asma = asmaulHusnaModel,
@@ -65,26 +61,8 @@ class AsmaulHusnaScreenViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = EventResources.Loading
+            initialValue = UiStates.Loading
         )
-
-    private val tasbihStateListener = TasbihStateListener(
-        coroutineContext = viewModelScope.coroutineContext,
-        savedStateHandle = savedStateHandle,
-        tasbihRepo = tasbihRepo,
-        settings = settings
-    )
-
-    val tasbihCount: StateFlow<Int?>
-        get() = tasbihStateListener.tasbihCount
-
-    val tasbihTotalCount: StateFlow<Int?>
-        get() = tasbihStateListener.tasbihTotalCount
-
-    val tasbihSoundEnabled: StateFlow<Boolean>
-        get() = tasbihStateListener.tasbihSoundEnabled
-
-    fun setDuaId(duaId: Int) = tasbihStateListener.setDuaId(duaId)
 
     val asmaPreview = settings.getSelectedAsmaPreview()
         .flowOn(Dispatchers.IO)
@@ -93,10 +71,6 @@ class AsmaulHusnaScreenViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = R.drawable.frame_72
         )
-
-    fun setAsmaPreview(asmaPreview: Int) {
-        viewModelScope.launch { settings.setSelectedAsmaPreview(asmaPreview) }
-    }
 
     private var lastColorIndex = 0
     private fun randomColor(): Color {
@@ -117,5 +91,9 @@ class AsmaulHusnaScreenViewModel @Inject constructor(
 
         lastColorIndex = (lastColorIndex + 1) % colors.size
         return colors[lastColorIndex]
+    }
+
+    fun setSavedStateHandler(azkarId: Int) {
+        savedStateHandle[DUA_ID] = azkarId
     }
 }

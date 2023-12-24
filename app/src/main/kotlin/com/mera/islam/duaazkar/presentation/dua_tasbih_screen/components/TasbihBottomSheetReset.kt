@@ -27,6 +27,7 @@ import ir.kaaveh.sdpcompose.ssp
 fun TasbihBottomSheetReset(onCancelClick: () -> Unit, onResetClick: () -> Unit) {
     CustomBottomSheet(
         title = stringResource(id = R.string.reset),
+        onCloseBottomSheet = onCancelClick,
         addCloseButton = false,
         content = {
             Text(
