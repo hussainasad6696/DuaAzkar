@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import com.mera.islam.duaazkar.R
 import com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
 import com.mera.islam.duaazkar.core.extensions.dpToPx
-import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import com.mera.islam.duaazkar.core.substitution.CustomTextModel
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
@@ -49,7 +49,7 @@ import ir.kaaveh.sdpcompose.ssp
 
 @Composable
 fun CustomTextCell(
-    arabicModelWithTranslationModel: ArabicModelWithTranslationModel,
+    customTextModel: CustomTextModel,
     arabicFont: FontFamily = ArabicFonts.AL_QALAM_QURAN.getFont(),
     arabicColor: Color = Color.darkTextGrayColor,
     translationColor: Color = Color.darkTextGrayColor,
@@ -91,7 +91,7 @@ fun CustomTextCell(
 
         CustomText(
             modifier = Modifier.padding(horizontal = 5.sdp),
-            arabicModelWithTranslationModel = arabicModelWithTranslationModel,
+            customTextModel = customTextModel,
             arabicColor = arabicColor,
             translationColor = translationColor,
             transliterationColor = transliterationColor,
@@ -103,7 +103,7 @@ fun CustomTextCell(
         Spacer(modifier = Modifier.height(10.sdp))
 
         CellClickEvents(
-            isBookmarked = arabicModelWithTranslationModel.isFav(),
+            isBookmarked = customTextModel.isFav(),
             isPlaying = isPlaying,
             isDarkTheme = isDarkTheme,
             onPlayAudio = onPlayAudio,

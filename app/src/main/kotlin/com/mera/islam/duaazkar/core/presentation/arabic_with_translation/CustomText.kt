@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.mera.islam.duaazkar.core.TEXT_MIN_SIZE
 import com.mera.islam.duaazkar.core.enums.LanguageDirection
 import com.mera.islam.duaazkar.core.extensions.findWordPositions
-import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import com.mera.islam.duaazkar.core.substitution.CustomTextModel
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.core.utils.fonts.LeftLangFonts
 import com.mera.islam.duaazkar.ui.theme.darkTextGrayColor
@@ -31,7 +31,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun CustomText(
     modifier: Modifier = Modifier,
-    arabicModelWithTranslationModel: ArabicModelWithTranslationModel,
+    customTextModel: CustomTextModel,
     arabicColor: Color = Color.darkTextGrayColor,
     translationColor: Color = Color.darkTextGrayColor,
     transliterationColor: Color = Color.transliterationBlurColor,
@@ -59,7 +59,7 @@ fun CustomText(
         withStyle(style = ParagraphStyle(textAlign = TextAlign.End, lineHeight = 30.ssp)) {
             append(
                 AnnotatedString(
-                    text = arabicModelWithTranslationModel.getArabic().replace("\n"," "),
+                    text = customTextModel.getArabic().replace("\n"," "),
                     spanStyle = SpanStyle(
                         color = animatedArabicColor,
                         fontFamily = arabicFont,
@@ -71,7 +71,7 @@ fun CustomText(
 
         append("\n")
 
-        arabicModelWithTranslationModel.getTransliteration()?.let { transliteration ->
+        customTextModel.getTransliteration()?.let { transliteration ->
             withStyle(style = ParagraphStyle(textAlign = TextAlign.Start)) {
                 append(
                     AnnotatedString(
@@ -88,7 +88,7 @@ fun CustomText(
 
         append("\n")
 
-        arabicModelWithTranslationModel.getTranslation().forEach { translationWithLanguageDirection ->
+        customTextModel.getTranslation().forEach { translationWithLanguageDirection ->
 
             withStyle(
                 style = ParagraphStyle(
@@ -114,7 +114,7 @@ fun CustomText(
         withStyle(style = ParagraphStyle(textAlign = TextAlign.Start)) {
             append(
                 AnnotatedString(
-                    text = arabicModelWithTranslationModel.reasonOrReference(),
+                    text = customTextModel.reasonOrReference(),
                     spanStyle = SpanStyle(
                         color = animatedTranslationColor.copy(0.5f),
                         fontFamily = LeftLangFonts.ROBOTO.getFont(),

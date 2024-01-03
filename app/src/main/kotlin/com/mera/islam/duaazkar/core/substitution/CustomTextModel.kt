@@ -2,7 +2,7 @@ package  com.mera.islam.duaazkar.core.substitution
 
 import androidx.compose.ui.unit.TextUnit
 
-interface ArabicModelWithTranslationModel {
+interface CustomTextModel {
     fun getArabic(): String
     fun getTransliteration(): String? = null
     fun getTranslation(): List<TranslationWithLanguageDirection>

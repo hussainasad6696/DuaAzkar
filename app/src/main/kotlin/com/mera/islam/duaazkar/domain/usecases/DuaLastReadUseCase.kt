@@ -1,7 +1,7 @@
 package  com.mera.islam.duaazkar.domain.usecases
 
 import  com.mera.islam.duaazkar.core.Settings
-import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import  com.mera.islam.duaazkar.core.substitution.CustomTextModel
 import  com.mera.islam.duaazkar.domain.repo.dua.DuaRepo
 import  com.mera.islam.duaazkar.domain.repo.dua.DuaTranslationRepo
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +14,7 @@ class DuaLastReadUseCase @Inject constructor(
     private val duaTranslationRepo: DuaTranslationRepo,
     private val settings: Settings
 ) {
-    suspend operator fun invoke(): Flow<ArabicModelWithTranslationModel> {
+    suspend operator fun invoke(): Flow<CustomTextModel> {
         val duaId = settings.getDuaLastReadId().first()
         return if (duaId == -1) emptyFlow()
         else {

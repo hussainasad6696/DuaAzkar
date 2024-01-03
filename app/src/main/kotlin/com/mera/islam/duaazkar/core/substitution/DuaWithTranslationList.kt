@@ -8,7 +8,7 @@ data class DuaWithTranslationList(
     val duaModel: DuaModel,
     val duaTranslations: List<DuaTranslationWithTranslators>,
     val fontSize: TextUnit
-): ArabicModelWithTranslationModel {
+): CustomTextModel {
     override fun getArabic(): String = duaModel.arabic
     override fun getTransliteration(): String = duaModel.translitration
     override fun getTranslation(): List<TranslationWithLanguageDirection> = duaTranslations

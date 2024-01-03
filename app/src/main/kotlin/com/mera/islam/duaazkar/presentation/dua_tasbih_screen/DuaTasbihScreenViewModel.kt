@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mera.islam.duaazkar.core.Settings
-import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationStateListener
+import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.CustomTextStateListener
 import com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.domain.usecases.GetDuaByIdWithTranslationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,8 +24,8 @@ class DuaTasbihScreenViewModel @Inject constructor(
     settings: Settings
 ) : ViewModel() {
 
-    val arabicWithTranslationStateListener =
-        ArabicWithTranslationStateListener(
+    val customTextStateListener =
+        CustomTextStateListener(
             coroutineContext = viewModelScope.coroutineContext,
             settings = settings
         )

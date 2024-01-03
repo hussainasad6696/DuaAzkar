@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.Settings
 import com.mera.islam.duaazkar.core.enums.LanguageDirection
-import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.ArabicWithTranslationStateListener
+import  com.mera.islam.duaazkar.core.presentation.arabic_with_translation.CustomTextStateListener
 import  com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.core.utils.SystemBrightnessSettings
 import  com.mera.islam.duaazkar.core.utils.fonts.FontsType
@@ -51,8 +51,8 @@ class DuaScreenViewModel @Inject constructor(
     private val _uiEvent: MutableSharedFlow<UiEvent> = MutableSharedFlow()
     val uiEvent = _uiEvent.asSharedFlow()
 
-    val arabicWithTranslationStateListener =
-        ArabicWithTranslationStateListener(
+    val customTextStateListener =
+        CustomTextStateListener(
             coroutineContext = viewModelScope.coroutineContext,
             settings = settings
         )

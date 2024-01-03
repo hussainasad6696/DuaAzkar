@@ -51,10 +51,9 @@ import com.mera.islam.duaazkar.core.presentation.DefaultTopAppBar
 import com.mera.islam.duaazkar.core.presentation.DuaAzkarWithBackground
 import com.mera.islam.duaazkar.core.presentation.Loading
 import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.CustomTextCell
-import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import com.mera.islam.duaazkar.core.substitution.CustomTextModel
 import com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
-import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomBar
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomNavItems
 import com.mera.islam.duaazkar.presentation.dua_screen.components.DuaBottomSheetAudio
@@ -256,14 +255,14 @@ fun DuaScreen(
                                     .background(color = Color.Transparent)
                             )
 
-                            is UiStates.Success<List<ArabicModelWithTranslationModel>> -> {
+                            is UiStates.Success<List<CustomTextModel>> -> {
 
                                 val listState = rememberLazyListState()
                                 val duas =
                                     (allDuas as UiStates.Success).template
 
-                                val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
-                                val arabicFonts by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
+                                val textSize by viewModel.customTextStateListener.textSize.collectAsStateWithLifecycle()
+                                val arabicFonts by viewModel.customTextStateListener.arabicFont.collectAsStateWithLifecycle()
 
                                 LazyColumn(
                                     content = {
@@ -278,7 +277,7 @@ fun DuaScreen(
                                             }
 
                                             CustomTextCell(
-                                                arabicModelWithTranslationModel = duaItem,
+                                                customTextModel = duaItem,
                                                 arabicFont = ArabicFonts.getLanguageFont(
                                                     arabicFonts
                                                 ).getFont(),
@@ -382,8 +381,8 @@ private fun BottomSheetSettings(
     viewModel: DuaScreenViewModel,
     onCloseBottomSheet: () -> Unit = {}
 ) {
-    val duaTextSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
-    val arabicFont by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
+    val duaTextSize by viewModel.customTextStateListener.textSize.collectAsStateWithLifecycle()
+    val arabicFont by viewModel.customTextStateListener.arabicFont.collectAsStateWithLifecycle()
     val translationOptions by viewModel.translators.collectAsStateWithLifecycle()
 
     DuaBottomSheetSettings(

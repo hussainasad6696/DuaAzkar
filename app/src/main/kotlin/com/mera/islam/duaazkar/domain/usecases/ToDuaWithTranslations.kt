@@ -4,7 +4,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import  com.mera.islam.duaazkar.core.Settings
 import  com.mera.islam.duaazkar.core.enums.LanguageDirection
-import  com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import  com.mera.islam.duaazkar.core.substitution.CustomTextModel
 import  com.mera.islam.duaazkar.core.substitution.DuaTranslationWithTranslators
 import  com.mera.islam.duaazkar.core.substitution.DuaWithTranslationList
 import  com.mera.islam.duaazkar.domain.models.dua.DuaModel
@@ -17,7 +17,7 @@ fun Flow<List<DuaModel>>.mapDuaFlowToDuaWithTranslationListFlow(
     languageIdsFlow: Flow<List<Int>>,
     duaTranslationRepo: DuaTranslationRepo,
     settings: Settings
-): Flow<List<ArabicModelWithTranslationModel>> = combine(
+): Flow<List<CustomTextModel>> = combine(
     this,
     languageIdsFlow,
     settings.getLeftFont(),
@@ -59,7 +59,7 @@ fun Flow<DuaModel>.mapDuaFlowToDuaWithTranslationModelFlow(
     languageIdsFlow: Flow<List<Int>>,
     duaTranslationRepo: DuaTranslationRepo,
     settings: Settings
-): Flow<ArabicModelWithTranslationModel> = combine(
+): Flow<CustomTextModel> = combine(
     this,
     languageIdsFlow,
     settings.getLeftFont(),

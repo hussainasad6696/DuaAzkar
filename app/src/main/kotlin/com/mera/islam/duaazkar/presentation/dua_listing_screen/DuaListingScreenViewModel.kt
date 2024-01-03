@@ -2,7 +2,7 @@ package com.mera.islam.duaazkar.presentation.dua_listing_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import com.mera.islam.duaazkar.core.substitution.CustomTextModel
 import com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.domain.usecases.DuaByIdsWithTranslationUseCase
@@ -18,7 +18,7 @@ class DuaListingScreenViewModel @Inject constructor(
     private val duaWithTranslationByIds: DuaByIdsWithTranslationUseCase
 ) : ViewModel() {
 
-    private val _duasHeadingList: MutableStateFlow<UiStates<List<ArabicModelWithTranslationModel>>> =
+    private val _duasHeadingList: MutableStateFlow<UiStates<List<CustomTextModel>>> =
         MutableStateFlow(UiStates.Loading)
     val duaHeadingList = _duasHeadingList.asStateFlow()
 

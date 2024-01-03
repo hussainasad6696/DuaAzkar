@@ -41,7 +41,7 @@ import com.mera.islam.duaazkar.core.presentation.Loading
 import com.mera.islam.duaazkar.core.presentation.arabic_with_translation.CustomText
 import com.mera.islam.duaazkar.core.presentation.bounceClickable
 import com.mera.islam.duaazkar.core.presentation.tasbih_bottom_sheets.TasbihWithBottomSheets
-import com.mera.islam.duaazkar.core.substitution.ArabicModelWithTranslationModel
+import com.mera.islam.duaazkar.core.substitution.CustomTextModel
 import com.mera.islam.duaazkar.core.utils.UiStates
 import com.mera.islam.duaazkar.core.utils.fonts.ArabicFonts
 import com.mera.islam.duaazkar.ui.theme.RobotoFonts
@@ -81,11 +81,11 @@ fun DuaTasbihScreen(
                     isLoading = true
                 )
 
-                is UiStates.Success<ArabicModelWithTranslationModel> -> {
+                is UiStates.Success<CustomTextModel> -> {
                     val dua = (duaById as UiStates.Success).template
 
-                    val textSize by viewModel.arabicWithTranslationStateListener.textSize.collectAsStateWithLifecycle()
-                    val arabicFonts by viewModel.arabicWithTranslationStateListener.arabicFont.collectAsStateWithLifecycle()
+                    val textSize by viewModel.customTextStateListener.textSize.collectAsStateWithLifecycle()
+                    val arabicFonts by viewModel.customTextStateListener.arabicFont.collectAsStateWithLifecycle()
 
                     CustomText(
                         modifier = Modifier
@@ -93,7 +93,7 @@ fun DuaTasbihScreen(
                             .fillMaxWidth()
                             .heightIn(min = 100.sdp, max = (0.4 * localScreenConfig).dp)
                             .verticalScroll(rememberScrollState()),
-                        arabicModelWithTranslationModel = dua,
+                        customTextModel = dua,
                         arabicColor = Color.darkTextGrayColor,
                         translationColor = Color.darkTextGrayColor,
                         transliterationColor = Color.transliterationBlurColor,
