@@ -1,5 +1,6 @@
 package com.mera.islam.duaazkar
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,6 +29,9 @@ import com.mera.islam.duaazkar.presentation.dua_tasbih_screen.DuaTasbihScreen
 import com.mera.islam.duaazkar.presentation.landing_screen.LandingScreen
 import com.mera.islam.duaazkar.ui.theme.DuaAzkarTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.DeserializationStrategy
+import kotlinx.serialization.json.Json
+import java.io.Serializable
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -100,7 +104,7 @@ fun NavGraphBuilder.duaTasbihScreen(navController: NavHostController) {
     ) { backStackEntry ->
         val duaId = backStackEntry.arguments?.getInt("duaId") ?: -1
 
-        DuaTasbihScreen(navHostController = navController,duaId = duaId)
+        DuaTasbihScreen(navHostController = navController, duaId = duaId)
     }
 }
 
@@ -136,20 +140,12 @@ fun NavGraphBuilder.duaScreen(navHostController: NavHostController) {
         popEnterTransition = { popEnterTransition() },
         popExitTransition = { popExitTransition() }
     ) { backStackEntry ->
-        val lastReadId =
-            backStackEntry.arguments?.getInt("lastReadId") ?: -1
 
-        val duaType =
-            DuaType.toDuaType(backStackEntry.arguments?.getInt("duaType") ?: DuaType.ALL.type)
-
-        val matchTextList =
-            backStackEntry.arguments?.getString("matchTextList")?.split(",") ?: emptyList()
+        val args = Json.decodeFromString<NavControllerRoutes.DUA_SCREEN.DuaScreenArgs>(backStackEntry.arguments?.getString("args") ?: duaScreenNav.getDefault())
 
         DuaScreen(
             navHostController = navHostController,
-            lastRead = lastReadId,
-            duaType = duaType,
-            matchTextList = matchTextList
+            args = args
         )
     }
 }

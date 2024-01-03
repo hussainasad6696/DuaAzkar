@@ -41,6 +41,3 @@ fun Dp.dpToPx(): Float {
     val localDensity = LocalDensity.current
     return with(localDensity) { this@dpToPx.toPx() }
 }
-
-inline val Context.downloadService: DownloadManager
-    get() = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager

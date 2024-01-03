@@ -252,7 +252,7 @@ fun MorningEveningAzkar(
         ),
         onItemClick = {
             navController.navigate(
-                NavControllerRoutes.DUA_SCREEN(duaType = DuaType.Morning_Evening_Night)
+                NavControllerRoutes.DUA_SCREEN(args = NavControllerRoutes.DUA_SCREEN.DuaScreenArgs(duaType = DuaType.Morning_Evening_Night))
                     .getPathWithNavArgs()
             )
         }
@@ -283,7 +283,7 @@ fun Tasbih(
         ),
         onItemClick = {
             navController.navigate(
-                NavControllerRoutes.DUA_SCREEN(duaType = DuaType.Ibadah)
+                NavControllerRoutes.DUA_SCREEN(args = NavControllerRoutes.DUA_SCREEN.DuaScreenArgs(duaType = DuaType.Ibadah))
                     .getPathWithNavArgs()
             )
         }
@@ -309,8 +309,10 @@ fun LastRead(
         subTitle = lastRead.second,
         onItemClick = {
             val duaNav = NavControllerRoutes.DUA_SCREEN(
-                lastReadId = lastRead.first,
-                duaType = DuaType.ALL
+                args = NavControllerRoutes.DUA_SCREEN.DuaScreenArgs(
+                    lastReadId = lastRead.first,
+                    duaType = DuaType.ALL
+                )
             )
             navController.navigate(duaNav.getPathWithNavArgs())
         }

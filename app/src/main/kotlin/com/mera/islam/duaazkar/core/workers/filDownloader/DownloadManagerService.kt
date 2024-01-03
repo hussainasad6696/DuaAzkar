@@ -3,27 +3,33 @@ package com.mera.islam.duaazkar.core.workers.filDownloader
 import android.app.DownloadManager
 import android.content.Context
 import android.database.Cursor
-import android.net.Uri
-import com.mera.islam.duaazkar.core.extensions.downloadService
+import androidx.core.net.toUri
+import com.mera.islam.duaazkar.core.DUA_DIR
+import com.mera.islam.duaazkar.core.downloadService
+import com.mera.islam.duaazkar.core.duaDownloadAddress
+import com.mera.islam.duaazkar.core.extensions.log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.File
+import java.net.URL
+import java.net.URLConnection
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
-class DownloadManagerService @Inject constructor(@ApplicationContext context: Context) : CoroutineScope {
+class DownloadManagerService @Inject constructor(@ApplicationContext private val context: Context) :
+    CoroutineScope {
 
     private val downloadService = context.downloadService
     private lateinit var downloadRequest: DownloadManager.Request
     private var downloadId: Long = -1
 
     private var downloadProgressListener: DownloadProgressListener? = null
-    private var downloadParamsListener: DownloadRequestNotCompletedListener? = null
     private var downloadFailedListener: DownloadFailedListener? = null
     private var downloadPausedListener: DownloadPausedListener? = null
     private var downloadCompletedListener: DownloadCompletedListener? = null
@@ -31,11 +37,6 @@ class DownloadManagerService @Inject constructor(@ApplicationContext context: Co
 
     fun setOnDownloadProgressListener(progressListener: DownloadProgressListener): DownloadManagerService {
         this.downloadProgressListener = progressListener
-        return this
-    }
-
-    fun setOnDownloadParamsIncompleteListener(downloadParamsIncomplete: DownloadRequestNotCompletedListener): DownloadManagerService {
-        this.downloadParamsListener = downloadParamsIncomplete
         return this
     }
 
@@ -59,30 +60,47 @@ class DownloadManagerService @Inject constructor(@ApplicationContext context: Co
         return this
     }
 
+    private fun mimeType(urlString: String): String? = runCatching {
+        val url = URL(urlString)
+        val connection: URLConnection = url.openConnection()
+        connection.connect()
+
+        connection.contentType
+    }.getOrNull()
+
     fun request(
         url: String,
-        fileOutputPath: File,
-        meteredOnly: Boolean //Set if download is allowed on Mobile network
+        directoryPath: String,
+        fileName: String,
+        meteredOnly: Boolean = false //Set if download is allowed on Mobile network
     ): DownloadManagerService? {
         if (url.isEmpty()) {
-            downloadParamsListener?.onDownloadRequestRemaining("Url is empty")
+            downloadFailedListener?.onDownloadFailed("Url is empty")
             return null
         }
 
-        if (fileOutputPath.absolutePath.isEmpty()) {
-            downloadParamsListener?.onDownloadRequestRemaining("Output path is empty")
+        if (fileName.isEmpty()) {
+            downloadFailedListener?.onDownloadFailed("Output path is empty")
             return null
         }
 
+        if (File(context.duaDownloadAddress,fileName).exists()) {
+            downloadFailedListener?.onDownloadFailed("File already exist")
+            return null
+        }
 
-        downloadRequest = DownloadManager.Request(Uri.parse(url))
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-            .setDestinationUri(Uri.fromFile(fileOutputPath))
-            .setTitle("Downloading ${fileOutputPath.name}")
+        downloadRequest = DownloadManager.Request(url.toUri())
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalFilesDir(context,directoryPath,fileName)
+            .setTitle("Downloading $fileName")
             .setDescription("Please wait while downloading media resources")
             .setRequiresCharging(false)
             .setAllowedOverMetered(meteredOnly)
             .setAllowedOverRoaming(false)
+
+        mimeType(url)?.let {
+            downloadRequest.setMimeType(it)
+        }
 
         return this
     }
@@ -91,22 +109,25 @@ class DownloadManagerService @Inject constructor(@ApplicationContext context: Co
         if (::downloadRequest.isInitialized) {
             downloadId = downloadService.enqueue(downloadRequest)
             downloadObserver()
-        }
-        else downloadParamsListener?.onDownloadRequestRemaining("Download request remaining")
+        } else downloadFailedListener?.onDownloadFailed("Download request remaining")
     }
 
     private fun downloadObserver() = launch {
-        val cursor: Cursor =
-            downloadService.query(DownloadManager.Query().setFilterById(downloadId))
-        val columnStatus = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
-        val columnTotal = cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
-        val columnDownloadedBytes = cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
-
         while (isActive) {
-            if (cursor.moveToFirst()) {
+            val cursor: Cursor =
+                downloadService.query(DownloadManager.Query().setFilterById(downloadId))
+            val columnStatus = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
+            val columnTotal = cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+            val columnDownloadedBytes =
+                cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
 
-                when(cursor.getInt(columnStatus)) {
-                    DownloadManager.STATUS_FAILED -> downloadFailedListener?.onDownloadFailed()
+            if (cursor.moveToFirst()) {
+                when (cursor.getInt(columnStatus)) {
+                    DownloadManager.STATUS_FAILED -> {
+                        downloadFailedListener?.onDownloadFailed("Download failed")
+                        this.cancel()
+                    }
+
                     DownloadManager.STATUS_PAUSED -> downloadPausedListener?.onDownloadPaused()
                     DownloadManager.STATUS_PENDING -> downloadPendingListener?.onDownloadPending()
                     DownloadManager.STATUS_RUNNING -> {
@@ -117,13 +138,15 @@ class DownloadManagerService @Inject constructor(@ApplicationContext context: Co
                             downloadProgressListener?.onProgressListener(((downloaded * 100L) / total).toInt())
                         }
                     }
+
                     DownloadManager.STATUS_SUCCESSFUL -> {
                         downloadCompletedListener?.onDownloadCompleted()
-
                         this.cancel()
                     }
                 }
             }
+
+            delay(400L)
         }
     }
 
@@ -134,12 +157,9 @@ class DownloadManagerService @Inject constructor(@ApplicationContext context: Co
         fun onProgressListener(progress: Int)
     }
 
-    fun interface DownloadRequestNotCompletedListener {
-        fun onDownloadRequestRemaining(message: String)
-    }
 
     fun interface DownloadFailedListener {
-        fun onDownloadFailed()
+        fun onDownloadFailed(message: String)
     }
 
     fun interface DownloadPausedListener {

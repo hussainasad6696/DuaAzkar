@@ -50,8 +50,8 @@ class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         CoroutineScope(Dispatchers.IO).launch {
             intent?.action?.let {
-                context?.let {
-                    if (SdkHelper.isO()) notificationManager(it).createNotificationChannel(
+                context?.let { context ->
+                    if (SdkHelper.isO()) context.notificationManager.createNotificationChannel(
                         notificationChannel
                     )
                 }
@@ -143,7 +143,7 @@ class AlarmReceiver : BroadcastReceiver() {
         bigText: String,
         notificationId: Int
     ) {
-        if (SdkHelper.isO()) notificationManager(context).createNotificationChannel(
+        if (SdkHelper.isO()) context.notificationManager.createNotificationChannel(
             notificationChannel
         )
 

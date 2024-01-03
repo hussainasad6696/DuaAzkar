@@ -78,9 +78,7 @@ import java.net.URL
 fun DuaScreen(
     navHostController: NavHostController,
     viewModel: DuaScreenViewModel = hiltViewModel(),
-    lastRead: Int = -1,
-    duaType: DuaType,
-    matchTextList: List<String> = emptyList()
+    args: NavControllerRoutes.DUA_SCREEN.DuaScreenArgs
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -285,7 +283,7 @@ fun DuaScreen(
                                                     arabicFonts
                                                 ).getFont(),
                                                 textSize = if (textSize == 0.sp) duaItem.fontSize() else textSize,
-                                                matchTextList = matchTextList,
+                                                matchTextList = args.matchTextList,
                                                 isPlaying = isPlaying,
                                                 cardBackgroundColor = when (selectedTheme) {
                                                     R.drawable.ic_white_theme -> Color.White
@@ -355,10 +353,10 @@ fun DuaScreen(
                                         .background(color = Color.Transparent)
                                 )
 
-                                if (duas.isNotEmpty() && lastRead != -1)
+                                if (duas.isNotEmpty() && args.lastReadId != -1)
                                     LaunchedEffect(key1 = Unit, block = {
                                         val index =
-                                            duas.indexOfFirst { it.getDataId() == lastRead }
+                                            duas.indexOfFirst { it.getDataId() == args.lastReadId }
                                         if (index == -1) return@LaunchedEffect
 
                                         listState.scrollToItem(index)

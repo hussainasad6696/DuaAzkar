@@ -5,6 +5,10 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.mera.islam.duaazkar.core.extensions.log
 import com.mera.islam.duaazkar.domain.models.dua.DuaType
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 
 sealed class NavControllerRoutes(val route: String) {
@@ -12,7 +16,7 @@ sealed class NavControllerRoutes(val route: String) {
     data class DUA_TASBIH_SCREEN(
         val rout: String = "duaTasbihScreen",
         val duaId: Int = -1
-    ): NavControllerRoutes(rout) {
+    ) : NavControllerRoutes(rout) {
         val listOfArguments = listOf(
             navArgument("duaId") {
                 type = NavType.IntType
@@ -31,42 +35,38 @@ sealed class NavControllerRoutes(val route: String) {
             return mainPath
         }
     }
+
     data class DUA_SCREEN(
         val rout: String = "duaScreen",
-        val lastReadId: Int = -1,
-        val duaType: DuaType = DuaType.ALL,
-        val matchTextList: List<String> = emptyList()
+        val args: DuaScreenArgs = DuaScreenArgs()
     ) :
         NavControllerRoutes(rout) {
+
+        @Serializable
+        data class DuaScreenArgs(
+            @SerialName("last_read_id")
+            val lastReadId: Int = -1,
+            @SerialName("dua_type")
+            val duaType: DuaType = DuaType.ALL,
+            @SerialName("match_text_list")
+            val matchTextList: List<String> = emptyList()
+        )
+
+        fun getDefault() = Json.encodeToString(args)
+
         val listOfArguments = listOf(
-            navArgument("lastReadId") {
-                type = NavType.IntType
-                defaultValue = -1
-            },
-            navArgument("duaType") {
-                type = NavType.IntType
-                defaultValue = duaType.type
-            },
-            navArgument("matchTextList") {
+            navArgument("args") {
                 type = NavType.StringType
-                defaultValue = matchTextList.joinToString(",")
+                defaultValue = getDefault()
             }
         )
 
-        fun getPath() = "$rout?lastReadId={lastReadId}&duaType={duaType}&matchTextList={matchTextList}"
+        fun getPath() = "$rout/{args}"
+
         fun getPathWithNavArgs(): String {
             var mainPath = rout
 
-            if (lastReadId != -1)
-                mainPath += "${if (mainPath.contains("?")) "&" else "?"}lastReadId=$lastReadId"
-
-            mainPath += "${if (mainPath.contains("?")) "&" else "?"}matchTextList=${
-                Uri.encode(matchTextList.joinToString(
-                    ","
-                ))
-            }"
-
-            mainPath += "${if (mainPath.contains("?")) "&" else "?"}duaType=${duaType.type}"
+            mainPath += "/${getDefault()}"
 
             return mainPath
         }
@@ -75,7 +75,7 @@ sealed class NavControllerRoutes(val route: String) {
     data class DUA_SEARCH_SCREEN(val rout: String = "duaSearchScreen") :
         NavControllerRoutes(rout)
 
-    data class ASMA_UL_HUSNA(val rout: String = "asmaulHusna"): NavControllerRoutes(rout)
+    data class ASMA_UL_HUSNA(val rout: String = "asmaulHusna") : NavControllerRoutes(rout)
 
     data class DUA_LISTING_SCREEN(
         val rout: String = "duaListingScreen",

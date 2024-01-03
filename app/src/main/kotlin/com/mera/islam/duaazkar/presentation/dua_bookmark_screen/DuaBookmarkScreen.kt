@@ -74,7 +74,7 @@ fun DuaBookmarkScreen(
 
                         IndexedItems(index = it + 1, dua = dua.reasonOrReference(), onItemClick = {
                             val duaNav =
-                                NavControllerRoutes.DUA_SCREEN(lastReadId = dua.getDataId())
+                                NavControllerRoutes.DUA_SCREEN(args = NavControllerRoutes.DUA_SCREEN.DuaScreenArgs(lastReadId = dua.getDataId()))
                             navController.navigate(duaNav.getPathWithNavArgs())
                         })
 
