@@ -40,3 +40,4 @@ inline val Context.downloadService: DownloadManager
 const val DUA_DIR = "duas"
 inline val Context.duaDownloadAddress: File
     get() = getExternalFilesDir(DUA_DIR) ?: File(filesDir, DUA_DIR)
+

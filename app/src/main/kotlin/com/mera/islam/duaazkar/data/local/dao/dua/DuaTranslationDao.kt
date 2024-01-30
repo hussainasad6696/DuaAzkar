@@ -2,6 +2,7 @@ package  com.mera.islam.duaazkar.data.local.dao.dua
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
 import  com.mera.islam.duaazkar.data.local.entities.dua.relationalEntities.DuaWithTranslationRelationalEntity
 
@@ -21,6 +22,7 @@ interface DuaTranslationDao {
     @Transaction
     @Query("SELECT * FROM dua_translation WHERE translator_id = :languageId ORDER BY RANDOM() LIMIT 1")
     suspend fun getRandomDuaWithTranslation(languageId: Int): DuaWithTranslationRelationalEntity
+    @RewriteQueriesToDropUnusedColumns
     @Transaction
     @Query("""
         SELECT * FROM dua_translation

@@ -68,6 +68,10 @@ class DownloadManagerService @Inject constructor(@ApplicationContext private val
         connection.contentType
     }.getOrNull()
 
+    private var url: String = ""
+    private var directoryPath: String = ""
+    private var fileName: String = ""
+
     fun request(
         url: String,
         directoryPath: String,
@@ -79,19 +83,31 @@ class DownloadManagerService @Inject constructor(@ApplicationContext private val
             return null
         }
 
+        this.url = url
+
         if (fileName.isEmpty()) {
             downloadFailedListener?.onDownloadFailed("Output path is empty")
             return null
         }
 
-        if (File(context.duaDownloadAddress,fileName).exists()) {
+        this.fileName = fileName
+
+        if (directoryPath.isEmpty()) {
+            downloadFailedListener?.onDownloadFailed("Directory path is empty")
+            return null
+        }
+
+        this.directoryPath = directoryPath
+
+        if (File(context.getExternalFilesDir(directoryPath), fileName).exists()) {
             downloadFailedListener?.onDownloadFailed("File already exist")
             return null
         }
 
+
         downloadRequest = DownloadManager.Request(url.toUri())
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            .setDestinationInExternalFilesDir(context,directoryPath,fileName)
+            .setDestinationInExternalFilesDir(context, directoryPath, fileName)
             .setTitle("Downloading $fileName")
             .setDescription("Please wait while downloading media resources")
             .setRequiresCharging(false)
@@ -144,6 +160,10 @@ class DownloadManagerService @Inject constructor(@ApplicationContext private val
                         this.cancel()
                     }
                 }
+            } else {
+                downloadFailedListener?.onDownloadFailed("Download canceled")
+                runCatching { File(context.getExternalFilesDir(directoryPath), fileName).delete() }
+                this.cancel()
             }
 
             delay(400L)
@@ -173,4 +193,10 @@ class DownloadManagerService @Inject constructor(@ApplicationContext private val
     fun interface DownloadPendingListener {
         fun onDownloadPending()
     }
+}
+
+fun main() {
+    val audioNames = listOf("n1", "n3", "n44")
+
+
 }

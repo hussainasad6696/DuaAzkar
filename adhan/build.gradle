@@ -3,8 +3,8 @@ plugins {
 }
 
 compileJava {
-   sourceCompatibility = JavaVersion.VERSION_17
-   targetCompatibility = JavaVersion.VERSION_17
+   sourceCompatibility = JavaVersion.VERSION_1_8
+   targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 dependencies {
@@ -17,11 +17,11 @@ dependencies {
 // version '1.9.10'
 compileKotlin {
    kotlinOptions {
-      jvmTarget = "17"
+      jvmTarget = "1.8"
    }
 }
 compileTestKotlin {
    kotlinOptions {
-      jvmTarget = "17"
+      jvmTarget = "1.8"
    }
 }
