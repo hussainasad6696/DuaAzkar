@@ -1,10 +1,16 @@
-package com.batoulapps.adhan.data;
+package com.batoulapps.adhan.data
 
-public class TimingParameters {
-  public double latitude;
-  public double longitude;
-  public String timezone;
-  public String method;
-  public String madhab;
-  public String highLatitudeRule;
+class TimingParameters {
+    @JvmField
+    var latitude = 0.0
+    @JvmField
+    var longitude = 0.0
+    @JvmField
+    var timezone: String? = null
+    @JvmField
+    var method: String? = null
+    @JvmField
+    var madhab: String? = null
+    @JvmField
+    var highLatitudeRule: String? = null
 }

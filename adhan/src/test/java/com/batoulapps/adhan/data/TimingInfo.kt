@@ -1,11 +1,18 @@
-package com.batoulapps.adhan.data;
+package com.batoulapps.adhan.data
 
-public class TimingInfo {
-  public String date;
-  public String fajr;
-  public String sunrise;
-  public String dhuhr;
-  public String asr;
-  public String maghrib;
-  public String isha;
+class TimingInfo {
+    @JvmField
+    var date: String? = null
+    @JvmField
+    var fajr: String? = null
+    @JvmField
+    var sunrise: String? = null
+    @JvmField
+    var dhuhr: String? = null
+    @JvmField
+    var asr: String? = null
+    @JvmField
+    var maghrib: String? = null
+    @JvmField
+    var isha: String? = null
 }

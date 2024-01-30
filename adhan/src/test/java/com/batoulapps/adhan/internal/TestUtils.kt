@@ -1,53 +1,57 @@
-package com.batoulapps.adhan.internal;
+package com.batoulapps.adhan.internal
 
-import com.batoulapps.adhan.data.CalendarUtil;
-import com.batoulapps.adhan.data.DateComponents;
+import com.batoulapps.adhan.data.CalendarUtil.add
+import com.batoulapps.adhan.data.DateComponents
+import com.batoulapps.adhan.data.DateComponents.Companion.fromUTC
+import java.util.Calendar
+import java.util.Date
+import java.util.GregorianCalendar
+import java.util.TimeZone
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+object TestUtils {
+    @JvmStatic
+    fun makeDate(year: Int, month: Int, day: Int): Date {
+        return makeDate(year, month, day, 0, 0, 0)
+    }
 
-public class TestUtils {
+    @JvmOverloads
+    fun makeDate(year: Int, month: Int, day: Int, hour: Int, minute: Int, second: Int = 0): Date {
+        val calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar[year, month - 1, day, hour, minute] = second
+        return calendar.time
+    }
 
-  public static Date makeDate(int year, int month, int day) {
-    return makeDate(year, month, day, 0, 0, 0);
-  }
+    @JvmStatic
+    fun getDayOfYear(date: Date?): Int {
+        val calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar.time = date
+        return calendar[Calendar.DAY_OF_YEAR]
+    }
 
-  static Date makeDate(int year, int month, int day, int hour, int minute) {
-    return makeDate(year, month, day, hour, minute, 0);
-  }
+    @JvmStatic
+    fun getDateComponents(date: String): DateComponents {
+        val pieces = date.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val year = pieces[0].toInt()
+        val month = pieces[1].toInt()
+        val day = pieces[2].toInt()
+        return DateComponents(year, month, day)
+    }
 
-  static Date makeDate(int year, int month, int day, int hour, int minute, int second) {
-    Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
-    //noinspection MagicConstant
-    calendar.set(year, month - 1, day, hour, minute, second);
-    return calendar.getTime();
-  }
+    @JvmStatic
+    fun addSeconds(date: Date?, seconds: Int): Date {
+        return add(date, seconds, Calendar.SECOND)
+    }
 
-  public static int getDayOfYear(Date date) {
-    Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
-    calendar.setTime(date);
-    return calendar.get(Calendar.DAY_OF_YEAR);
-  }
-
-  public static DateComponents getDateComponents(String date) {
-    String[] pieces = date.split("-");
-    int year = Integer.parseInt(pieces[0]);
-    int month = Integer.parseInt(pieces[1]);
-    int day = Integer.parseInt(pieces[2]);
-    return new DateComponents(year, month, day);
-  }
-
-  public static Date addSeconds(Date date, int seconds) {
-    return CalendarUtil.add(date, seconds, Calendar.SECOND);
-  }
-
-  static DateComponents makeDateWithOffset(int year, int month, int day, int offset, int unit) {
-    Calendar calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
-    //noinspection MagicConstant
-    calendar.set(year, month - 1, day);
-    calendar.add(unit, offset);
-    return DateComponents.fromUTC(calendar.getTime());
-  }
+    fun makeDateWithOffset(
+        year: Int,
+        month: Int,
+        day: Int,
+        offset: Int,
+        unit: Int
+    ): DateComponents {
+        val calendar = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"))
+        calendar[year, month - 1] = day
+        calendar.add(unit, offset)
+        return fromUTC(calendar.time)
+    }
 }

@@ -1,7 +1,7 @@
-package com.batoulapps.adhan.data;
+package com.batoulapps.adhan.data
 
-public class TimingFile {
-  public TimingParameters params;
-  public TimingInfo[] times;
-  public long variance;
+class TimingFile {
+    var params: TimingParameters? = null
+    var timingInfos: Array<TimingInfo> = emptyArray()
+    var variance: Long = 0
 }
