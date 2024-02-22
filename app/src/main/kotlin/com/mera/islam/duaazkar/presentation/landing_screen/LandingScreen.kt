@@ -83,7 +83,7 @@ fun LandingScreen(
                 actions = {
                     if (selectedScreen == BottomNavItems.Categories)
                         IconButton(onClick = {
-                            navController.navigate(NavControllerRoutes.DUA_SEARCH_SCREEN().route)
+                            navController.navigate(NavControllerRoutes.DuaSearchScreen().route)
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_search_icon),

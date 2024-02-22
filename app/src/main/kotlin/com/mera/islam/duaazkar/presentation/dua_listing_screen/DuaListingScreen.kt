@@ -72,8 +72,8 @@ fun DuaListingScreen(
                             dua = dua.reasonOrReference(),
                             onItemClick = {
                                 val duaNav =
-                                    NavControllerRoutes.DUA_SCREEN(
-                                        args = NavControllerRoutes.DUA_SCREEN.DuaScreenArgs(
+                                    NavControllerRoutes.DuaScreen(
+                                        args = NavControllerRoutes.DuaScreen.DuaScreenArgs(
                                             lastReadId = dua.getDataId(),
                                             duaType = dua.getDataType() as DuaType,
                                             matchTextList = matchTextList

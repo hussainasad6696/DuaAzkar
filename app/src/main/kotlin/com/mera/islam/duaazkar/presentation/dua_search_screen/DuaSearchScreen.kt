@@ -105,7 +105,7 @@ fun DuaSearchScreen(
                                     coroutineScope.launch {
                                         val keywords = viewModel.getKeywords()
                                         navController.navigate(
-                                            NavControllerRoutes.DUA_LISTING_SCREEN(
+                                            NavControllerRoutes.DuaListingScreen(
                                                 duaListArray = dua.getIdList().toIntArray(),
                                                 matchTextList = keywords
                                             ).getPathWithNavArgs()

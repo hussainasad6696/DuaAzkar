@@ -1,6 +1,5 @@
 package com.mera.islam.duaazkar
 
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,7 +19,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.mera.islam.duaazkar.domain.models.dua.DuaType
 import com.mera.islam.duaazkar.presentation.asma_ul_husna_screen.AsmaulHusnaScreen
 import com.mera.islam.duaazkar.presentation.dua_listing_screen.DuaListingScreen
 import com.mera.islam.duaazkar.presentation.dua_screen.DuaScreen
@@ -29,9 +27,7 @@ import com.mera.islam.duaazkar.presentation.dua_tasbih_screen.DuaTasbihScreen
 import com.mera.islam.duaazkar.presentation.landing_screen.LandingScreen
 import com.mera.islam.duaazkar.ui.theme.DuaAzkarTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.Json
-import java.io.Serializable
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -68,7 +64,7 @@ fun Beginning(windowSizeClass: WindowSizeClass) {
 
         duaScreen(navController)
 
-        composable(NavControllerRoutes.DUA_SEARCH_SCREEN().route,
+        composable(NavControllerRoutes.DuaSearchScreen().route,
             enterTransition = { enterTransition() },
             exitTransition = { exitTransition() },
             popEnterTransition = { popEnterTransition() },
@@ -79,7 +75,7 @@ fun Beginning(windowSizeClass: WindowSizeClass) {
         duaListingScreen(navController)
 
         composable(
-            NavControllerRoutes.ASMA_UL_HUSNA().route,
+            NavControllerRoutes.AsmaUlHusna().route,
             enterTransition = { enterTransition() },
             exitTransition = { exitTransition() },
             popEnterTransition = { popEnterTransition() },
@@ -93,7 +89,7 @@ fun Beginning(windowSizeClass: WindowSizeClass) {
 }
 
 fun NavGraphBuilder.duaTasbihScreen(navController: NavHostController) {
-    val duaTasbihNav = NavControllerRoutes.DUA_TASBIH_SCREEN()
+    val duaTasbihNav = NavControllerRoutes.DuaTasbihScreen()
     composable(
         duaTasbihNav.getPath(),
         arguments = duaTasbihNav.listOfArguments,
@@ -109,7 +105,7 @@ fun NavGraphBuilder.duaTasbihScreen(navController: NavHostController) {
 }
 
 fun NavGraphBuilder.duaListingScreen(navController: NavHostController) {
-    val duaListingNav = NavControllerRoutes.DUA_LISTING_SCREEN()
+    val duaListingNav = NavControllerRoutes.DuaListingScreen()
     composable(
         duaListingNav.getPath(),
         arguments = duaListingNav.listOfArguments,
@@ -131,7 +127,7 @@ fun NavGraphBuilder.duaListingScreen(navController: NavHostController) {
 }
 
 fun NavGraphBuilder.duaScreen(navHostController: NavHostController) {
-    val duaScreenNav = NavControllerRoutes.DUA_SCREEN()
+    val duaScreenNav = NavControllerRoutes.DuaScreen()
     composable(
         duaScreenNav.getPath(),
         arguments = duaScreenNav.listOfArguments,
@@ -141,7 +137,7 @@ fun NavGraphBuilder.duaScreen(navHostController: NavHostController) {
         popExitTransition = { popExitTransition() }
     ) { backStackEntry ->
 
-        val args = Json.decodeFromString<NavControllerRoutes.DUA_SCREEN.DuaScreenArgs>(backStackEntry.arguments?.getString("args") ?: duaScreenNav.getDefault())
+        val args = Json.decodeFromString<NavControllerRoutes.DuaScreen.DuaScreenArgs>(backStackEntry.arguments?.getString("args") ?: duaScreenNav.getDefault())
 
         DuaScreen(
             navHostController = navHostController,

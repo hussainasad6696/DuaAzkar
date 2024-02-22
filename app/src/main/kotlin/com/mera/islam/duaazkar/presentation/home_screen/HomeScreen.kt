@@ -155,7 +155,7 @@ fun HomeScreen(
                                 noOfDua = dua.count,
                                 onNextClick = {
                                     navController.navigate(
-                                        NavControllerRoutes.DUA_LISTING_SCREEN(
+                                        NavControllerRoutes.DuaListingScreen(
                                             duaListArray = dua.getIdList().toIntArray()
                                         ).getPathWithNavArgs()
                                     )
@@ -213,7 +213,7 @@ fun HomeScreen(
                                     noOfDua = dua.count,
                                     onNextClick = {
                                         navController.navigate(
-                                            NavControllerRoutes.DUA_LISTING_SCREEN(
+                                            NavControllerRoutes.DuaListingScreen(
                                                 duaListArray = dua.getIdList().toIntArray()
                                             ).getPathWithNavArgs()
                                         )
@@ -252,7 +252,7 @@ fun MorningEveningAzkar(
         ),
         onItemClick = {
             navController.navigate(
-                NavControllerRoutes.DUA_SCREEN(args = NavControllerRoutes.DUA_SCREEN.DuaScreenArgs(duaType = DuaType.Morning_Evening_Night))
+                NavControllerRoutes.DuaScreen(args = NavControllerRoutes.DuaScreen.DuaScreenArgs(duaType = DuaType.Morning_Evening_Night))
                     .getPathWithNavArgs()
             )
         }
@@ -283,7 +283,7 @@ fun Tasbih(
         ),
         onItemClick = {
             navController.navigate(
-                NavControllerRoutes.DUA_SCREEN(args = NavControllerRoutes.DUA_SCREEN.DuaScreenArgs(duaType = DuaType.Ibadah))
+                NavControllerRoutes.DuaScreen(args = NavControllerRoutes.DuaScreen.DuaScreenArgs(duaType = DuaType.Ibadah))
                     .getPathWithNavArgs()
             )
         }
@@ -308,8 +308,8 @@ fun LastRead(
         resource = R.drawable.ic_last_read,
         subTitle = lastRead.second,
         onItemClick = {
-            val duaNav = NavControllerRoutes.DUA_SCREEN(
-                args = NavControllerRoutes.DUA_SCREEN.DuaScreenArgs(
+            val duaNav = NavControllerRoutes.DuaScreen(
+                args = NavControllerRoutes.DuaScreen.DuaScreenArgs(
                     lastReadId = lastRead.first,
                     duaType = DuaType.ALL
                 )
@@ -336,7 +336,7 @@ fun AsmaulHusna(
         subTitle = "99",
         onItemClick = {
             navController.navigate(
-                NavControllerRoutes.ASMA_UL_HUSNA().route
+                NavControllerRoutes.AsmaUlHusna().route
             )
         }
     )

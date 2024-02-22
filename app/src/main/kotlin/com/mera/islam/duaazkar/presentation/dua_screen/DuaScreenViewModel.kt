@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mera.islam.duaazkar.NavControllerRoutes
 import com.mera.islam.duaazkar.R
 import  com.mera.islam.duaazkar.core.Settings
 import com.mera.islam.duaazkar.core.enums.LanguageDirection
@@ -36,6 +37,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
@@ -77,12 +80,15 @@ class DuaScreenViewModel @Inject constructor(
     val title = _title.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val allDuaWithTranslations = savedStateHandle.getStateFlow(DUA_TYPE, DuaType.ALL.type)
-        .flatMapLatest { getAllDuaWithTranslationsUseCase(DuaType.toDuaType(it)) }
+    val allDuaWithTranslations = savedStateHandle.getStateFlow(DUA_ARGS, "")
+        .flatMapLatest {
+            val duaType = Json.decodeFromString<NavControllerRoutes.DuaScreen.DuaScreenArgs>(it)
+            getAllDuaWithTranslationsUseCase(duaType.duaType)
+        }
         .onEach {
             _title.value =
-                it.map { it.getDataType() as DuaType }.distinctBy { it.type }.map { it.getName() }
-                    .joinToString(" / ")
+                it.map { it.getDataType() as DuaType }.distinctBy { it.type }
+                    .joinToString(" / ") { it.getName() }
         }
         .map { UiStates.Success(it) }
         .stateIn(
@@ -149,8 +155,8 @@ class DuaScreenViewModel @Inject constructor(
         }
     }
 
-    fun loadDuasByDuaType(duaType: DuaType) {
-        savedStateHandle[DUA_TYPE] = duaType.type
+    fun loadDuasByDuaType(args: NavControllerRoutes.DuaScreen.DuaScreenArgs) {
+        savedStateHandle[DUA_ARGS] = Json.encodeToString(args)
     }
 
     fun onUserEvent(userEvent: UserEvent) {
@@ -248,6 +254,7 @@ class DuaScreenViewModel @Inject constructor(
     fun requestWriteSettingsPermission() {
         systemBrightnessSettings.changeWriteSettingsPermission()
     }
+
 }
 
 sealed interface UserEvent {
@@ -276,4 +283,4 @@ data class DuaTranslatorModelWithSelection(
     }
 }
 
-private const val DUA_TYPE = "duaType"
+private const val DUA_ARGS = "args"

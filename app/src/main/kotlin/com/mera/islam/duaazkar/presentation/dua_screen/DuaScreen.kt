@@ -77,7 +77,7 @@ import java.net.URL
 fun DuaScreen(
     navHostController: NavHostController,
     viewModel: DuaScreenViewModel = hiltViewModel(),
-    args: NavControllerRoutes.DUA_SCREEN.DuaScreenArgs
+    args: NavControllerRoutes.DuaScreen.DuaScreenArgs
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -139,7 +139,11 @@ fun DuaScreen(
             drawerContent = {
                 DuaCategoriesDrawer(viewModel = viewModel,
                     onCategorySelected = {
-                        viewModel.loadDuasByDuaType(it)
+                        val category = args.copy(
+                            duaType = it,
+                            lastReadId = -1
+                        )
+                        viewModel.loadDuasByDuaType(category)
                         coroutineScope.launch {
                             drawerState.close()
                         }
@@ -318,7 +322,7 @@ fun DuaScreen(
                                                 onItemClick = {},
                                                 onOpenTashib = {
                                                     navHostController.navigate(
-                                                        NavControllerRoutes.DUA_TASBIH_SCREEN(
+                                                        NavControllerRoutes.DuaTasbihScreen(
                                                             duaId = duaItem.getDataId()
                                                         ).getPathWithNavArgs()
                                                     )

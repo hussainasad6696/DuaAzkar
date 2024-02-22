@@ -13,7 +13,7 @@ import kotlinx.serialization.json.Json
 
 sealed class NavControllerRoutes(val route: String) {
     data class ROOT(val rout: String = "root") : NavControllerRoutes(rout)
-    data class DUA_TASBIH_SCREEN(
+    data class DuaTasbihScreen(
         val rout: String = "duaTasbihScreen",
         val duaId: Int = -1
     ) : NavControllerRoutes(rout) {
@@ -36,7 +36,7 @@ sealed class NavControllerRoutes(val route: String) {
         }
     }
 
-    data class DUA_SCREEN(
+    data class DuaScreen(
         val rout: String = "duaScreen",
         val args: DuaScreenArgs = DuaScreenArgs()
     ) :
@@ -72,12 +72,12 @@ sealed class NavControllerRoutes(val route: String) {
         }
     }
 
-    data class DUA_SEARCH_SCREEN(val rout: String = "duaSearchScreen") :
+    data class DuaSearchScreen(val rout: String = "duaSearchScreen") :
         NavControllerRoutes(rout)
 
-    data class ASMA_UL_HUSNA(val rout: String = "asmaulHusna") : NavControllerRoutes(rout)
+    data class AsmaUlHusna(val rout: String = "asmaulHusna") : NavControllerRoutes(rout)
 
-    data class DUA_LISTING_SCREEN(
+    data class DuaListingScreen(
         val rout: String = "duaListingScreen",
         val duaListArray: IntArray = IntArray(0),
         val matchTextList: List<String> = emptyList()
