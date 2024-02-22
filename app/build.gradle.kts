@@ -86,10 +86,10 @@ android {
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("com.google.firebase:firebase-crashlytics:18.6.1")
-    implementation("com.google.firebase:firebase-analytics:21.5.0")
+    implementation("com.google.firebase:firebase-crashlytics:18.6.2")
+    implementation("com.google.firebase:firebase-analytics:21.5.1")
     implementation("com.google.android.gms:play-services-location:21.1.0")
-    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
@@ -115,13 +115,13 @@ dependencies {
     implementation("androidx.compose.material:material")
 
     //jetpack compose animations
-    implementation("androidx.compose.animation:animation:1.6.0")
+    implementation("androidx.compose.animation:animation:1.6.2")
 
     //hilt
     val hiltVersion = "2.48.1"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     //room
     val roomVersion = "2.6.1"
@@ -136,7 +136,7 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:$dataStoreVersion")
 
     //navController
-    val navVersion = "2.7.6"
+    val navVersion = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$navVersion")
 
     //sdp
@@ -151,8 +151,8 @@ dependencies {
     //worker
     val workVersion = "2.9.0"
     implementation("androidx.work:work-runtime-ktx:$workVersion")
-    implementation("androidx.hilt:hilt-work:1.1.0")
-    kapt ("androidx.hilt:hilt-compiler:1.1.0")
+    implementation("androidx.hilt:hilt-work:1.2.0")
+    kapt ("androidx.hilt:hilt-compiler:1.2.0")
 
     //adhan
     implementation(project(":adhan"))
