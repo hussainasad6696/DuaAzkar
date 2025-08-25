@@ -2,10 +2,11 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'maven-publish'
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
-    compileSdk 34
+    compileSdk 36
     namespace 'com.smarttoolfactory.slider'
     defaultConfig {
         minSdk 21
@@ -27,7 +28,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.11"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     packagingOptions {
         resources {
@@ -51,7 +52,7 @@ afterEvaluate {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.core:core-ktx:1.17.0'
 
     // Jetpack Compose
     def compose_version = "1.6.0"

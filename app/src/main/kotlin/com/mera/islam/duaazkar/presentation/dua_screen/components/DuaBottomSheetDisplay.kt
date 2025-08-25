@@ -22,8 +22,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -121,8 +123,8 @@ fun ThemeSettings(selectedTheme: Int, onThemeSelected: (Int) -> Unit) {
                             shape = RoundedCornerShape(10.sdp)
                         )
                         .clickable(
-                            interactionSource = MutableInteractionSource(),
-                            indication = rememberRipple(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = ripple(
                                 radius = 16.sdp
                             )
                         ) { onThemeSelected(it) },

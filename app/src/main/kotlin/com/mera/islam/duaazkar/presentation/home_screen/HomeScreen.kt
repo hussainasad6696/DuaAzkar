@@ -49,7 +49,7 @@ fun HomeScreen(
     viewModel: LandingScreenViewModel,
     onViewAllClick: () -> Unit,
     navController: NavHostController,
-    isLandscape: Boolean = false
+    isLandscape: Boolean = false,
 ) {
     val allDuaTypes by viewModel.duaTypeWithCount.collectAsStateWithLifecycle()
 
@@ -147,10 +147,11 @@ fun HomeScreen(
                             val dua = it[index]
 
                             DuaTypesWithCountView(
-                                modifier = Modifier.padding(horizontal = 10.sdp)
-                                    .animateItemPlacement(
-                                    animationSpec = tween(durationMillis = 1000)
-                                ),
+                                modifier = Modifier
+                                    .padding(horizontal = 10.sdp)
+                                    .animateItem(
+                                        fadeInSpec = tween(durationMillis = 1000)
+                                    ),
                                 duaType = dua.getDuaType(),
                                 noOfDua = dua.count,
                                 onNextClick = {
@@ -234,7 +235,7 @@ fun HomeScreen(
 fun MorningEveningAzkar(
     seventyPercentWidth: Dp? = null,
     data: List<DuaNameAndCount>,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     LandingScreenTopSelection(
         modifier = Modifier
@@ -252,7 +253,11 @@ fun MorningEveningAzkar(
         ),
         onItemClick = {
             navController.navigate(
-                NavControllerRoutes.DuaScreen(args = NavControllerRoutes.DuaScreen.DuaScreenArgs(duaType = DuaType.Morning_Evening_Night))
+                NavControllerRoutes.DuaScreen(
+                    args = NavControllerRoutes.DuaScreen.DuaScreenArgs(
+                        duaType = DuaType.Morning_Evening_Night
+                    )
+                )
                     .getPathWithNavArgs()
             )
         }
@@ -263,7 +268,7 @@ fun MorningEveningAzkar(
 fun Tasbih(
     thirtyPercentWidth: Dp? = null,
     data: List<DuaNameAndCount>,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     Spacer(modifier = Modifier.width(5.sdp))
 
@@ -283,7 +288,11 @@ fun Tasbih(
         ),
         onItemClick = {
             navController.navigate(
-                NavControllerRoutes.DuaScreen(args = NavControllerRoutes.DuaScreen.DuaScreenArgs(duaType = DuaType.Ibadah))
+                NavControllerRoutes.DuaScreen(
+                    args = NavControllerRoutes.DuaScreen.DuaScreenArgs(
+                        duaType = DuaType.Ibadah
+                    )
+                )
                     .getPathWithNavArgs()
             )
         }
@@ -294,7 +303,7 @@ fun Tasbih(
 fun LastRead(
     viewModel: LandingScreenViewModel,
     thirtyPercentWidth: Dp? = null,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     val lastRead by viewModel.settingsDuaLastRead.collectAsStateWithLifecycle()
     LandingScreenTopSelection(
@@ -322,7 +331,7 @@ fun LastRead(
 @Composable
 fun AsmaulHusna(
     seventyPercentWidth: Dp? = null,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     LandingScreenTopSelection(
         modifier = Modifier
